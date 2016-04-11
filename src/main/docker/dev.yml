@@ -1,0 +1,7 @@
+vktrgt-dev-mongodb:
+  container_name: vktrgt-dev-mongodb
+  image: mongo:3.0.7
+  # volumes:
+  #   - ~/volumes/jhipster/vktrgt/dev-mongodb/:/data/db/
+  ports:
+    - "27017:27017"

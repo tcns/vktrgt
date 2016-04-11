@@ -1,0 +1,24 @@
+{
+  "generator-jhipster": {
+    "baseName": "vktrgt",
+    "packageName": "ru.tcns.vktrgt",
+    "packageFolder": "ru/tcns/vktrgt",
+    "authenticationType": "session",
+    "hibernateCache": "no",
+    "clusteredHttpSession": "no",
+    "websocket": "spring-websocket",
+    "databaseType": "mongodb",
+    "devDatabaseType": "mongodb",
+    "prodDatabaseType": "mongodb",
+    "searchEngine": "no",
+    "useSass": true,
+    "buildTool": "gradle",
+    "frontendBuilder": "grunt",
+    "enableTranslation": true,
+    "enableSocialSignIn": false,
+    "rememberMeKey": "00f47fea50d5a890e87923ac9c8935867fd039f3",
+    "testFrameworks": [
+      "gatling"
+    ]
+  }
+}
