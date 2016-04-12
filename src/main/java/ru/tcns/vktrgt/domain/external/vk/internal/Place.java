@@ -1,9 +1,12 @@
 package ru.tcns.vktrgt.domain.external.vk.internal;
 
+import org.springframework.data.annotation.Id;
+
 /**
  * Created by Тимур on 09.04.2016.
  */
 public class Place {
+    @Id
     private Long id;
     private String title;
     private Double longitude;

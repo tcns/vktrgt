@@ -30,7 +30,7 @@ public class ArrayUtils {
         ArrayList<String> strings = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
         for (long i = from; i<=to; i++) {
-            if (i%max==0) {
+            if (i%max==0 || i==to) {
                 builder.append(i);
                 strings.add(builder.toString());
                 builder = new StringBuilder();

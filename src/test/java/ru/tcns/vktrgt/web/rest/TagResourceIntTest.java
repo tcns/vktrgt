@@ -1,8 +1,6 @@
 package ru.tcns.vktrgt.web.rest;
 
 import ru.tcns.vktrgt.Application;
-import ru.tcns.vktrgt.domain.Tag;
-import ru.tcns.vktrgt.repository.TagRepository;
 
 import org.junit.Before;
 import org.junit.Test;

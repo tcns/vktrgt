@@ -1,5 +1,9 @@
 package ru.tcns.vktrgt.domain.external.vk.internal;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import ru.tcns.vktrgt.domain.external.vk.dict.GroupType;
 
 import java.util.Date;
@@ -7,34 +11,63 @@ import java.util.Date;
 /**
  * Created by timur on 3/28/16.
  */
+@Document(collection = "group")
 public class Group {
+    @Id
     private Long id;
+
     private String name;
+
     private String screenName;
+
     private Boolean isClosed;
+
     private GroupType type;
+
     private String photo50;
+
     private String photo100;
+
     private String photo200;
+
     private String city;
+
     private String country;
+    @DBRef
     private Place place;
+
     private String description;
+
     private String wikiPage;
+
     private Integer membersCount;
+
     private String counters;
+
     private Date startDate;
+
     private Date finishDate;
+
     private String publicDateLabel;
+
     private String activity;
+
     private String status;
+
     private String contacts;
+
     private String links;
+
     private String fixedPost;
+
     private String verified;
+
     private String site;
+
     private String mainAlbumId;
+
     private String mainSection;
+    @DBRef
     private Market market;
 
     public Long getId() {
@@ -259,5 +292,21 @@ public class Group {
 
     public void setMarket(Market market) {
         this.market = market;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Group group = (Group) o;
+
+        return id.equals(group.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }
