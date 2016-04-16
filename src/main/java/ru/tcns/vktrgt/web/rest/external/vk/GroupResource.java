@@ -7,13 +7,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.tcns.vktrgt.api.vk.Groups;
+import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
+import ru.tcns.vktrgt.domain.external.vk.internal.GroupIds;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
+import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 import ru.tcns.vktrgt.web.rest.dto.BlogDTO;
 import ru.tcns.vktrgt.web.rest.util.HeaderUtil;
@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,17 +38,36 @@ public class GroupResource {
 
     @Inject
     private GroupService groupService;
+    @Inject
+    private GroupIdRepository groupIdRepository;
 
     @RequestMapping(value = "/groups",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Void> collectGroups() throws URISyntaxException {
+    public ResponseEntity<Void> collectGroups(@RequestParam Integer from,
+                                              @RequestParam Integer to,
+                                              @RequestParam Boolean saveIds,
+                                              @RequestParam Boolean useIds) throws URISyntaxException {
         log.debug("REST Attempt to search groups");
-        List<Group>  groups = Groups.getGroupInfoById(ArrayUtils.getDelimetedLists(1,100,500));
-        groupService.saveAll(groups);
+        List<String> list;
+        if (useIds) {
+            List<GroupIds> idsList = groupIdRepository.findAll();
+            list = ArrayUtils.getDelimetedLists(from, to, VKDicts.MAX_GROUP_REQUEST_COUNT, idsList);
+        } else {
+            list = ArrayUtils.getDelimetedLists(from, to, VKDicts.MAX_GROUP_REQUEST_COUNT);
+        }
+        for (String s : list) {
+            List<Group> groups = Groups.getGroupInfoById(s);
+            if (saveIds) {
+                List<GroupIds> ids = groups.stream().map(p -> new GroupIds(p.getId().intValue())).collect(Collectors.toList());
+                groupIdRepository.save(ids);
+            }
+            groupService.saveAll(groups);
+        }
         return ResponseEntity.ok().build();
     }
+
     @RequestMapping(value = "/groups",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,5 +75,14 @@ public class GroupResource {
     public ResponseEntity<List<Group>> getAllGroups() throws URISyntaxException {
         List<Group> groups = groupService.findAll();
         return new ResponseEntity<>(groups, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/groups",
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Void> deleteAllGroups() throws URISyntaxException {
+        groupService.deleteAll();
+        return ResponseEntity.ok().build();
     }
 }

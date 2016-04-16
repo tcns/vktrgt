@@ -30,10 +30,10 @@ public class Group {
 
     private String photo200;
 
-    private String city;
+    private Integer city;
 
-    private String country;
-    @DBRef
+    private Integer country;
+    @Field
     private Place place;
 
     private String description;
@@ -54,21 +54,23 @@ public class Group {
 
     private String status;
 
-    private String contacts;
+    @Field
+    private Contact[] contacts;
 
     private String links;
 
-    private String fixedPost;
+    private Long fixedPost;
 
-    private String verified;
+    private Integer verified;
 
     private String site;
 
-    private String mainAlbumId;
+    private Long mainAlbumId;
 
-    private String mainSection;
-    @DBRef
+    private Long mainSection;
+    @Field
     private Market market;
+
 
     public Long getId() {
         return id;
@@ -134,19 +136,19 @@ public class Group {
         this.photo200 = photo200;
     }
 
-    public String getCity() {
+    public Integer getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(Integer city) {
         this.city = city;
     }
 
-    public String getCountry() {
+    public Integer getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(Integer country) {
         this.country = country;
     }
 
@@ -230,11 +232,11 @@ public class Group {
         this.status = status;
     }
 
-    public String getContacts() {
+    public Contact[] getContacts() {
         return contacts;
     }
 
-    public void setContacts(String contacts) {
+    public void setContacts(Contact[] contacts) {
         this.contacts = contacts;
     }
 
@@ -246,19 +248,19 @@ public class Group {
         this.links = links;
     }
 
-    public String getFixedPost() {
+    public Long getFixedPost() {
         return fixedPost;
     }
 
-    public void setFixedPost(String fixedPost) {
+    public void setFixedPost(Long fixedPost) {
         this.fixedPost = fixedPost;
     }
 
-    public String getVerified() {
+    public Integer getVerified() {
         return verified;
     }
 
-    public void setVerified(String verified) {
+    public void setVerified(Integer verified) {
         this.verified = verified;
     }
 
@@ -270,19 +272,19 @@ public class Group {
         this.site = site;
     }
 
-    public String getMainAlbumId() {
+    public Long getMainAlbumId() {
         return mainAlbumId;
     }
 
-    public void setMainAlbumId(String mainAlbumId) {
+    public void setMainAlbumId(Long mainAlbumId) {
         this.mainAlbumId = mainAlbumId;
     }
 
-    public String getMainSection() {
+    public Long getMainSection() {
         return mainSection;
     }
 
-    public void setMainSection(String mainSection) {
+    public void setMainSection(Long mainSection) {
         this.mainSection = mainSection;
     }
 

@@ -19,6 +19,7 @@ public interface GroupService {
     List<Group> findAll();
 
     void delete(Long id);
+    void deleteAll();
 
 
 }

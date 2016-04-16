@@ -81,21 +81,19 @@ public class Groups {
         return new GroupResponse();
     }
 
-    public static List<Group> getGroupInfoById(List<String> ids) {
+    public static List<Group> getGroupInfoById(String ids) {
         String fields = "city,country,place,description,wiki_page,members_count,counters,start_date,finish_date," +
             "public_date_label,activity,status,contacts,links,fixed_post,verified,site,main_album_id,main_section,market";
 
         List<Group> groups = new ArrayList<>();
-        for (String id : ids) {
-            Content content = null;
-            try {
-                String url = PREFIX + "getById?group_ids=" + id + "fields=" + fields;
-                content = Request.Get(url).execute().returnContent();
-                String ans = content.asString();
-                groups.addAll(VKResponseParser.parseGroupGetByIdesponse(ans));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        Content content = null;
+        try {
+            String url = PREFIX + "getById?group_ids=" + ids + "&fields=" + fields;
+            content = Request.Get(url).execute().returnContent();
+            String ans = content.asString();
+            groups.addAll(VKResponseParser.parseGroupGetByIdResponse(ans));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return groups;
     }

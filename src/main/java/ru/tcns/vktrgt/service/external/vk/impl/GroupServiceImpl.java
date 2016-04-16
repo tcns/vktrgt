@@ -47,6 +47,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public void deleteAll() {
+        groupRepository.deleteAll();
+    }
+
+    @Override
     public void delete(Long id) {
         groupRepository.delete(id);
     }
