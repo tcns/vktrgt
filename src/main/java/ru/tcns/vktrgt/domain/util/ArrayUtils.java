@@ -51,7 +51,7 @@ public class ArrayUtils {
         ArrayList<String> strings = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
         if (start > -1) {
-            for (int i = start; i > idsList.size() && idsList.get(i).getId() <= to; i++) {
+            for (int i = start; i < idsList.size() && idsList.get(i).getId() <= to; i++) {
                 if ((i-start) % max == 0 || i == to) {
                     builder.append(idsList.get(i).getId());
                     strings.add(builder.toString());

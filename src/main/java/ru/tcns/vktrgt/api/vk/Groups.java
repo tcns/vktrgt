@@ -91,7 +91,14 @@ public class Groups {
             String url = PREFIX + "getById?group_ids=" + ids + "&fields=" + fields;
             content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
-            groups.addAll(VKResponseParser.parseGroupGetByIdResponse(ans));
+            List<Group> groupResponse = VKResponseParser.parseGroupGetByIdResponse(ans);
+            if (groupResponse!=null) {
+                groups.addAll(groupResponse);
+            } else {
+                System.out.println(ans);
+                System.out.println(ids);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
