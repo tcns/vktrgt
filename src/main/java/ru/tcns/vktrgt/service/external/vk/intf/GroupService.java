@@ -20,6 +20,7 @@ public interface GroupService {
 
     void delete(Long id);
     void deleteAll();
+    Page<Group> searchByName(String name, Boolean restrict, Pageable pageable);
 
 
 }

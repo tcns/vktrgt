@@ -3,6 +3,9 @@ package ru.tcns.vktrgt.web.rest.external.vk;
 import com.codahale.metrics.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -72,9 +75,23 @@ public class GroupResource {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<Group>> getAllGroups() throws URISyntaxException {
-        List<Group> groups = groupService.findAll();
-        return new ResponseEntity<>(groups, HttpStatus.OK);
+    public ResponseEntity<List<Group>> getAllGroups(Pageable pageable) throws URISyntaxException {
+        Page<Group> groups = groupService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(groups, "/api/groups");
+        return new ResponseEntity<>(groups.getContent().stream()
+            .collect(Collectors.toCollection(LinkedList::new)), headers, HttpStatus.OK);
+    }
+    @RequestMapping(value = "/groups/{name}",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<Group>> getSearchGroupsByName(@PathVariable String name, @RequestParam Boolean restrict,
+                                                             @RequestParam int page, @RequestParam int size) throws URISyntaxException {
+        Pageable pageable = new PageRequest(page,size);
+        Page<Group> groups = groupService.searchByName(name, restrict, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(groups, "/api/groups");
+        return new ResponseEntity<>(groups.getContent().stream()
+            .collect(Collectors.toCollection(LinkedList::new)), headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/groups",

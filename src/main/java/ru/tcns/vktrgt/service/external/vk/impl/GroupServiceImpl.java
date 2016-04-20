@@ -1,11 +1,13 @@
 package ru.tcns.vktrgt.service.external.vk.impl;
 
+import com.mysema.query.types.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
+import ru.tcns.vktrgt.domain.external.vk.internal.QGroup;
 import ru.tcns.vktrgt.repository.external.vk.GroupRepository;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 
@@ -55,4 +57,16 @@ public class GroupServiceImpl implements GroupService {
     public void delete(Long id) {
         groupRepository.delete(id);
     }
+
+    @Override
+    public Page<Group> searchByName(String name, Boolean restrict, Pageable pageable) {
+        if (!restrict) {
+            Predicate predicate = QGroup.group.name.contains(name);
+            return groupRepository.findAll(predicate, pageable);
+        } else {
+            return groupRepository.findByName(name, pageable);
+        }
+
+    }
+
 }
