@@ -12,5 +12,5 @@ import java.util.List;
  * Created by Тимур on 13.04.2016.
  */
 public interface GroupRepository extends MongoRepository<Group, Long>, QueryDslPredicateExecutor<Group> {
-    Page<Group> findByName(String name, Pageable pageable);
+    Page<Group> findByNameIgnoreCase(String name, Pageable pageable);
 }

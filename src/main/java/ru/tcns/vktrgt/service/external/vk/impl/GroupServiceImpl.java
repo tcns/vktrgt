@@ -1,6 +1,8 @@
 package ru.tcns.vktrgt.service.external.vk.impl;
 
+import com.google.common.collect.Lists;
 import com.mysema.query.types.Predicate;
+import org.apache.commons.collections.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,6 +14,7 @@ import ru.tcns.vktrgt.repository.external.vk.GroupRepository;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,12 +64,28 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Page<Group> searchByName(String name, Boolean restrict, Pageable pageable) {
         if (!restrict) {
-            Predicate predicate = QGroup.group.name.contains(name);
+            Predicate predicate = QGroup.group.name.containsIgnoreCase(name.toLowerCase());
             return groupRepository.findAll(predicate, pageable);
         } else {
-            return groupRepository.findByName(name, pageable);
+            return groupRepository.findByNameIgnoreCase(name.toLowerCase(), pageable);
         }
 
+    }
+
+    @Override
+    public List<Group> searchByNames(List<String> names) {
+        ArrayList<Long> ids = new ArrayList<>();
+        for (String name: names) {
+            try {
+                Long val = Long.parseLong(name);
+                ids.add(val);
+            } catch (Exception ex){}
+
+        }
+        Predicate predicate = QGroup.group.screenName.in(names).or(
+            QGroup.group.id.in(ids)
+        );
+        return Lists.newArrayList(groupRepository.findAll(predicate));
     }
 
 }

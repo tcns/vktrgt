@@ -3,21 +3,18 @@ package ru.tcns.vktrgt.api.vk;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
-import ru.tcns.vktrgt.domain.external.vk.internal.Group;
-import ru.tcns.vktrgt.domain.external.vk.response.GroupResponse;
-import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
+import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by root on 3/18/16.
+ * Created by TIMUR on 21.04.2016.
  */
-public class Groups {
+public class Users {
     private static final String ACCESS_TOKEN = "&access_token=" + Common.getToken() + "&client_secret=" + Common.CLIENT_SECRET +
         "&v=5.50";
     public static Long reqTime = 0L;
@@ -27,8 +24,7 @@ public class Groups {
     final static String METHOD_PREFIX = "groups.";
     final static String PREFIX = URL_PREFIX + METHOD_PREFIX;
 
-
-    public static GroupUserResponse getGroupUsers(String groupId, int offset, int count) {
+    public static GroupUserResponse getUserFriends(String userId, int offset, int count) {
         try {
             String url = PREFIX + "getMembers?group_id=" + groupId + "&offset=" + offset
                 + "&count=" + count;
@@ -64,44 +60,5 @@ public class Groups {
             result = utils.intersect(result, cur.getUsers());
         }
         return result;
-    }
-
-    public static GroupResponse getGroups(String q, int count, int offset) {
-        try {
-            String url = PREFIX + "search?q=" + q + "&offset=" + offset
-                + "&count=" + count + ACCESS_TOKEN;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-
-            GroupResponse response = VKResponseParser.parseGroupSearchResponse(ans);
-            return response;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new GroupResponse();
-    }
-
-    public static List<Group> getGroupInfoById(String ids) {
-        String fields = "city,country,place,description,wiki_page,members_count,counters,start_date,finish_date," +
-            "public_date_label,activity,status,contacts,links,fixed_post,verified,site,main_album_id,main_section,market";
-
-        List<Group> groups = new ArrayList<>();
-        Content content = null;
-        try {
-            String url = PREFIX + "getById?group_ids=" + ids + "&fields=" + fields;
-            content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            List<Group> groupResponse = VKResponseParser.parseGroupGetByIdResponse(ans);
-            if (groupResponse!=null) {
-                groups.addAll(groupResponse);
-            } else {
-                System.out.println(ans);
-                System.out.println(ids);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return groups;
     }
 }

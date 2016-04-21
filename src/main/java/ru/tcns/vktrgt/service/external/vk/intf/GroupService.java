@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 
+import javax.lang.model.element.Name;
 import java.util.List;
 
 /**
@@ -21,6 +22,7 @@ public interface GroupService {
     void delete(Long id);
     void deleteAll();
     Page<Group> searchByName(String name, Boolean restrict, Pageable pageable);
+    List<Group> searchByNames(List<String> names);
 
 
 }

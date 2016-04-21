@@ -81,17 +81,35 @@ public class GroupResource {
         return new ResponseEntity<>(groups.getContent().stream()
             .collect(Collectors.toCollection(LinkedList::new)), headers, HttpStatus.OK);
     }
-    @RequestMapping(value = "/groups/{name}",
-        method = RequestMethod.GET,
+    @RequestMapping(value = "/groups/search/name",
+        method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<Group>> getSearchGroupsByName(@PathVariable String name, @RequestParam Boolean restrict,
+    public ResponseEntity<List<Group>> getSearchGroupsByName(@RequestParam String name, @RequestParam Boolean restrict,
                                                              @RequestParam int page, @RequestParam int size) throws URISyntaxException {
         Pageable pageable = new PageRequest(page,size);
         Page<Group> groups = groupService.searchByName(name, restrict, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(groups, "/api/groups");
         return new ResponseEntity<>(groups.getContent().stream()
             .collect(Collectors.toCollection(LinkedList::new)), headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/groups/search/ids",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<Group>> getSearchGroupsByNames(@RequestParam List<String> names) throws URISyntaxException {
+        List<Group> groups = groupService.searchByNames(names);
+        return ResponseEntity.ok(groups);
+    }
+
+    @RequestMapping(value = "/groups/intersect",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<Long>> intersectGroups(@RequestParam List<String> names) throws URISyntaxException {
+        List<Long> userIds = Groups.intersectGroups(names);
+        return ResponseEntity.ok(userIds);
     }
 
     @RequestMapping(value = "/groups",
