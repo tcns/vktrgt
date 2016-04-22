@@ -1,10 +1,10 @@
 package ru.tcns.vktrgt.domain.util;
 
+import org.apache.commons.collections.FastTreeMap;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupIds;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Created by timur on 3/26/16.
@@ -29,6 +29,38 @@ public class ArrayUtils {
         return result;
     }
 
+    public <T extends Comparable> HashMap<T, Integer> intersectWithCount(HashMap<T, Integer> map, List<T> list) {
+        Set<Map.Entry<T, Integer>> entrySet = map.entrySet();
+        if (map.isEmpty()) {
+            map = new HashMap<>();
+            for (T e : list) {
+                map.put(e, 1);
+            }
+            return map;
+        }
+        for (T e : list) {
+            Integer val = map.get(e);
+            if (val == null) {
+                map.put(e, 1);
+            } else {
+                map.put(e, val + 1);
+            }
+        }
+        return map;
+    }
+
+    public static <K, V extends Comparable<? super V>> Map<K, V>
+    sortByValue(Map<K, V> map) {
+        Map<K, V> result = new LinkedHashMap<>();
+        Stream<Map.Entry<K, V>> st = map.entrySet().stream();
+
+        st.sorted(Map.Entry.comparingByValue(Comparator.<V>reverseOrder()))
+            .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+
+        return result;
+    }
+
+
     public static List<String> getDelimetedLists(long from, long to, int max) {
         ArrayList<String> strings = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
@@ -52,7 +84,7 @@ public class ArrayUtils {
         StringBuilder builder = new StringBuilder();
         if (start > -1) {
             for (int i = start; i < idsList.size() && idsList.get(i).getId() <= to; i++) {
-                if ((i-start) % max == 0 || i == to) {
+                if ((i - start) % max == 0 || i == to) {
                     builder.append(idsList.get(i).getId());
                     strings.add(builder.toString());
                     builder = new StringBuilder();

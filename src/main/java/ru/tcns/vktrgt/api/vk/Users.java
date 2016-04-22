@@ -4,12 +4,15 @@ import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
+import ru.tcns.vktrgt.domain.external.vk.internal.User;
+import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
+import ru.tcns.vktrgt.domain.external.vk.response.FriendsResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by TIMUR on 21.04.2016.
@@ -21,44 +24,49 @@ public class Users {
     public static Long transTime = 0L;
 
     final static String URL_PREFIX = "https://api.vk.com/method/";
-    final static String METHOD_PREFIX = "groups.";
-    final static String PREFIX = URL_PREFIX + METHOD_PREFIX;
+    final static String FRIENDS_METHOD_PREFIX = "friends.";
+    final static String USER_METHOD_PREFIX = "user.";
+    final static String PREFIX = URL_PREFIX + FRIENDS_METHOD_PREFIX;
 
-    public static GroupUserResponse getUserFriends(String userId, int offset, int count) {
+    public static FriendsResponse getUserFriends(Long userId) {
         try {
-            String url = PREFIX + "getMembers?group_id=" + groupId + "&offset=" + offset
-                + "&count=" + count;
+            String url = PREFIX + "get?user_id=" + userId;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
-            GroupUserResponse response = VKResponseParser.parseGroupUserResponse(ans);
+            FriendsResponse response = VKResponseParser.parseFriendsResponse(ans);
             return response;
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return new GroupUserResponse();
+        return new FriendsResponse();
 
     }
-
-    public static GroupUsers getAllGroupUsers(String groupId) {
-        GroupUserResponse initial = getGroupUsers(groupId, 0, 1);
-        int count = initial.getCount();
-        GroupUsers users = new GroupUsers(count, groupId);
-        for (int i = 0; i < count; i += 1000) {
-            users.append(getGroupUsers(groupId, i, 1000));
+    public static CommonIDResponse getUserFriendIds(Long userId) {
+        try {
+            String url = PREFIX + "get?user_id=" + userId+"&order=id";
+            Content content = Request.Get(url).execute().returnContent();
+            String ans = content.asString();
+            CommonIDResponse response = VKResponseParser.parseCommonIDResponse(ans);
+            return response;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return users;
+        return new CommonIDResponse();
+
     }
 
-    public static List<Long> intersectGroups(List<String> groups) {
-        GroupUsers init = getAllGroupUsers(groups.get(0));
+    public static Map<Long, Integer> intersectUsers(List<Long> users) {
+        HashMap<Long, Integer> result = new HashMap<>();
         ArrayUtils utils = new ArrayUtils();
-        List<Long> result = init.getUsers();
-        for (int i = 1; i < groups.size(); i++) {
-            GroupUsers cur = getAllGroupUsers(groups.get(i));
-            result = utils.intersect(result, cur.getUsers());
+        for (int i = 0; i < users.size(); i++) {
+            CommonIDResponse cur = getUserFriendIds(users.get(i));
+            List<Long> curResult = cur.getIds();
+            result = utils.intersectWithCount(result, curResult);
         }
-        return result;
+        return ArrayUtils.sortByValue(result);
     }
 }

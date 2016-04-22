@@ -5,10 +5,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import ru.tcns.vktrgt.domain.external.vk.dict.GroupType;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
-import ru.tcns.vktrgt.domain.external.vk.internal.Contact;
-import ru.tcns.vktrgt.domain.external.vk.internal.Group;
-import ru.tcns.vktrgt.domain.external.vk.internal.Market;
-import ru.tcns.vktrgt.domain.external.vk.internal.Place;
+import ru.tcns.vktrgt.domain.external.vk.internal.*;
+import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
+import ru.tcns.vktrgt.domain.external.vk.response.FriendsResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.GroupResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
 import ru.tcns.vktrgt.domain.util.DateUtils;
@@ -26,6 +25,54 @@ public final class VKResponseParser {
     public static String parseAuthResponse(String response) throws JSONException {
         JSONObject object = new JSONObject(response);
         return object.getString("access_token");
+    }
+
+    public static CommonIDResponse parseCommonIDResponse(String response) throws JSONException {
+        JSONObject object = new JSONObject(response);
+        JSONArray jsonArray = object.getJSONArray("response");
+        CommonIDResponse commonIDResponse = new CommonIDResponse();
+        commonIDResponse.setCount(jsonArray.length());
+        ArrayList<Long> items = new ArrayList<>(jsonArray.length());
+        for (int i = 0; i < jsonArray.length(); i++) {
+            items.add(jsonArray.getLong(i));
+        }
+        commonIDResponse.setIds(items);
+        return commonIDResponse;
+    }
+
+    public static FriendsResponse parseFriendsResponse(String response) throws JSONException{
+        JSONObject object = new JSONObject(response);
+        JSONObject jsonResponse = object.getJSONObject("response");
+        FriendsResponse friendsResponse = new FriendsResponse();
+        friendsResponse.setCount(jsonResponse.getInt("count"));
+        JSONArray jsonArray = jsonResponse.getJSONArray("items");
+        ArrayList<User> users = new ArrayList<>();
+        for (int i = 0; i<jsonArray.length(); i++) {
+            users.add(parseUser(jsonArray.getJSONObject(i)));
+        }
+        friendsResponse.setItems(users);
+        return friendsResponse;
+    }
+
+    public static User parseUser (JSONObject from) {
+        User user = new User();
+        user.setCity(parseCity(from.optJSONObject("city")));
+        user.setDomain(from.optString("domain"));
+        user.setFirstName(from.optString("first_name"));
+        user.setId(from.optLong("id"));
+        user.setLastName(from.optString("last_name"));
+        return user;
+    }
+
+    public static City parseCity (JSONObject from) {
+
+        if (from!=null) {
+            City city = new City();
+            city.setId(from.optInt("id"));
+            city.setTitle(from.optString("title"));
+            return city;
+        }
+        return null;
     }
 
     public static GroupUserResponse parseGroupUserResponse(String response) throws JSONException {
