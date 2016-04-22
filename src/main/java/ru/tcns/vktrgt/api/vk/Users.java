@@ -59,7 +59,7 @@ public class Users {
 
     }
 
-    public static Map<Long, Integer> intersectUsers(List<Long> users) {
+    public static Map<Long, Integer> intersectUsers(List<Long> users, Integer min) {
         HashMap<Long, Integer> result = new HashMap<>();
         ArrayUtils utils = new ArrayUtils();
         for (int i = 0; i < users.size(); i++) {
@@ -67,6 +67,6 @@ public class Users {
             List<Long> curResult = cur.getIds();
             result = utils.intersectWithCount(result, curResult);
         }
-        return ArrayUtils.sortByValue(result);
+        return ArrayUtils.sortByValue(result, min);
     }
 }

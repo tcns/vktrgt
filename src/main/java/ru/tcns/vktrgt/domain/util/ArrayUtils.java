@@ -50,15 +50,17 @@ public class ArrayUtils {
     }
 
     public static <K, V extends Comparable<? super V>> Map<K, V>
-    sortByValue(Map<K, V> map) {
+    sortByValue(Map<K, V> map, V min) {
         Map<K, V> result = new LinkedHashMap<>();
         Stream<Map.Entry<K, V>> st = map.entrySet().stream();
 
         st.sorted(Map.Entry.comparingByValue(Comparator.<V>reverseOrder()))
+            .filter(a->a.getValue().compareTo(min) >= 0)
             .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
 
         return result;
     }
+
 
 
     public static List<String> getDelimetedLists(long from, long to, int max) {
