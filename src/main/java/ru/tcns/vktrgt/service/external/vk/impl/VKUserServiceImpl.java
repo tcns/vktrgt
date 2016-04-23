@@ -1,8 +1,10 @@
-package ru.tcns.vktrgt.api.vk;
+package ru.tcns.vktrgt.service.external.vk.impl;
 
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
+import org.springframework.stereotype.Service;
+import ru.tcns.vktrgt.api.vk.Common;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
@@ -10,6 +12,7 @@ import ru.tcns.vktrgt.domain.external.vk.response.FriendsResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
+import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 
 import java.io.IOException;
 import java.util.*;
@@ -17,7 +20,8 @@ import java.util.*;
 /**
  * Created by TIMUR on 21.04.2016.
  */
-public class Users {
+@Service
+public class VKUserServiceImpl implements VKUserService {
     private static final String ACCESS_TOKEN = "&access_token=" + Common.getToken() + "&client_secret=" + Common.CLIENT_SECRET +
         "&v=5.50";
     public static Long reqTime = 0L;
@@ -28,7 +32,8 @@ public class Users {
     final static String USER_METHOD_PREFIX = "user.";
     final static String PREFIX = URL_PREFIX + FRIENDS_METHOD_PREFIX;
 
-    public static FriendsResponse getUserFriends(Long userId) {
+    @Override
+    public FriendsResponse getUserFriends(Long userId) {
         try {
             String url = PREFIX + "get?user_id=" + userId;
             Content content = Request.Get(url).execute().returnContent();
@@ -43,7 +48,8 @@ public class Users {
         return new FriendsResponse();
 
     }
-    public static CommonIDResponse getUserFriendIds(Long userId) {
+    @Override
+    public CommonIDResponse getUserFriendIds(Long userId) {
         try {
             String url = PREFIX + "get?user_id=" + userId+"&order=id";
             Content content = Request.Get(url).execute().returnContent();
@@ -59,7 +65,8 @@ public class Users {
 
     }
 
-    public static Map<Long, Integer> intersectUsers(List<Long> users, Integer min) {
+    @Override
+    public Map<Long, Integer> intersectUsers(List<Long> users, Integer min) {
         HashMap<Long, Integer> result = new HashMap<>();
         ArrayUtils utils = new ArrayUtils();
         for (int i = 0; i < users.size(); i++) {

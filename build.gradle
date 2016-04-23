@@ -155,6 +155,7 @@ dependencies {
     compile 'org.apache.httpcomponents:fluent-hc:4.5.2'
     compile 'org.json:json:20160212'
     compile 'com.mysema.querydsl:querydsl-mongodb:3.7.2'
+    compile 'com.github.mongobee:mongobee:0.11'
 
 
     testCompile group: 'com.jayway.awaitility', name: 'awaitility', version: awaility_version

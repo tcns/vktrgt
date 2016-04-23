@@ -1,5 +1,11 @@
 package ru.tcns.vktrgt.config;
 
+import com.github.mongobee.Mongobee;
+import com.github.mongobee.changeset.ChangeLog;
+import com.github.mongobee.changeset.ChangeSet;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
 import ru.tcns.vktrgt.domain.util.JSR310DateConverters.*;
 import com.mongodb.Mongo;
 import org.mongeez.Mongeez;
@@ -71,7 +77,7 @@ public class DatabaseConfiguration extends AbstractMongoConfiguration {
         return new CustomConversions(converters);
     }
 
-    @Bean
+    /*@Bean
     @Profile("!" + Constants.SPRING_PROFILE_FAST)
     public Mongeez mongeez() {
         log.debug("Configuring Mongeez");
@@ -81,5 +87,17 @@ public class DatabaseConfiguration extends AbstractMongoConfiguration {
         mongeez.setDbName(mongoProperties.getDatabase());
         mongeez.process();
         return mongeez;
-    }
+    }*/
+   @Bean
+   public Mongobee mongobee(){
+
+       Mongobee runner =
+           new Mongobee(mongoProperties.getUri());
+       runner.setDbName(mongoProperties.getDatabase());
+       runner.setChangeLogsScanPackage(
+           "ru.tcns.vktrgt.config.changeset"); // package to scan for changesets
+       runner.setEnabled(true);
+       return runner;
+   }
+
 }

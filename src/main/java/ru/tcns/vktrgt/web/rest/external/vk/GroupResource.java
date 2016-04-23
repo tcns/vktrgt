@@ -11,22 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tcns.vktrgt.api.vk.Groups;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupIds;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
-import ru.tcns.vktrgt.web.rest.dto.BlogDTO;
-import ru.tcns.vktrgt.web.rest.util.HeaderUtil;
 import ru.tcns.vktrgt.web.rest.util.PaginationUtil;
 
 import javax.inject.Inject;
-import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,14 +54,7 @@ public class GroupResource {
         } else {
             list = ArrayUtils.getDelimetedLists(from, to, VKDicts.MAX_GROUP_REQUEST_COUNT);
         }
-        for (String s : list) {
-            List<Group> groups = Groups.getGroupInfoById(s);
-            if (saveIds) {
-                List<GroupIds> ids = groups.stream().map(p -> new GroupIds(p.getId().intValue())).collect(Collectors.toList());
-                groupIdRepository.save(ids);
-            }
-            groupService.saveAll(groups);
-        }
+        groupService.getGroupInfoById(list, saveIds);
         return ResponseEntity.ok().build();
     }
 
@@ -108,7 +95,7 @@ public class GroupResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<Long>> intersectGroups(@RequestParam List<String> names) throws URISyntaxException {
-        List<Long> userIds = Groups.intersectGroups(names);
+        List<Long> userIds = groupService.intersectGroups(names);
         return ResponseEntity.ok(userIds);
     }
 

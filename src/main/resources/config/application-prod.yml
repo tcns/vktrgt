@@ -20,8 +20,8 @@ spring:
             enabled: false
     data:
         mongodb:
-            uri: mongodb://localhost:27017
-            database: vktrgt
+            uri: ${MONGODB_URI}
+            database: heroku_967hwnzb
     mail:
         host: localhost
         port: 25

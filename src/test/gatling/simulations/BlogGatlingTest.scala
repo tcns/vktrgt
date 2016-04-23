@@ -83,7 +83,7 @@ class BlogGatlingTest extends Simulation {
             .pause(10)
         }
 
-    val users = scenario("Users").exec(scn)
+    val users = scenario("VKUserServiceImpl").exec(scn)
 
     setUp(
         users.inject(rampUsers(100) over (1 minutes))

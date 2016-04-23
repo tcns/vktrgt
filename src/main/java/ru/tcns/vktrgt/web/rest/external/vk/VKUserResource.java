@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.tcns.vktrgt.api.vk.Users;
+import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 
+import javax.inject.Inject;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ import java.util.Map;
 @RequestMapping("/api")
 public class VKUserResource {
     private final Logger log = LoggerFactory.getLogger(VKUserResource.class);
+    @Inject
+    VKUserService vkUserService;
 
     @RequestMapping(value = "/users/intersect",
         method = RequestMethod.POST,
@@ -29,7 +32,7 @@ public class VKUserResource {
     @Timed
     public ResponseEntity<Map<Long, Integer>> intersectUsers(@RequestParam List<Long> ids,
     @RequestParam Integer min) throws URISyntaxException {
-        Map<Long, Integer> userIds = Users.intersectUsers(ids, min);
+        Map<Long, Integer> userIds = vkUserService.intersectUsers(ids, min);
         return ResponseEntity.ok(userIds);
     }
 }
