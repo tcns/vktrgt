@@ -9,8 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupIds;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
@@ -46,10 +48,12 @@ public class GroupServiceImpl implements GroupService {
     public Group findOne(Long id) {
         return groupRepository.findOne(id);
     }
+
     @Override
     public List<Group> saveAll(List<Group> group) {
         return groupRepository.save(group);
     }
+
     @Override
     public Group save(Group group) {
         return groupRepository.save(group);
@@ -89,11 +93,12 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> searchByNames(List<String> names) {
         ArrayList<Long> ids = new ArrayList<>();
-        for (String name: names) {
+        for (String name : names) {
             try {
                 Long val = Long.parseLong(name);
                 ids.add(val);
-            } catch (Exception ex){}
+            } catch (Exception ex) {
+            }
 
         }
         Predicate predicate = QGroup.group.screenName.in(names).or(
@@ -170,7 +175,7 @@ public class GroupServiceImpl implements GroupService {
             content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             List<Group> groupResponse = VKResponseParser.parseGroupGetByIdResponse(ans);
-            if (groupResponse!=null) {
+            if (groupResponse != null) {
                 groups.addAll(groupResponse);
             } else {
                 System.out.println(ans);
@@ -185,15 +190,42 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Async
-    public void getGroupInfoById(List<String> ids, Boolean saveIds) {
-        for (String s : ids) {
-            List<Group> groups = getGroupInfoById(s);
-            if (saveIds) {
-                List<GroupIds> groupIdsList = groups.stream().map(p -> new GroupIds(p.getId().intValue())).collect(Collectors.toList());
-                groupIdRepository.save(groupIdsList);
+    public void getGroupInfoById(Integer from, Integer to, Boolean saveIds, Boolean useIds) {
+        int add = 100000;
+        List<String> list;
+        for (int i = from; i < to; i += add) {
+            int toCur = Math.min(to, i+add);
+            int requestCount = getGroupRequestCount(toCur);
+            if (useIds) {
+                List<GroupIds> idsList = groupIdRepository.findByIdBetween(i, toCur);
+                list = ArrayUtils.getDelimetedLists(i, toCur, requestCount, idsList);
+            } else {
+                list = ArrayUtils.getDelimetedLists(from, toCur, requestCount);
             }
-            saveAll(groups);
+            for (String s : list) {
+                List<Group> groups = getGroupInfoById(s);
+                if (saveIds) {
+                    List<GroupIds> groupIdsList = groups.stream().map(p -> new GroupIds(p.getId().intValue())).collect(Collectors.toList());
+                    groupIdRepository.save(groupIdsList);
+                }
+                saveAll(groups);
+            }
         }
+
+    }
+
+    private int getGroupRequestCount(int toCur) {
+        int requestCount = VKDicts.MAX_GROUP_REQUEST_COUNT;
+        if (toCur >= 1000000) {
+            requestCount = 400;
+        }
+        if (toCur >= 10000000) {
+            requestCount = 350;
+        }
+        if (toCur >= 100000000) {
+            requestCount = 300;
+        }
+        return requestCount;
     }
 
 }

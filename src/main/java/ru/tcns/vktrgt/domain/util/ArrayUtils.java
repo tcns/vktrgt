@@ -63,10 +63,10 @@ public class ArrayUtils {
 
 
 
-    public static List<String> getDelimetedLists(long from, long to, int max) {
+    public static List<String> getDelimetedLists(int from, int to, int max) {
         ArrayList<String> strings = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
-        for (long i = from; i <= to; i++) {
+        for (int i = from; i <= to; i++) {
             if (i % max == 0 || i == to) {
                 builder.append(i);
                 strings.add(builder.toString());
@@ -84,9 +84,9 @@ public class ArrayUtils {
         int start = Collections.binarySearch(idsList, new GroupIds(from));
         ArrayList<String> strings = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
-        if (start > -1) {
-            for (int i = start; i < idsList.size() && idsList.get(i).getId() <= to; i++) {
-                if ((i - start) % max == 0 || i == to) {
+        if (!idsList.isEmpty()) {
+            for (int i = 0; i < idsList.size() && idsList.get(i).getId() <= to; i++) {
+                if (i % max == 0 || i == to) {
                     builder.append(idsList.get(i).getId());
                     strings.add(builder.toString());
                     builder = new StringBuilder();
@@ -95,10 +95,13 @@ public class ArrayUtils {
                     builder.append(",");
                 }
             }
+            if (idsList.get(idsList.size() - 1).getId() < to) {
+                strings.addAll(getDelimetedLists(idsList.get(idsList.size() - 1).getId(), to, max));
+            }
+        } else {
+            strings.addAll(getDelimetedLists(from, to, max));
         }
-        if (idsList.get(idsList.size() - 1).getId() < to) {
-            strings.addAll(getDelimetedLists(idsList.get(idsList.size() - 1).getId(), to, max));
-        }
+
         return strings;
     }
 }

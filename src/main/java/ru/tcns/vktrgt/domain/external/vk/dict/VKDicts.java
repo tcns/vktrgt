@@ -9,5 +9,5 @@ public class VKDicts {
     public static final Integer MEMBER_COUNT_THRESHOLD = 50;
     public static final String VK_DATE_FORMAT = "YYYYMMDD";
     public static final String NAME_DELETED = "DELETED";
-    public static final Integer MAX_GROUP_REQUEST_COUNT = 100;
+    public static final Integer MAX_GROUP_REQUEST_COUNT = 500;
 }
