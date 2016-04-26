@@ -10,6 +10,7 @@ import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.FriendsResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
+import ru.tcns.vktrgt.domain.external.vk.response.SubscriptionsResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
 import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
@@ -29,7 +30,7 @@ public class VKUserServiceImpl implements VKUserService {
 
     final static String URL_PREFIX = "https://api.vk.com/method/";
     final static String FRIENDS_METHOD_PREFIX = "friends.";
-    final static String USER_METHOD_PREFIX = "user.";
+    final static String USER_METHOD_PREFIX = "users.";
     final static String PREFIX = URL_PREFIX + FRIENDS_METHOD_PREFIX;
 
     @Override
@@ -66,8 +67,36 @@ public class VKUserServiceImpl implements VKUserService {
     }
 
     @Override
+    public Map<Long, Integer> intersectSubscriptions(List<Long> users, Integer min) {
+        Map<Long, Integer> result = new HashMap<>();
+        ArrayUtils utils = new ArrayUtils();
+        for (int i = 0; i < users.size(); i++) {
+            SubscriptionsResponse cur = getSubscriptions("" + users.get(i));
+            List<Long> curResult = cur.getGroups();
+            result = utils.intersectWithCount(result, curResult);
+        }
+        return ArrayUtils.sortByValue(result, min);
+    }
+
+    @Override
+    public SubscriptionsResponse getSubscriptions(String userId) {
+        try {
+            String url = URL_PREFIX + USER_METHOD_PREFIX + "getSubscriptions?user_id=" + userId;
+            Content content = Request.Get(url).execute().returnContent();
+            String ans = content.asString();
+            SubscriptionsResponse response = VKResponseParser.parseUserSubscriptions(ans);
+            return response;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new SubscriptionsResponse();
+    }
+
+    @Override
     public Map<Long, Integer> intersectUsers(List<Long> users, Integer min) {
-        HashMap<Long, Integer> result = new HashMap<>();
+        Map<Long, Integer> result = new HashMap<>();
         ArrayUtils utils = new ArrayUtils();
         for (int i = 0; i < users.size(); i++) {
             CommonIDResponse cur = getUserFriendIds(users.get(i));

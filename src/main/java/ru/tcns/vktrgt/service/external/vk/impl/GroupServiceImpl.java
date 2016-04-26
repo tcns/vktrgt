@@ -17,6 +17,7 @@ import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupIds;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
 import ru.tcns.vktrgt.domain.external.vk.internal.QGroup;
+import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.GroupResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
@@ -148,22 +149,6 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public GroupResponse getGroups(String q, int count, int offset) {
-        try {
-            String url = PREFIX + "search?q=" + q + "&offset=" + offset
-                + "&count=" + count + ACCESS_TOKEN;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-
-            GroupResponse response = VKResponseParser.parseGroupSearchResponse(ans);
-            return response;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new GroupResponse();
-    }
-
-    @Override
     public List<Group> getGroupInfoById(String ids) {
         String fields = "city,country,place,description,wiki_page,members_count,counters,start_date,finish_date," +
             "public_date_label,activity,status,contacts,links,fixed_post,verified,site,main_album_id,main_section,market";
@@ -212,6 +197,22 @@ public class GroupServiceImpl implements GroupService {
             }
         }
 
+    }
+
+    @Override
+    public List<Long> getUserGroups(String userId) {
+        try {
+            String url = PREFIX + "get?user_id=" + userId + ACCESS_TOKEN;
+            Content content = Request.Get(url).execute().returnContent();
+            String ans = content.asString();
+            CommonIDResponse response = VKResponseParser.parseCommonIDResponse(ans);
+            return response.getIds();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
     private int getGroupRequestCount(int toCur) {

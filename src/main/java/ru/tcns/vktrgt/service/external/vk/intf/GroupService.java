@@ -38,8 +38,8 @@ public interface GroupService {
     GroupUserResponse getGroupUsers(String groupId, int offset, int count);
     GroupUsers getAllGroupUsers(String groupId);
     List<Long> intersectGroups(List<String> groups);
-    GroupResponse getGroups(String q, int count, int offset);
     List<Group> getGroupInfoById(String ids);
     void getGroupInfoById(Integer from, Integer to, Boolean saveIds, Boolean useIds);
+    List<Long> getUserGroups(String userId);
 
 }

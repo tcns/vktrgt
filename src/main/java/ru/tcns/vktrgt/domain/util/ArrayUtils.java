@@ -29,7 +29,7 @@ public class ArrayUtils {
         return result;
     }
 
-    public <T extends Comparable> HashMap<T, Integer> intersectWithCount(HashMap<T, Integer> map, List<T> list) {
+    public <T extends Comparable> Map<T, Integer> intersectWithCount(Map<T, Integer> map, List<T> list) {
         Set<Map.Entry<T, Integer>> entrySet = map.entrySet();
         if (map.isEmpty()) {
             map = new HashMap<>();

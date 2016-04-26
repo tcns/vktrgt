@@ -6,10 +6,7 @@ import org.json.JSONObject;
 import ru.tcns.vktrgt.domain.external.vk.dict.GroupType;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.internal.*;
-import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
-import ru.tcns.vktrgt.domain.external.vk.response.FriendsResponse;
-import ru.tcns.vktrgt.domain.external.vk.response.GroupResponse;
-import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
+import ru.tcns.vktrgt.domain.external.vk.response.*;
 import ru.tcns.vktrgt.domain.util.DateUtils;
 
 import java.util.ArrayList;
@@ -221,4 +218,38 @@ public final class VKResponseParser {
     }
 
 
+    public static SubscriptionsResponse parseUserSubscriptions(String response) {
+        JSONObject object = new JSONObject(response);
+        JSONObject obj = object.optJSONObject("response");
+        if (obj!=null) {
+            SubscriptionsResponse subscriptionsResponse = new SubscriptionsResponse();
+            JSONObject users =  obj.optJSONObject("users");
+            if (users!=null) {
+                JSONArray jsonArray = users.optJSONArray("items");
+                if (jsonArray != null) {
+                    ArrayList<Long> items = new ArrayList<>(jsonArray.length());
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        Long id = jsonArray.getLong(i);
+                        items.add(id);
+                    }
+                    subscriptionsResponse.setUsers(items);
+                }
+            }
+            JSONObject groups =  obj.optJSONObject("groups");
+            if (groups!=null) {
+                JSONArray jsonArray = groups.optJSONArray("items");
+                if (jsonArray != null) {
+                    ArrayList<Long> items = new ArrayList<>(jsonArray.length());
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        Long id = jsonArray.getLong(i);
+                        items.add(id);
+                    }
+                    subscriptionsResponse.setGroups(items);
+                }
+            }
+            return subscriptionsResponse;
+
+        }
+        return null;
+    }
 }
