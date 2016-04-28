@@ -10,7 +10,9 @@ import ru.tcns.vktrgt.domain.external.vk.response.*;
 import ru.tcns.vktrgt.domain.util.DateUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by timur on 3/26/16.
@@ -29,14 +31,36 @@ public final class VKResponseParser {
         JSONArray jsonArray = object.getJSONArray("response");
         CommonIDResponse commonIDResponse = new CommonIDResponse();
         commonIDResponse.setCount(jsonArray.length());
-        ArrayList<Long> items = new ArrayList<>(jsonArray.length());
+        ArrayList<Integer> items = new ArrayList<>(jsonArray.length());
         for (int i = 0; i < jsonArray.length(); i++) {
-            items.add(jsonArray.getLong(i));
+            items.add(jsonArray.getInt(i));
         }
         commonIDResponse.setIds(items);
         return commonIDResponse;
     }
+    public static List<User> parseUsersResponse(String response) throws JSONException {
+        JSONObject object = new JSONObject(response);
+        JSONArray jsonArray = object.getJSONArray("response");
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i<jsonArray.length(); i++) {
+            users.add(parseUser(jsonArray.getJSONObject(i)));
+        }
+        return users;
+    }
 
+    public static CommonIDResponse parseCommonResponseWithCount(String response) throws JSONException{
+        JSONObject object = new JSONObject(response);
+        JSONObject jsonResponse = object.getJSONObject("response");
+        CommonIDResponse commonIDResponse = new CommonIDResponse();
+        commonIDResponse.setCount(jsonResponse.getInt("count"));
+        JSONArray jsonArray = jsonResponse.getJSONArray("items");
+        ArrayList<Integer> items = new ArrayList<>();
+        for (int i = 0; i<jsonArray.length(); i++) {
+            items.add(jsonArray.getInt(i));
+        }
+        commonIDResponse.setIds(items);
+        return commonIDResponse;
+    }
     public static FriendsResponse parseFriendsResponse(String response) throws JSONException{
         JSONObject object = new JSONObject(response);
         JSONObject jsonResponse = object.getJSONObject("response");
@@ -58,6 +82,18 @@ public final class VKResponseParser {
         user.setFirstName(from.optString("first_name"));
         user.setId(from.optLong("id"));
         user.setLastName(from.optString("last_name"));
+        JSONArray relatives = from.optJSONArray("relatives");
+        if (relatives!=null) {
+            Map<Integer, String> userRelatives = new HashMap<>();
+            for (int i = 0; i<relatives.length(); i++) {
+                JSONObject object = relatives.getJSONObject(i);
+                userRelatives.put(object.getInt("uid"), object.getString("type"));
+            }
+            user.setRelatives(userRelatives);
+        }
+        user.setRelation(from.optInt("relation"));
+        user.setPartner(from.optInt("relation_partner"));
+
         return user;
     }
 
@@ -78,9 +114,9 @@ public final class VKResponseParser {
         GroupUserResponse userResponse = new GroupUserResponse();
         userResponse.setCount(jsonResponse.getInt("count"));
         JSONArray jsonArray = jsonResponse.getJSONArray("users");
-        ArrayList<Long> items = new ArrayList<>(jsonArray.length());
+        ArrayList<Integer> items = new ArrayList<>(jsonArray.length());
         for (int i = 0; i < jsonArray.length(); i++) {
-            items.add(jsonArray.getLong(i));
+            items.add(jsonArray.getInt(i));
         }
         userResponse.setUserIds(items);
         return userResponse;
@@ -227,9 +263,9 @@ public final class VKResponseParser {
             if (users!=null) {
                 JSONArray jsonArray = users.optJSONArray("items");
                 if (jsonArray != null) {
-                    ArrayList<Long> items = new ArrayList<>(jsonArray.length());
+                    ArrayList<Integer> items = new ArrayList<>(jsonArray.length());
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        Long id = jsonArray.getLong(i);
+                        Integer id = jsonArray.getInt(i);
                         items.add(id);
                     }
                     subscriptionsResponse.setUsers(items);
@@ -239,9 +275,9 @@ public final class VKResponseParser {
             if (groups!=null) {
                 JSONArray jsonArray = groups.optJSONArray("items");
                 if (jsonArray != null) {
-                    ArrayList<Long> items = new ArrayList<>(jsonArray.length());
+                    ArrayList<Integer> items = new ArrayList<>(jsonArray.length());
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        Long id = jsonArray.getLong(i);
+                        Integer id = jsonArray.getInt(i);
                         items.add(id);
                     }
                     subscriptionsResponse.setGroups(items);

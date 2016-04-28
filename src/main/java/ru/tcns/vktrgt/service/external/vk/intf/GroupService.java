@@ -37,9 +37,9 @@ public interface GroupService {
     List<Group> searchByNames(List<String> names);
     GroupUserResponse getGroupUsers(String groupId, int offset, int count);
     GroupUsers getAllGroupUsers(String groupId);
-    List<Long> intersectGroups(List<String> groups);
+    List<Integer> intersectGroups(List<String> groups);
     List<Group> getGroupInfoById(String ids);
     void getGroupInfoById(Integer from, Integer to, Boolean saveIds, Boolean useIds);
-    List<Long> getUserGroups(String userId);
+    List<Integer> getUserGroups(String userId);
 
 }

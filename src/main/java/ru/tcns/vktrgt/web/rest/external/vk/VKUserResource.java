@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 
 import javax.inject.Inject;
@@ -26,13 +27,39 @@ public class VKUserResource {
     @Inject
     VKUserService vkUserService;
 
-    @RequestMapping(value = "/users/intersect",
+    @RequestMapping(value = "/users/leaders",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Map<Long, Integer>> intersectUsers(@RequestParam List<Long> ids,
+    public ResponseEntity<Map<Integer, Integer>> intersectUsersFromFriends(@RequestParam List<Integer> users,
     @RequestParam Integer min) throws URISyntaxException {
-        Map<Long, Integer> userIds = vkUserService.intersectUsers(ids, min);
+        Map<Integer, Integer> userIds = vkUserService.intersectUsers(users, min);
         return ResponseEntity.ok(userIds);
     }
+    @RequestMapping(value = "/users/groups",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Map<Integer, Integer>> intersectGroupsFromUsers(@RequestParam List<Integer> users,
+                                                                       @RequestParam Integer min) throws URISyntaxException {
+        Map<Integer, Integer> userIds = vkUserService.intersectSubscriptions(users, min);
+        return ResponseEntity.ok(userIds);
+    }
+    @RequestMapping(value = "/users/relatives",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<User>> intersectGroupsFromUsers(@RequestParam List<Integer> userIds) throws URISyntaxException {
+        List<User> users = vkUserService.getUserRelatives(userIds);
+        return ResponseEntity.ok(users);
+    }
+    @RequestMapping(value = "/users/followers",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<Integer>> getUserFollowers(@RequestParam Integer userId) throws URISyntaxException {
+        List<Integer> userIds = vkUserService.getFollowers(userId);
+        return ResponseEntity.ok(userIds);
+    }
+
 }

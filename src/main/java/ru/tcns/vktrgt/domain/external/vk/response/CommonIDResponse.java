@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class CommonIDResponse {
     private Integer count;
-    private ArrayList<Long> ids;
+    private ArrayList<Integer> ids;
 
     public Integer getCount() {
         return count;
@@ -17,11 +17,11 @@ public class CommonIDResponse {
         this.count = count;
     }
 
-    public ArrayList<Long> getIds() {
+    public ArrayList<Integer> getIds() {
         return ids;
     }
 
-    public void setIds(ArrayList<Long> ids) {
+    public void setIds(ArrayList<Integer> ids) {
         this.ids = ids;
     }
 }

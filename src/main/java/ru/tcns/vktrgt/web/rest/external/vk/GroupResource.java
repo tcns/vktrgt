@@ -84,12 +84,12 @@ public class GroupResource {
         return ResponseEntity.ok(groups);
     }
 
-    @RequestMapping(value = "/groups/intersect",
+    @RequestMapping(value = "/groups/users",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<Long>> intersectGroups(@RequestParam List<String> names) throws URISyntaxException {
-        List<Long> userIds = groupService.intersectGroups(names);
+    public ResponseEntity<List<Integer>> intersectUsersFromGroups(@RequestParam List<String> names) throws URISyntaxException {
+        List<Integer> userIds = groupService.intersectGroups(names);
         return ResponseEntity.ok(userIds);
     }
 

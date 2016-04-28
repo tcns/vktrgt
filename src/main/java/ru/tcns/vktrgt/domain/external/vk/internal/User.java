@@ -1,5 +1,7 @@
 package ru.tcns.vktrgt.domain.external.vk.internal;
 
+import java.util.Map;
+
 /**
  * Created by TIMUR on 22.04.2016.
  */
@@ -9,6 +11,9 @@ public class User implements Comparable<User> {
     private String lastName;
     private String domain;
     private City city;
+    private Map<Integer, String> relatives;
+    private Integer relation;
+    private Integer partner;
 
     public Long getId() {
         return id;
@@ -53,5 +58,29 @@ public class User implements Comparable<User> {
     @Override
     public int compareTo(User o) {
         return this.getId().compareTo(o.getId());
+    }
+
+    public Map<Integer, String> getRelatives() {
+        return relatives;
+    }
+
+    public void setRelatives(Map<Integer, String> relatives) {
+        this.relatives = relatives;
+    }
+
+    public Integer getRelation() {
+        return relation;
+    }
+
+    public void setRelation(Integer relation) {
+        this.relation = relation;
+    }
+
+    public Integer getPartner() {
+        return partner;
+    }
+
+    public void setPartner(Integer partner) {
+        this.partner = partner;
     }
 }

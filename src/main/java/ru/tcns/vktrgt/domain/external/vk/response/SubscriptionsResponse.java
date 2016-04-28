@@ -7,8 +7,8 @@ import java.util.ArrayList;
  */
 public class SubscriptionsResponse {
     private String userId;
-    private ArrayList<Long> users;
-    private ArrayList<Long> groups;
+    private ArrayList<Integer> users;
+    private ArrayList<Integer> groups;
 
     public String getUserId() {
         return userId;
@@ -18,19 +18,19 @@ public class SubscriptionsResponse {
         this.userId = userId;
     }
 
-    public ArrayList<Long> getUsers() {
+    public ArrayList<Integer> getUsers() {
         return users;
     }
 
-    public void setUsers(ArrayList<Long> users) {
+    public void setUsers(ArrayList<Integer> users) {
         this.users = users;
     }
 
-    public ArrayList<Long> getGroups() {
+    public ArrayList<Integer> getGroups() {
         return groups;
     }
 
-    public void setGroups(ArrayList<Long> groups) {
+    public void setGroups(ArrayList<Integer> groups) {
         this.groups = groups;
     }
 }

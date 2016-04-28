@@ -137,10 +137,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<Long> intersectGroups(List<String> groups) {
+    public List<Integer> intersectGroups(List<String> groups) {
         GroupUsers init = getAllGroupUsers(groups.get(0));
         ArrayUtils utils = new ArrayUtils();
-        List<Long> result = init.getUsers();
+        List<Integer> result = init.getUsers();
         for (int i = 1; i < groups.size(); i++) {
             GroupUsers cur = getAllGroupUsers(groups.get(i));
             result = utils.intersect(result, cur.getUsers());
@@ -200,7 +200,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<Long> getUserGroups(String userId) {
+    public List<Integer> getUserGroups(String userId) {
         try {
             String url = PREFIX + "get?user_id=" + userId + ACCESS_TOKEN;
             Content content = Request.Get(url).execute().returnContent();

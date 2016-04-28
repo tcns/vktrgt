@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class GroupUsers {
     private String groupId;
-    private ArrayList<Long> users;
+    private ArrayList<Integer> users;
 
     public GroupUsers(int count, String groupId) {
         users = new ArrayList<>(count);
@@ -20,7 +20,7 @@ public class GroupUsers {
         return groupId;
     }
 
-    public ArrayList<Long> getUsers() {
+    public ArrayList<Integer> getUsers() {
         return users;
     }
     public void append(GroupUserResponse response) {

@@ -1,6 +1,7 @@
 package ru.tcns.vktrgt.api;
 
 import org.junit.Test;
+import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.domain.external.vk.response.SubscriptionsResponse;
 import ru.tcns.vktrgt.service.external.vk.impl.GroupServiceImpl;
 import ru.tcns.vktrgt.service.external.vk.impl.VKUserServiceImpl;
@@ -20,10 +21,8 @@ public class Vk {
     @Test
     public void testGroupResponse() {
         Long cur = System.currentTimeMillis();
-        VKUserServiceImpl  vkUserService = new VKUserServiceImpl();
-        GroupServiceImpl groupService = new GroupServiceImpl();
-        ArrayList<Long> ids = groupService.getAllGroupUsers("52673292").getUsers();
-        Map<Long, Integer> response = vkUserService.intersectSubscriptions(ids, 200);
+        VKUserServiceImpl vkUserService = new VKUserServiceImpl();
+        List<User> response = vkUserService.getUserRelatives(Arrays.asList(66748, 14838024));
         Long time = (System.currentTimeMillis() - cur)/1000L;
         assertThat(response).isNotNull();
     }

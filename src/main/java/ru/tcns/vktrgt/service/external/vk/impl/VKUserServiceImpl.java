@@ -1,5 +1,6 @@
 package ru.tcns.vktrgt.service.external.vk.impl;
 
+import com.sun.org.apache.bcel.internal.generic.LSTORE;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
@@ -31,12 +32,13 @@ public class VKUserServiceImpl implements VKUserService {
     final static String URL_PREFIX = "https://api.vk.com/method/";
     final static String FRIENDS_METHOD_PREFIX = "friends.";
     final static String USER_METHOD_PREFIX = "users.";
-    final static String PREFIX = URL_PREFIX + FRIENDS_METHOD_PREFIX;
+    final static String FRIENDS_PREFIX = URL_PREFIX + FRIENDS_METHOD_PREFIX;
+    final static String USERS_PREFIX = URL_PREFIX + USER_METHOD_PREFIX;
 
     @Override
-    public FriendsResponse getUserFriends(Long userId) {
+    public FriendsResponse getUserFriends(Integer userId) {
         try {
-            String url = PREFIX + "get?user_id=" + userId;
+            String url = FRIENDS_PREFIX + "get?user_id=" + userId;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             FriendsResponse response = VKResponseParser.parseFriendsResponse(ans);
@@ -47,12 +49,27 @@ public class VKUserServiceImpl implements VKUserService {
             e.printStackTrace();
         }
         return new FriendsResponse();
-
     }
     @Override
-    public CommonIDResponse getUserFriendIds(Long userId) {
+    public List<User> getUserRelatives(List<Integer> userIds) {
         try {
-            String url = PREFIX + "get?user_id=" + userId+"&order=id";
+            String fields = "relation,relatives";
+            String url = USERS_PREFIX + "get?user_ids=" + ArrayUtils.getDelimetedList(userIds)+"&fields="+fields;
+            Content content = Request.Get(url).execute().returnContent();
+            String ans = content.asString();
+            List<User> response = VKResponseParser.parseUsersResponse(ans);
+            return response;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+    @Override
+    public CommonIDResponse getUserFriendIds(Integer userId) {
+        try {
+            String url = FRIENDS_PREFIX + "get?user_id=" + userId+"&order=id";
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             CommonIDResponse response = VKResponseParser.parseCommonIDResponse(ans);
@@ -67,21 +84,47 @@ public class VKUserServiceImpl implements VKUserService {
     }
 
     @Override
-    public Map<Long, Integer> intersectSubscriptions(List<Long> users, Integer min) {
-        Map<Long, Integer> result = new HashMap<>();
+    public Map<Integer, Integer> intersectSubscriptions(List<Integer> users, Integer min) {
+        Map<Integer, Integer> result = new HashMap<>();
         ArrayUtils utils = new ArrayUtils();
         for (int i = 0; i < users.size(); i++) {
             SubscriptionsResponse cur = getSubscriptions("" + users.get(i));
-            List<Long> curResult = cur.getGroups();
+            List<Integer> curResult = cur.getGroups();
             result = utils.intersectWithCount(result, curResult);
         }
         return ArrayUtils.sortByValue(result, min);
     }
 
+    private CommonIDResponse getFollowers(int userId, int offset, int count) {
+        try {
+            String url = USERS_PREFIX + "getFollowers?user_id=" + userId + "&offset=" + offset
+                + "&count=" + count;
+            Content content = Request.Get(url).execute().returnContent();
+            String ans = content.asString();
+            CommonIDResponse response = VKResponseParser.parseCommonResponseWithCount(ans);
+            return response;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new CommonIDResponse();
+    }
+    @Override
+    public List<Integer> getFollowers(Integer userId) {
+        CommonIDResponse initial = getFollowers(userId, 0, 1);
+        int count = initial.getCount();
+        List<Integer> users = new ArrayList<>(count);
+        for (int i = 0; i < count; i += 1000) {
+            users.addAll(getFollowers(userId, i, 1000).getIds());
+        }
+        return users;
+    }
+
     @Override
     public SubscriptionsResponse getSubscriptions(String userId) {
         try {
-            String url = URL_PREFIX + USER_METHOD_PREFIX + "getSubscriptions?user_id=" + userId;
+            String url = USERS_PREFIX + "getSubscriptions?user_id=" + userId;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             SubscriptionsResponse response = VKResponseParser.parseUserSubscriptions(ans);
@@ -95,12 +138,12 @@ public class VKUserServiceImpl implements VKUserService {
     }
 
     @Override
-    public Map<Long, Integer> intersectUsers(List<Long> users, Integer min) {
-        Map<Long, Integer> result = new HashMap<>();
+    public Map<Integer, Integer> intersectUsers(List<Integer> users, Integer min) {
+        Map<Integer, Integer> result = new HashMap<>();
         ArrayUtils utils = new ArrayUtils();
         for (int i = 0; i < users.size(); i++) {
             CommonIDResponse cur = getUserFriendIds(users.get(i));
-            List<Long> curResult = cur.getIds();
+            List<Integer> curResult = cur.getIds();
             result = utils.intersectWithCount(result, curResult);
         }
         return ArrayUtils.sortByValue(result, min);

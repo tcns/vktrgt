@@ -79,6 +79,17 @@ public class ArrayUtils {
         return strings;
 
     }
+    public static String getDelimetedList(List<Integer> numbers) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < numbers.size(); i++) {
+            builder.append(numbers.get(i));
+            if(i < numbers.size() - 1) {
+                builder.append(",");
+            }
+        }
+        return builder.toString();
+
+    }
 
     public static List<String> getDelimetedLists(Integer from, Integer to, Integer max, List<GroupIds> idsList) {
         int start = Collections.binarySearch(idsList, new GroupIds(from));

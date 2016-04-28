@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class GroupUserResponse {
     private Long groupId;
     private Integer count;
-    private ArrayList<Long> userIds;
+    private ArrayList<Integer> userIds;
 
     public Long getGroupId() {
         return groupId;
@@ -28,11 +28,11 @@ public class GroupUserResponse {
         this.count = count;
     }
 
-    public ArrayList<Long> getUserIds() {
+    public ArrayList<Integer> getUserIds() {
         return userIds;
     }
 
-    public void setUserIds(ArrayList<Long> userIds) {
+    public void setUserIds(ArrayList<Integer> userIds) {
         this.userIds = userIds;
     }
 
