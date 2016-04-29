@@ -11,7 +11,12 @@ import java.util.Map;
 /**
  * Created by TIMUR on 23.04.2016.
  */
-public interface VKUserService {
+public interface VKUserService extends VKService {
+
+    String FRIENDS_METHOD_PREFIX = "friends.";
+    String USER_METHOD_PREFIX = "users.";
+    String FRIENDS_PREFIX = URL_PREFIX + FRIENDS_METHOD_PREFIX;
+    String USERS_PREFIX = URL_PREFIX + USER_METHOD_PREFIX;
     FriendsResponse getUserFriends(Integer userId);
     List<User> getUserRelatives(List<Integer> userId);
 

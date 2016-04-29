@@ -24,16 +24,6 @@ import java.util.*;
  */
 @Service
 public class VKUserServiceImpl implements VKUserService {
-    private static final String ACCESS_TOKEN = "&access_token=" + Common.getToken() + "&client_secret=" + Common.CLIENT_SECRET +
-        "&v=5.50";
-    public static Long reqTime = 0L;
-    public static Long transTime = 0L;
-
-    final static String URL_PREFIX = "https://api.vk.com/method/";
-    final static String FRIENDS_METHOD_PREFIX = "friends.";
-    final static String USER_METHOD_PREFIX = "users.";
-    final static String FRIENDS_PREFIX = URL_PREFIX + FRIENDS_METHOD_PREFIX;
-    final static String USERS_PREFIX = URL_PREFIX + USER_METHOD_PREFIX;
 
     @Override
     public FriendsResponse getUserFriends(Integer userId) {

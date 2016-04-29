@@ -14,23 +14,15 @@ import java.util.List;
 /**
  * Created by Тимур on 13.04.2016.
  */
-public interface GroupService {
-    static final String ACCESS_TOKEN = "&access_token=" + Common.getToken() + "&client_secret=" + Common.CLIENT_SECRET +
-        "&v=5.50";
-    public static Long reqTime = 0L;
-    public static Long transTime = 0L;
+public interface GroupService extends VKService {
+    String METHOD_PREFIX = "groups.";
+    String PREFIX = URL_PREFIX + METHOD_PREFIX;
 
-    final static String URL_PREFIX = "https://api.vk.com/method/";
-    final static String METHOD_PREFIX = "groups.";
-    final static String PREFIX = URL_PREFIX + METHOD_PREFIX;
     Group findOne(Long id);
-
     Group save(Group group);
     List<Group> saveAll(List<Group> group);
-
     Page<Group> findAll(Pageable pageable);
     List<Group> findAll();
-
     void delete(Long id);
     void deleteAll();
     Page<Group> searchByName(String name, Boolean restrict, Pageable pageable);
