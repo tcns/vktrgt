@@ -1,10 +1,13 @@
 package ru.tcns.vktrgt.domain.external.vk.internal;
 
+import ru.tcns.vktrgt.anno.JsonEntity;
+
 import java.util.Map;
 
 /**
  * Created by TIMUR on 22.04.2016.
  */
+@JsonEntity
 public class User implements Comparable<User> {
     private Long id;
     private String firstName;

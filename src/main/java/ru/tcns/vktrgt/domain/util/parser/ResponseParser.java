@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.tcns.vktrgt.anno.JsonEntity;
 import ru.tcns.vktrgt.anno.JsonField;
+import ru.tcns.vktrgt.anno.JsonIgnore;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -34,6 +35,9 @@ public class ResponseParser<T> {
         Boolean jsonClass = clazz.isAnnotationPresent(JsonEntity.class);
         Field[] fields = clazz.getDeclaredFields();
         for (Field f : fields) {
+            if (f.isAnnotationPresent(JsonIgnore.class)) {
+                continue;
+            }
             JsonField ann = null;
             Boolean annPresent = f.isAnnotationPresent(JsonField.class);
             String defaultName = "";
