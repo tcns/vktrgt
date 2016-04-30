@@ -10,4 +10,5 @@ import java.util.Map;
  */
 public interface ActivityService {
     Map<Integer, Map<Integer, Integer>> getActiveAuditory(ActiveAuditoryDTO activeAuditoryDTO);
+    Map<Integer, Map<Integer, Integer>> getActiveTopicAuditory(List<String> topicUrls, Integer minCount);
 }

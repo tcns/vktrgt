@@ -2,8 +2,10 @@ package ru.tcns.vktrgt.service.external.vk.impl;
 
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
+import ru.tcns.vktrgt.domain.external.vk.dict.VKUrlDto;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
+import ru.tcns.vktrgt.domain.util.parser.VKUrlParser;
 import ru.tcns.vktrgt.service.external.vk.intf.ActivityService;
 import ru.tcns.vktrgt.service.external.vk.intf.WallService;
 
@@ -20,6 +22,24 @@ import java.util.Map;
 public class ActivityServiceImpl implements ActivityService {
     @Inject
     private WallService wallService;
+
+    @Override
+    public Map<Integer, Map<Integer, Integer>> getActiveTopicAuditory(List<String> topicUrls, Integer minCount) {
+        Map<Integer, Map<Integer, Integer>> activity = new HashMap<>();
+        Map<Integer, List<Integer>> wallPosts = new HashMap<>();
+        for (String url : topicUrls) {
+            VKUrlDto urlDto = VKUrlParser.parseUrl(url);
+            wallPosts.put(urlDto.getElementId(), getWallService().getTopicCommentsWithLikes(urlDto.getOwnerId(), urlDto.getElementId()));
+        }
+        ArrayUtils utils = new ArrayUtils();
+        for (Map.Entry<Integer, List<Integer>> e : wallPosts.entrySet()) {
+            Map<Integer, Integer> groupActivity = new HashMap<>();
+            groupActivity = utils.intersectWithCount(groupActivity, e.getValue());
+            groupActivity = ArrayUtils.sortByValue(groupActivity, minCount);
+            activity.put(e.getKey(), groupActivity);
+        }
+        return activity;
+    }
 
     @Override
     public Map<Integer, Map<Integer, Integer>> getActiveAuditory(ActiveAuditoryDTO activeAuditoryDTO) {

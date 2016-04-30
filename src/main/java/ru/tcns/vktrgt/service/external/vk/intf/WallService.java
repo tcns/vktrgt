@@ -19,7 +19,7 @@ public interface WallService extends VKService {
 
     List<Integer> getLikes (Integer ownerId, Integer postId, String type);
     List<Integer> getComments (Integer ownerId, Integer postId);
-    List<Integer> getTopicComments (Integer ownerId, Integer postId);
+    List<Integer> getTopicCommentsWithLikes (Integer ownerId, Integer postId);
     List<Integer> getReposts (Integer ownerId, Integer postId);
 
 }

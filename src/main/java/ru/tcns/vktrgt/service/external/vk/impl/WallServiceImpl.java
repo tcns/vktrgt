@@ -3,6 +3,7 @@ package ru.tcns.vktrgt.service.external.vk.impl;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
+import ru.tcns.vktrgt.domain.external.vk.internal.Comment;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 import ru.tcns.vktrgt.domain.external.vk.response.*;
 import ru.tcns.vktrgt.domain.util.DateUtils;
@@ -82,8 +83,43 @@ public class WallServiceImpl implements WallService {
     }
 
     @Override
-    public List<Integer> getTopicComments(Integer ownerId, Integer postId) {
-        return null;
+    public List<Integer> getTopicCommentsWithLikes(Integer ownerId, Integer postId) {
+        List<Integer> comments = new ArrayList<>();
+        try {
+            Integer count = getTopicComments(ownerId, postId, 0, 1).getCount();
+            comments = new ArrayList<>(count);
+            for (int i = 0; i < count; i += 100) {
+                List<Comment> items = getTopicComments(ownerId, postId, i, 100).getItems();
+                List<Integer> cur = items
+                    .stream().map(a -> a.getFromId()).collect(Collectors.toList());
+                List<Integer> likes = new ArrayList<>();
+                for (Comment comment: items) {
+                    likes = getLikes(postId, comment.getId(), "topic_comment");
+                }
+                comments.addAll(likes);
+                comments.addAll(cur);
+            }
+            return comments;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return comments;
+    }
+    private CommentsResponse getTopicComments(Integer groupId, int topicId, int offset, int count) {
+        try {
+            String url = TOPIC_PREFIX + "getComments?group_id=" + Math.abs(groupId) + "&topic_id=" + topicId + "&offset=" + offset
+                + "&count=" + count + VERSION;
+            Content content = Request.Get(url).execute().returnContent();
+            String ans = content.asString();
+            CommentsResponse response = new ResponseParser<CommentsResponse>().parseResponseString
+                (ans, RESPONSE_STRING, CommentsResponse.class);
+            return response;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new CommentsResponse();
     }
 
     private CommentsResponse getComments(Integer ownerId, int postId, int offset, int count) {

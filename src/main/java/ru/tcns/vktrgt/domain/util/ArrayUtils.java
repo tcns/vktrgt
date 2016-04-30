@@ -33,10 +33,6 @@ public class ArrayUtils {
         Set<Map.Entry<T, Integer>> entrySet = map.entrySet();
         if (map.isEmpty()) {
             map = new HashMap<>();
-            for (T e : list) {
-                map.put(e, 1);
-            }
-            return map;
         }
         for (T e : list) {
             Integer val = map.get(e);
