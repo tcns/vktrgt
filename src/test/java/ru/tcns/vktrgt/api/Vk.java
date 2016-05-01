@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Created by timur on 3/26/16.
  */
@@ -22,8 +23,7 @@ public class Vk {
         Map<Integer, Map<Integer, Integer>> response = activityService.getActiveTopicAuditory(
             Arrays.asList("https://vk.com/topic-4100014_22054206"), 0
         );
-        Long time = (System.currentTimeMillis() - cur)/1000L;
+        Long time = (System.currentTimeMillis() - cur) / 1000L;
         assertThat(response).isNotNull();
     }
-
 }

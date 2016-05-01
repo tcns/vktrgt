@@ -51,12 +51,11 @@ public class ArrayUtils {
         Stream<Map.Entry<K, V>> st = map.entrySet().stream();
 
         st.sorted(Map.Entry.comparingByValue(Comparator.<V>reverseOrder()))
-            .filter(a->a.getValue().compareTo(min) >= 0)
+            .filter(a -> a.getValue().compareTo(min) >= 0)
             .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
 
         return result;
     }
-
 
 
     public static List<String> getDelimetedLists(int from, int to, int max) {
@@ -75,15 +74,22 @@ public class ArrayUtils {
         return strings;
 
     }
-    public static String getDelimetedList(List<Integer> numbers) {
+
+    public static List<String> getDelimetedLists(List<String> numbers, int max) {
         StringBuilder builder = new StringBuilder();
+        List<String> response = new ArrayList<>();
         for (int i = 0; i < numbers.size(); i++) {
+            if ((i + 1) % max == 0) {
+                response.add(builder.toString());
+                builder = new StringBuilder();
+            }
             builder.append(numbers.get(i));
-            if(i < numbers.size() - 1) {
+            if (i < numbers.size() - 1) {
                 builder.append(",");
             }
         }
-        return builder.toString();
+        response.add(builder.toString());
+        return response;
 
     }
 

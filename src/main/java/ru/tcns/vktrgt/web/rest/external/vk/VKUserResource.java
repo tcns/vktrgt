@@ -45,12 +45,12 @@ public class VKUserResource {
         Map<Integer, Integer> userIds = vkUserService.intersectSubscriptions(users, min);
         return ResponseEntity.ok(userIds);
     }
-    @RequestMapping(value = "/users/relatives",
+    @RequestMapping(value = "/users/info",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<User>> intersectGroupsFromUsers(@RequestParam List<Integer> userIds) throws URISyntaxException {
-        List<User> users = vkUserService.getUserRelatives(userIds);
+    public ResponseEntity<List<User>> getUsersInfo(@RequestParam List<String> userIds) throws URISyntaxException {
+        List<User> users = vkUserService.getUserInfo(userIds);
         return ResponseEntity.ok(users);
     }
     @RequestMapping(value = "/users/followers",

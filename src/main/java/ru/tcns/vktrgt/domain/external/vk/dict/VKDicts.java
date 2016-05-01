@@ -10,4 +10,5 @@ public class VKDicts {
     public static final String VK_DATE_FORMAT = "YYYYMMDD";
     public static final String NAME_DELETED = "DELETED";
     public static final Integer MAX_GROUP_REQUEST_COUNT = 500;
+    public static final String[] BDAY_FORMATS = {"DD.MM.YYYY", "DD.MM"};
 }

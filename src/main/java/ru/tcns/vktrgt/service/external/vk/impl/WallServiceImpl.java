@@ -8,7 +8,6 @@ import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 import ru.tcns.vktrgt.domain.external.vk.response.*;
 import ru.tcns.vktrgt.domain.util.DateUtils;
 import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
-import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
 import ru.tcns.vktrgt.service.external.vk.intf.WallService;
 
 import java.io.IOException;

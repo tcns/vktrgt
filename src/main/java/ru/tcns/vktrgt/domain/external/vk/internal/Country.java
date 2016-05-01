@@ -3,10 +3,10 @@ package ru.tcns.vktrgt.domain.external.vk.internal;
 import ru.tcns.vktrgt.anno.JsonEntity;
 
 /**
- * Created by TIMUR on 22.04.2016.
+ * Created by TIMUR on 01.05.2016.
  */
 @JsonEntity
-public class City {
+public class Country {
     private Integer id;
     private String title;
 

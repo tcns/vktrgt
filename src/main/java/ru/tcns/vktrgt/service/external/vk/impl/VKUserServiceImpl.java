@@ -35,26 +35,30 @@ public class VKUserServiceImpl implements VKUserService {
             return response;
         } catch (IOException ex) {
             ex.printStackTrace();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new FriendsResponse();
     }
+
     @Override
-    public List<User> getUserRelatives(List<Integer> userIds) {
+    public List<User> getUserInfo(List<String> userIds) {
+        List<User> response = new ArrayList<>();
         try {
-            String fields = "relation,relatives";
-            String url = USERS_PREFIX + "get?user_ids=" + ArrayUtils.getDelimetedList(userIds)+"&fields="+fields;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            List<User> response = VKResponseParser.parseUsersResponse(ans);
-            return response;
+            String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts";
+            List<String> users = ArrayUtils.getDelimetedLists(userIds, 1000);
+            for (String user: users) {
+                String url = USERS_PREFIX + "get?user_ids=" + user +"&fields="+fields;
+                Content content = Request.Get(url).execute().returnContent();
+                String ans = content.asString();
+                response.addAll(VKResponseParser.parseUsersResponse(ans));
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return new ArrayList<>();
+        return response;
     }
     @Override
     public CommonIDResponse getUserFriendIds(Integer userId) {

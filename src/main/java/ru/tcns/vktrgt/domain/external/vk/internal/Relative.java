@@ -3,12 +3,13 @@ package ru.tcns.vktrgt.domain.external.vk.internal;
 import ru.tcns.vktrgt.anno.JsonEntity;
 
 /**
- * Created by TIMUR on 22.04.2016.
+ * Created by TIMUR on 01.05.2016.
  */
 @JsonEntity
-public class City {
+public class Relative {
+
     private Integer id;
-    private String title;
+    private String type;
 
     public Integer getId() {
         return id;
@@ -18,11 +19,11 @@ public class City {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getType() {
+        return type;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setType(String type) {
+        this.type = type;
     }
 }

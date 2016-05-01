@@ -9,6 +9,7 @@ import ru.tcns.vktrgt.domain.external.vk.internal.*;
 import ru.tcns.vktrgt.domain.external.vk.response.*;
 import ru.tcns.vktrgt.domain.util.DateUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,12 +39,13 @@ public final class VKResponseParser {
         commonIDResponse.setIds(items);
         return commonIDResponse;
     }
-    public static List<User> parseUsersResponse(String response) throws JSONException {
+    public static List<User> parseUsersResponse(String response) throws JSONException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         JSONObject object = new JSONObject(response);
         JSONArray jsonArray = object.getJSONArray("response");
         List<User> users = new ArrayList<>();
+        ResponseParser<User> userResponseParser = new ResponseParser<>();
         for (int i = 0; i<jsonArray.length(); i++) {
-            users.add(parseUser(jsonArray.getJSONObject(i)));
+            users.add(userResponseParser.parseObject(jsonArray.getJSONObject(i), User.class));
         }
         return users;
     }
@@ -61,51 +63,19 @@ public final class VKResponseParser {
         commonIDResponse.setIds(items);
         return commonIDResponse;
     }
-    public static FriendsResponse parseFriendsResponse(String response) throws JSONException{
+    public static FriendsResponse parseFriendsResponse(String response) throws JSONException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         JSONObject object = new JSONObject(response);
         JSONObject jsonResponse = object.getJSONObject("response");
         FriendsResponse friendsResponse = new FriendsResponse();
         friendsResponse.setCount(jsonResponse.getInt("count"));
         JSONArray jsonArray = jsonResponse.getJSONArray("items");
         ArrayList<User> users = new ArrayList<>();
+        ResponseParser<User> userResponseParser = new ResponseParser<>();
         for (int i = 0; i<jsonArray.length(); i++) {
-            users.add(parseUser(jsonArray.getJSONObject(i)));
+            users.add(userResponseParser.parseObject(jsonArray.getJSONObject(i), User.class));
         }
         friendsResponse.setItems(users);
         return friendsResponse;
-    }
-
-    public static User parseUser (JSONObject from) {
-        User user = new User();
-        user.setCity(parseCity(from.optJSONObject("city")));
-        user.setDomain(from.optString("domain"));
-        user.setFirstName(from.optString("first_name"));
-        user.setId(from.optLong("id"));
-        user.setLastName(from.optString("last_name"));
-        JSONArray relatives = from.optJSONArray("relatives");
-        if (relatives!=null) {
-            Map<Integer, String> userRelatives = new HashMap<>();
-            for (int i = 0; i<relatives.length(); i++) {
-                JSONObject object = relatives.getJSONObject(i);
-                userRelatives.put(object.getInt("uid"), object.getString("type"));
-            }
-            user.setRelatives(userRelatives);
-        }
-        user.setRelation(from.optInt("relation"));
-        user.setPartner(from.optInt("relation_partner"));
-
-        return user;
-    }
-
-    public static City parseCity (JSONObject from) {
-
-        if (from!=null) {
-            City city = new City();
-            city.setId(from.optInt("id"));
-            city.setTitle(from.optString("title"));
-            return city;
-        }
-        return null;
     }
 
     public static GroupUserResponse parseGroupUserResponse(String response) throws JSONException {
