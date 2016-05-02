@@ -9,11 +9,16 @@ import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.FriendsResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.SubscriptionsResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
+import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
 import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by TIMUR on 21.04.2016.
@@ -40,29 +45,37 @@ public class VKUserServiceImpl implements VKUserService {
     @Override
     public List<User> getUserInfo(List<String> userIds) {
         List<User> response = new ArrayList<>();
-        try {
-            String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts";
-            List<String> users = ArrayUtils.getDelimetedLists(userIds, 1000);
-            for (String user: users) {
-                String url = USERS_PREFIX + "get?user_ids=" + user +"&fields="+fields;
+        String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts";
+        List<String> users = ArrayUtils.getDelimetedLists(userIds, 1000);
+        ExecutorService service = Executors.newFixedThreadPool(100);
+        List<Future<List<User>>> tasks = new ArrayList<>();
+        for (String user : users) {
+            tasks.add(service.submit(() -> {
+                String url = USERS_PREFIX + "get?user_ids=" + user + "&fields=" + fields + VERSION;
                 Content content = Request.Get(url).execute().returnContent();
                 String ans = content.asString();
-                response.addAll(VKResponseParser.parseUsersResponse(ans));
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+                return VKResponseParser.parseUsersResponse(ans);
+            }));
         }
+        for (Future<List<User>> future : tasks) {
+            try {
+                response.addAll(future.get());
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+        service.shutdown();
         return response;
     }
+
     @Override
     public CommonIDResponse getUserFriendIds(Integer userId) {
         try {
-            String url = FRIENDS_PREFIX + "get?user_id=" + userId+"&order=id";
+            String url = FRIENDS_PREFIX + "get?user_id=" + userId + "&order=id";
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
-            CommonIDResponse response = VKResponseParser.parseCommonIDResponse(ans);
+            CommonIDResponse response = new ResponseParser<>(CommonIDResponse.class).parseResponseString(ans, RESPONSE_STRING);
             return response;
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -100,14 +113,29 @@ public class VKUserServiceImpl implements VKUserService {
         }
         return new CommonIDResponse();
     }
+
     @Override
     public List<Integer> getFollowers(Integer userId) {
         CommonIDResponse initial = getFollowers(userId, 0, 1);
         int count = initial.getCount();
         List<Integer> users = new ArrayList<>(count);
+        ExecutorService service = Executors.newFixedThreadPool(100);
+        List<Future<List<Integer>>> tasks = new ArrayList<>();
         for (int i = 0; i < count; i += 1000) {
-            users.addAll(getFollowers(userId, i, 1000).getItems());
+            final Integer cur = i;
+            tasks.add(service.submit(() -> getFollowers(userId, cur, 1000).getItems()));
+
         }
+        for (Future<List<Integer>> task: tasks) {
+            try {
+                users.addAll(task.get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        service.shutdown();
         return users;
     }
 

@@ -11,7 +11,7 @@ import java.util.Map;
  */
 @JsonEntity
 public class User implements Comparable<User> {
-    private Long id;
+    private Integer id;
     private String firstName;
     private String lastName;
     private String domain;
@@ -26,11 +26,11 @@ public class User implements Comparable<User> {
     private Integer relation;
     private User relationPartner;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

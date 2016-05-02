@@ -44,7 +44,6 @@ public class GroupResource {
                                               @RequestParam Boolean saveIds,
                                               @RequestParam Boolean useIds) throws URISyntaxException {
         log.debug("REST Attempt to search groups");
-
         groupService.getGroupInfoById(from, to, saveIds, useIds);
         return ResponseEntity.ok().build();
     }

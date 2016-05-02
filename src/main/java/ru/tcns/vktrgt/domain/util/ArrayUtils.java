@@ -1,6 +1,7 @@
 package ru.tcns.vktrgt.domain.util;
 
 import org.apache.commons.collections.FastTreeMap;
+import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupIds;
 
 import java.util.*;
@@ -79,7 +80,7 @@ public class ArrayUtils {
         StringBuilder builder = new StringBuilder();
         List<String> response = new ArrayList<>();
         for (int i = 0; i < numbers.size(); i++) {
-            if ((i + 1) % max == 0) {
+            if ((i + 1) % max == 0 || builder.length() > VKDicts.MAX_REQUEST_LENGTH) {
                 response.add(builder.toString());
                 builder = new StringBuilder();
             }

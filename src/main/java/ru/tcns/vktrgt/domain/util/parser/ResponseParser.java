@@ -64,11 +64,12 @@ public class ResponseParser<T> {
                     jsonField = convertName(fieldName);
                 }
                 if (fieldType.isAnnotationPresent(JsonEntity.class)) {
+                    ResponseParser parser = new ResponseParser(fieldType);
                     if (isRequired) {
-                        f.set(t, parseObject(object.getJSONObject(jsonField)));
+                        f.set(t, parser.parseObject(object.getJSONObject(jsonField)));
                     } else {
                         if (object.optJSONObject(jsonField) != null) {
-                            setField(f, t, parseObject(object.optJSONObject(jsonField)));
+                            setField(f, t, parser.parseObject(object.optJSONObject(jsonField)));
                         } else {
                             setField(f, t, null);
                         }
@@ -80,22 +81,25 @@ public class ResponseParser<T> {
                         setField(f, t, object.opt(jsonField));
                     }
                 } else {
-                    JSONArray array = object.getJSONArray(jsonField);
-                    Class generic = (Class) ((ParameterizedType) f.getGenericType()).getActualTypeArguments()[0];
-                    Collection collection = null;
-                    if (Set.class.isAssignableFrom(fieldType)) {
-                        collection = new HashSet<>();
-                    } else {
-                        collection = new ArrayList<>();
-                    }
-                    for (int i = 0; i < array.length(); i++) {
-                        if (Number.class.isAssignableFrom(generic)) {
-                            collection.add(array.get(i));
-                        } else if (generic.isAnnotationPresent(JsonEntity.class)) {
-                            collection.add(parseObject(array.getJSONObject(i)));
+                    JSONArray array = object.optJSONArray(jsonField);
+                    if (array!=null) {
+                        Class generic = (Class) ((ParameterizedType) f.getGenericType()).getActualTypeArguments()[0];
+                        Collection collection = null;
+                        if (Set.class.isAssignableFrom(fieldType)) {
+                            collection = new HashSet<>();
+                        } else {
+                            collection = new ArrayList<>();
                         }
+                        for (int i = 0; i < array.length(); i++) {
+                            if (Number.class.isAssignableFrom(generic)) {
+                                collection.add(array.get(i));
+                            } else if (generic.isAnnotationPresent(JsonEntity.class)) {
+                                ResponseParser parser = new ResponseParser(generic);
+                                collection.add(parser.parseObject(array.getJSONObject(i)));
+                            }
+                        }
+                        setField(f, t, collection);
                     }
-                    setField(f, t, collection);
                 }
             }
 

@@ -3,6 +3,7 @@ package ru.tcns.vktrgt.service.external.vk.impl;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
+import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.external.vk.internal.Comment;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 import ru.tcns.vktrgt.domain.external.vk.response.*;
@@ -14,11 +15,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by TIMUR on 29.04.2016.
  */
+@Service
 public class WallServiceImpl implements WallService {
 
     private WallPostsResponse getWallPosts(int ownerId, int offset, int count) {
@@ -39,29 +42,36 @@ public class WallServiceImpl implements WallService {
     }
 
     @Override
-    public List<WallPost> getWallPosts(Integer ownerId, Integer maxDays) {
-        List<WallPost> posts = new ArrayList<>();
+    public List<WallPost> getWallPosts(Integer ownerId, Integer maxCount) {
+        final List<WallPost> posts;
         try {
-            Integer count = getWallPosts(ownerId, 0, 2).getCount();
+            Integer count = getWallPosts(ownerId, 0, 1).getCount();
+            count = Math.min(maxCount, count);
             if (count == null) {
                 count = 0;
             }
+            ExecutorService service = Executors.newFixedThreadPool(50);
+            List<Future<List<WallPost>>> tasks = new ArrayList<>();
             posts = new ArrayList<>(count);
             for (int i = 0; i < count; i += 100) {
-                List<WallPost> cur = getWallPosts(ownerId, i, 100).getItems();
-                posts.addAll(cur);
-                if (!cur.isEmpty()) {
-                    WallPost post = cur.get(0);
-                    if (isBefore(maxDays, post)) {
-                        break;
-                    }
-                }
+                final int cur = i;
+                tasks.add(service.submit(() -> getWallPosts(ownerId, cur, 100).getItems()));
             }
+            tasks.forEach(a -> {
+                try {
+                    posts.addAll(a.get());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            });
+            service.shutdown();
             return posts;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return posts;
+        return new ArrayList<>();
     }
 
     private LikesResponse getLikes(Integer ownerId, String type, int wallId, int offset, int count) {
@@ -83,27 +93,42 @@ public class WallServiceImpl implements WallService {
 
     @Override
     public List<Integer> getTopicCommentsWithLikes(Integer ownerId, Integer postId) {
-        List<Integer> comments = new ArrayList<>();
+        final List<Integer> comments;
         try {
             Integer count = getTopicComments(ownerId, postId, 0, 1).getCount();
             comments = new ArrayList<>(count);
+            ExecutorService service = Executors.newFixedThreadPool(100);
+            List<Future<List<Integer>>> tasks = new ArrayList<>();
             for (int i = 0; i < count; i += 100) {
-                List<Comment> items = getTopicComments(ownerId, postId, i, 100).getItems();
-                List<Integer> cur = items
-                    .stream().map(a -> a.getFromId()).collect(Collectors.toList());
-                List<Integer> likes = new ArrayList<>();
-                for (Comment comment: items) {
-                    likes = getLikes(postId, comment.getId(), "topic_comment");
-                }
-                comments.addAll(likes);
-                comments.addAll(cur);
+                final int curId = i;
+                tasks.add(service.submit(()-> {
+                        List<Comment> items = getTopicComments(ownerId, postId, curId, 100).getItems();
+                        List<Integer> cur = items
+                            .stream().map(a -> a.getFromId()).collect(Collectors.toList());
+                        for (Comment comment : items) {
+                            cur.addAll(getLikes(postId, comment.getId(), "topic_comment"));
+                        }
+                        return cur;
+                    }
+                ));
             }
+            tasks.forEach(a -> {
+                try {
+                    comments.addAll(a.get());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            });
+            service.shutdown();
             return comments;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return comments;
+        return new ArrayList<>();
     }
+
     private CommentsResponse getTopicComments(Integer groupId, int topicId, int offset, int count) {
         try {
             String url = TOPIC_PREFIX + "getComments?group_id=" + Math.abs(groupId) + "&topic_id=" + topicId + "&offset=" + offset
@@ -140,20 +165,32 @@ public class WallServiceImpl implements WallService {
 
     @Override
     public List<Integer> getComments(Integer ownerId, Integer postId) {
-        List<Integer> comments = new ArrayList<>();
+        final List<Integer> comments;
         try {
-            Integer count = getComments(ownerId, postId, 0, 2).getCount();
+            Integer count = getComments(ownerId, postId, 0, 1).getCount();
             comments = new ArrayList<>(count);
+            ExecutorService service = Executors.newFixedThreadPool(100);
+            List<Future<List<Integer>>> tasks = new ArrayList<>();
             for (int i = 0; i < count; i += 100) {
-                List<Integer> cur = getComments(ownerId, postId, i, 100).getItems()
-                    .stream().map(a->a.getFromId()).collect(Collectors.toList());
-                comments.addAll(cur);
+                final int cur = i;
+                tasks.add(service.submit(() -> getComments(ownerId, postId, cur, 100).getItems()
+                    .stream().map(a -> a.getFromId()).collect(Collectors.toList())));
             }
+            tasks.forEach(a -> {
+                try {
+                    comments.addAll(a.get());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            });
+            service.shutdown();
             return comments;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return comments;
+        return new ArrayList<>();
     }
 
     private RepostResponse getReposts(Integer ownerId, int postId, int offset, int count) {
@@ -172,6 +209,7 @@ public class WallServiceImpl implements WallService {
         }
         return new RepostResponse();
     }
+
     @Override
     public List<Integer> getReposts(Integer ownerId, Integer postId) {
         List<Integer> reposts = new ArrayList<>();
@@ -180,13 +218,13 @@ public class WallServiceImpl implements WallService {
             int i = 0;
             while (true) {
                 RepostResponse repostResponse = getReposts(ownerId, postId, i, 1000);
-                if (repostResponse.getItems()==null || repostResponse.getItems().isEmpty()) {
+                if (repostResponse.getItems() == null || repostResponse.getItems().isEmpty()) {
                     break;
                 }
                 List<Integer> cur = repostResponse.getItems()
-                    .stream().map(a->a.getFromId()).collect(Collectors.toList());
+                    .stream().map(a -> a.getFromId()).collect(Collectors.toList());
                 reposts.addAll(cur);
-                i+=1000;
+                i += 1000;
             }
             return reposts;
         } catch (JSONException e) {
@@ -197,19 +235,31 @@ public class WallServiceImpl implements WallService {
 
     @Override
     public List<Integer> getLikes(Integer ownerId, Integer postId, String type) {
-        List<Integer> likes = new ArrayList<>();
+        final List<Integer> likes;
         try {
-            Integer count = getLikes(ownerId, type, postId, 0, 2).getCount();
+            Integer count = getLikes(ownerId, type, postId, 0, 1).getCount();
             likes = new ArrayList<>(count);
+            ExecutorService service = Executors.newFixedThreadPool(10);
+            List<Future<List<Integer>>> tasks = new ArrayList<>();
             for (int i = 0; i < count; i += 1000) {
-                List<Integer> cur = getLikes(ownerId, type, postId, i, 1000).getItems();
-                likes.addAll(cur);
+                final int cur = i;
+                tasks.add(service.submit(() -> getLikes(ownerId, type, postId, cur, 1000).getItems()));
             }
+            tasks.forEach(a -> {
+                try {
+                    likes.addAll(a.get());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            });
+            service.shutdown();
             return likes;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return likes;
+        return new ArrayList<>();
     }
 
     private boolean isBefore(Integer maxDays, WallPost post) {

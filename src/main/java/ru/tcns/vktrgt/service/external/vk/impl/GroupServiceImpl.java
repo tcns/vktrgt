@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -126,10 +127,25 @@ public class GroupServiceImpl implements GroupService {
     public GroupUsers getAllGroupUsers(String groupId) {
         CommonIDResponse initial = getGroupUsers(groupId, 0, 1);
         int count = initial.getCount();
+        ExecutorService service = Executors.newFixedThreadPool(10);
         GroupUsers users = new GroupUsers(count, groupId);
+        List<Future<CommonIDResponse>> tasks = new ArrayList<>();
         for (int i = 0; i < count; i += 1000) {
-            users.append(getGroupUsers(groupId, i, 1000));
+            final int cur = i;
+            try {
+                tasks.add(service.submit(() -> getGroupUsers(groupId, cur, 1000)));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
+        for (Future<CommonIDResponse> f : tasks) {
+            try {
+                users.append(f.get());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        service.shutdown();
         return users;
     }
 
@@ -173,11 +189,15 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Async
     public void getGroupInfoById(Integer from, Integer to, Boolean saveIds, Boolean useIds) {
-        int add = 100000;
+        int add = 1000000;
         List<String> list;
+        ExecutorService service = Executors.newFixedThreadPool(100);
+        List<Future> tasks;
         for (int i = from; i < to; i += add) {
-            int toCur = Math.min(to, i+add);
+
+            int toCur = Math.min(to, i + add);
             int requestCount = getGroupRequestCount(toCur);
+            tasks = new ArrayList<>(1000000 / requestCount);
             if (useIds) {
                 List<GroupIds> idsList = groupIdRepository.findByIdBetween(i, toCur);
                 list = ArrayUtils.getDelimetedLists(i, toCur, requestCount, idsList);
@@ -185,13 +205,25 @@ public class GroupServiceImpl implements GroupService {
                 list = ArrayUtils.getDelimetedLists(from, toCur, requestCount);
             }
             for (String s : list) {
-                List<Group> groups = getGroupInfoById(s);
-                if (saveIds) {
-                    List<GroupIds> groupIdsList = groups.stream().map(p -> new GroupIds(p.getId().intValue())).collect(Collectors.toList());
-                    groupIdRepository.save(groupIdsList);
-                }
-                saveAll(groups);
+                tasks.add(service.submit(() -> {
+                    List<Group> groups = getGroupInfoById(s);
+                    if (saveIds) {
+                        List<GroupIds> groupIdsList = groups.stream().map(p -> new GroupIds(p.getId().intValue())).collect(Collectors.toList());
+                        groupIdRepository.save(groupIdsList);
+                    }
+                    saveAll(groups);
+                }));
             }
+            for (Future task: tasks) {
+                try {
+                    task.get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+            service.shutdown();
         }
 
     }

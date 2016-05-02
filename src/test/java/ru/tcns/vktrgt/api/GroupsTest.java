@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by TIMUR on 02.05.2016.
  */
 public class GroupsTest {
-    @Test
+    //@Test
     public void testUserGroups() {
         Long cur = System.currentTimeMillis();
         GroupServiceImpl groupService = new GroupServiceImpl();
@@ -28,7 +28,7 @@ public class GroupsTest {
     public void testGroupUsers() {
         Long cur = System.currentTimeMillis();
         GroupServiceImpl groupService = new GroupServiceImpl();
-        GroupUsers response = groupService.getAllGroupUsers("hata13");
+        GroupUsers response = groupService.getAllGroupUsers("mudachyo");
         Long time = (System.currentTimeMillis() - cur) / 1000L;
         assertThat(response).isNotNull();
     }
