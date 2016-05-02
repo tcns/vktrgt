@@ -27,8 +27,8 @@ public class WallServiceImpl implements WallService {
                 + "&count=" + count + VERSION;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
-            WallPostsResponse response = new ResponseParser<WallPostsResponse>().parseResponseString
-                (ans, RESPONSE_STRING, WallPostsResponse.class);
+            WallPostsResponse response = new ResponseParser<>(WallPostsResponse.class).parseResponseString
+                (ans, RESPONSE_STRING);
             return response;
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -70,8 +70,8 @@ public class WallServiceImpl implements WallService {
                 + "&count=" + count + VERSION;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
-            LikesResponse response = new ResponseParser<LikesResponse>().parseResponseString
-                (ans, RESPONSE_STRING, LikesResponse.class);
+            LikesResponse response = new ResponseParser<>(LikesResponse.class).parseResponseString
+                (ans, RESPONSE_STRING);
             return response;
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -110,8 +110,8 @@ public class WallServiceImpl implements WallService {
                 + "&count=" + count + VERSION;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
-            CommentsResponse response = new ResponseParser<CommentsResponse>().parseResponseString
-                (ans, RESPONSE_STRING, CommentsResponse.class);
+            CommentsResponse response = new ResponseParser<>(CommentsResponse.class).parseResponseString
+                (ans, RESPONSE_STRING);
             return response;
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -127,8 +127,8 @@ public class WallServiceImpl implements WallService {
                 + "&count=" + count + VERSION;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
-            CommentsResponse response = new ResponseParser<CommentsResponse>().parseResponseString
-                (ans, RESPONSE_STRING, CommentsResponse.class);
+            CommentsResponse response = new ResponseParser<>(CommentsResponse.class).parseResponseString
+                (ans, RESPONSE_STRING);
             return response;
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -162,8 +162,8 @@ public class WallServiceImpl implements WallService {
                 + "&count=" + count + VERSION;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
-            RepostResponse response = new ResponseParser<RepostResponse>().parseResponseString
-                (ans, RESPONSE_STRING, RepostResponse.class);
+            RepostResponse response = new ResponseParser<>(RepostResponse.class).parseResponseString
+                (ans, RESPONSE_STRING);
             return response;
         } catch (IOException ex) {
             ex.printStackTrace();

@@ -1,5 +1,6 @@
 package ru.tcns.vktrgt.domain.util.parser;
 
+import com.google.common.reflect.TypeToken;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import ru.tcns.vktrgt.anno.JsonIgnore;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,10 +21,15 @@ import java.util.Set;
  * Created by TIMUR on 29.04.2016.
  */
 public class ResponseParser<T> {
-    public T parseResponseString (String answer, String mainObject, Class<T> clazz) {
+    private Class<T> classType;
+
+    public ResponseParser(Class<T> klass) {
+        classType = klass;
+    }
+    public T parseResponseString(String answer, String mainObject) {
         JSONObject object = new JSONObject(answer);
         try {
-            return parseObject(object.getJSONObject(mainObject), clazz);
+            return parseObject(object.getJSONObject(mainObject));
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -30,7 +37,9 @@ public class ResponseParser<T> {
         }
         return null;
     }
-    public T parseObject(JSONObject object, Class<T> clazz) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+
+    public T parseObject(JSONObject object) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        Class<T> clazz = getClassDefinition();
         T t = build(clazz);
         Boolean jsonClass = clazz.isAnnotationPresent(JsonEntity.class);
         Field[] fields = clazz.getDeclaredFields();
@@ -56,10 +65,10 @@ public class ResponseParser<T> {
                 }
                 if (fieldType.isAnnotationPresent(JsonEntity.class)) {
                     if (isRequired) {
-                        f.set(t, parseObject(object.getJSONObject(jsonField), fieldType));
+                        f.set(t, parseObject(object.getJSONObject(jsonField)));
                     } else {
-                        if (object.optJSONObject(jsonField)!=null) {
-                            setField(f, t, parseObject(object.optJSONObject(jsonField), fieldType));
+                        if (object.optJSONObject(jsonField) != null) {
+                            setField(f, t, parseObject(object.optJSONObject(jsonField)));
                         } else {
                             setField(f, t, null);
                         }
@@ -72,18 +81,18 @@ public class ResponseParser<T> {
                     }
                 } else {
                     JSONArray array = object.getJSONArray(jsonField);
-                    Class generic = (Class)((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
+                    Class generic = (Class) ((ParameterizedType) f.getGenericType()).getActualTypeArguments()[0];
                     Collection collection = null;
                     if (Set.class.isAssignableFrom(fieldType)) {
                         collection = new HashSet<>();
                     } else {
                         collection = new ArrayList<>();
                     }
-                    for (int i = 0; i<array.length(); i++) {
+                    for (int i = 0; i < array.length(); i++) {
                         if (Number.class.isAssignableFrom(generic)) {
                             collection.add(array.get(i));
                         } else if (generic.isAnnotationPresent(JsonEntity.class)) {
-                            collection.add(parseObject(array.getJSONObject(i), generic));
+                            collection.add(parseObject(array.getJSONObject(i)));
                         }
                     }
                     setField(f, t, collection);
@@ -97,6 +106,7 @@ public class ResponseParser<T> {
     void setField(Field f, Object t, Object val) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         PropertyUtils.setSimpleProperty(t, f.getName(), val);
     }
+
     String convertName(String input) {
         String[] strings = input.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
         StringBuilder builder = new StringBuilder();
@@ -107,6 +117,10 @@ public class ResponseParser<T> {
             }
         }
         return builder.toString();
+    }
+
+    private Class<T> getClassDefinition() {
+        return classType;
     }
 
     private T build(Class<T> clazz) throws IllegalAccessException, InstantiationException {

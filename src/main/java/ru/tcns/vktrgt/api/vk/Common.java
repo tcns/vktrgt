@@ -2,7 +2,6 @@ package ru.tcns.vktrgt.api.vk;
 
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
-import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
 
 /**

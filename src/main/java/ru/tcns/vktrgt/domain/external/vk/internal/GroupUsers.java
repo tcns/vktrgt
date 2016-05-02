@@ -1,6 +1,6 @@
 package ru.tcns.vktrgt.domain.external.vk.internal;
 
-import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
+import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 
 import java.util.ArrayList;
 
@@ -23,9 +23,9 @@ public class GroupUsers {
     public ArrayList<Integer> getUsers() {
         return users;
     }
-    public void append(GroupUserResponse response) {
-        if (response.getUserIds()!=null) {
-            users.addAll(response.getUserIds());
+    public void append(CommonIDResponse response) {
+        if (response.getItems()!=null) {
+            users.addAll(response.getItems());
         }
 
     }

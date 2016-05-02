@@ -1,13 +1,16 @@
 package ru.tcns.vktrgt.domain.external.vk.response;
 
+import ru.tcns.vktrgt.anno.JsonEntity;
+
 import java.util.ArrayList;
 
 /**
  * Created by TIMUR on 22.04.2016.
  */
+@JsonEntity
 public class CommonIDResponse {
     private Integer count;
-    private ArrayList<Integer> ids;
+    private ArrayList<Integer> items;
 
     public Integer getCount() {
         return count;
@@ -17,11 +20,11 @@ public class CommonIDResponse {
         this.count = count;
     }
 
-    public ArrayList<Integer> getIds() {
-        return ids;
+    public ArrayList<Integer> getItems() {
+        return items;
     }
 
-    public void setIds(ArrayList<Integer> ids) {
-        this.ids = ids;
+    public void setItems(ArrayList<Integer> items) {
+        this.items = items;
     }
 }

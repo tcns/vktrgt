@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
@@ -18,9 +17,8 @@ import ru.tcns.vktrgt.domain.external.vk.internal.GroupIds;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
 import ru.tcns.vktrgt.domain.external.vk.internal.QGroup;
 import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
-import ru.tcns.vktrgt.domain.external.vk.response.GroupResponse;
-import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
+import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
 import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
 import ru.tcns.vktrgt.repository.external.vk.GroupRepository;
@@ -108,26 +106,25 @@ public class GroupServiceImpl implements GroupService {
         return Lists.newArrayList(groupRepository.findAll(predicate));
     }
 
-    @Override
-    public GroupUserResponse getGroupUsers(String groupId, int offset, int count) {
+    private CommonIDResponse getGroupUsers(String groupId, int offset, int count) {
+        CommonIDResponse response = new CommonIDResponse();
         try {
             String url = PREFIX + "getMembers?group_id=" + groupId + "&offset=" + offset
-                + "&count=" + count;
+                + "&count=" + count + VERSION;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
-            GroupUserResponse response = VKResponseParser.parseGroupUserResponse(ans);
-            return response;
+            response = new ResponseParser<>(CommonIDResponse.class).parseResponseString(ans, RESPONSE_STRING);
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return new GroupUserResponse();
+        return response;
     }
 
     @Override
     public GroupUsers getAllGroupUsers(String groupId) {
-        GroupUserResponse initial = getGroupUsers(groupId, 0, 1);
+        CommonIDResponse initial = getGroupUsers(groupId, 0, 1);
         int count = initial.getCount();
         GroupUsers users = new GroupUsers(count, groupId);
         for (int i = 0; i < count; i += 1000) {
@@ -202,11 +199,11 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Integer> getUserGroups(String userId) {
         try {
-            String url = PREFIX + "get?user_id=" + userId + ACCESS_TOKEN;
+            String url = PREFIX + "get?user_id=" + userId + ACCESS_TOKEN + VERSION;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
-            CommonIDResponse response = VKResponseParser.parseCommonIDResponse(ans);
-            return response.getIds();
+            CommonIDResponse response = new ResponseParser<>(CommonIDResponse.class).parseResponseString(ans, RESPONSE_STRING);
+            return response.getItems();
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (JSONException e) {

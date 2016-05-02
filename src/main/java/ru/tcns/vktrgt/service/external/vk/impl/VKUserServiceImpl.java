@@ -1,16 +1,12 @@
 package ru.tcns.vktrgt.service.external.vk.impl;
 
-import com.sun.org.apache.bcel.internal.generic.LSTORE;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
 import org.springframework.stereotype.Service;
-import ru.tcns.vktrgt.api.vk.Common;
-import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.FriendsResponse;
-import ru.tcns.vktrgt.domain.external.vk.response.GroupUserResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.SubscriptionsResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
@@ -110,7 +106,7 @@ public class VKUserServiceImpl implements VKUserService {
         int count = initial.getCount();
         List<Integer> users = new ArrayList<>(count);
         for (int i = 0; i < count; i += 1000) {
-            users.addAll(getFollowers(userId, i, 1000).getIds());
+            users.addAll(getFollowers(userId, i, 1000).getItems());
         }
         return users;
     }
@@ -137,7 +133,7 @@ public class VKUserServiceImpl implements VKUserService {
         ArrayUtils utils = new ArrayUtils();
         for (int i = 0; i < users.size(); i++) {
             CommonIDResponse cur = getUserFriendIds(users.get(i));
-            List<Integer> curResult = cur.getIds();
+            List<Integer> curResult = cur.getItems();
             result = utils.intersectWithCount(result, curResult);
         }
         return ArrayUtils.sortByValue(result, min);

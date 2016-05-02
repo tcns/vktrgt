@@ -11,9 +11,7 @@ import ru.tcns.vktrgt.domain.util.DateUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by timur on 3/26/16.
@@ -36,16 +34,16 @@ public final class VKResponseParser {
         for (int i = 0; i < jsonArray.length(); i++) {
             items.add(jsonArray.getInt(i));
         }
-        commonIDResponse.setIds(items);
+        commonIDResponse.setItems(items);
         return commonIDResponse;
     }
     public static List<User> parseUsersResponse(String response) throws JSONException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         JSONObject object = new JSONObject(response);
         JSONArray jsonArray = object.getJSONArray("response");
         List<User> users = new ArrayList<>();
-        ResponseParser<User> userResponseParser = new ResponseParser<>();
+        ResponseParser<User> userResponseParser = new ResponseParser<>(User.class);
         for (int i = 0; i<jsonArray.length(); i++) {
-            users.add(userResponseParser.parseObject(jsonArray.getJSONObject(i), User.class));
+            users.add(userResponseParser.parseObject(jsonArray.getJSONObject(i)));
         }
         return users;
     }
@@ -60,7 +58,7 @@ public final class VKResponseParser {
         for (int i = 0; i<jsonArray.length(); i++) {
             items.add(jsonArray.getInt(i));
         }
-        commonIDResponse.setIds(items);
+        commonIDResponse.setItems(items);
         return commonIDResponse;
     }
     public static FriendsResponse parseFriendsResponse(String response) throws JSONException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
@@ -70,27 +68,14 @@ public final class VKResponseParser {
         friendsResponse.setCount(jsonResponse.getInt("count"));
         JSONArray jsonArray = jsonResponse.getJSONArray("items");
         ArrayList<User> users = new ArrayList<>();
-        ResponseParser<User> userResponseParser = new ResponseParser<>();
+        ResponseParser<User> userResponseParser = new ResponseParser<>(User.class);
         for (int i = 0; i<jsonArray.length(); i++) {
-            users.add(userResponseParser.parseObject(jsonArray.getJSONObject(i), User.class));
+            users.add(userResponseParser.parseObject(jsonArray.getJSONObject(i)));
         }
         friendsResponse.setItems(users);
         return friendsResponse;
     }
 
-    public static GroupUserResponse parseGroupUserResponse(String response) throws JSONException {
-        JSONObject object = new JSONObject(response);
-        JSONObject jsonResponse = object.getJSONObject("response");
-        GroupUserResponse userResponse = new GroupUserResponse();
-        userResponse.setCount(jsonResponse.getInt("count"));
-        JSONArray jsonArray = jsonResponse.getJSONArray("users");
-        ArrayList<Integer> items = new ArrayList<>(jsonArray.length());
-        for (int i = 0; i < jsonArray.length(); i++) {
-            items.add(jsonArray.getInt(i));
-        }
-        userResponse.setUserIds(items);
-        return userResponse;
-    }
 
     public static GroupResponse parseGroupSearchResponse(String response) throws JSONException {
         JSONObject object = new JSONObject(response);
