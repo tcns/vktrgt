@@ -3,6 +3,7 @@ package ru.tcns.vktrgt.service.external.vk.impl;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.external.vk.internal.Comment;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
@@ -92,6 +93,7 @@ public class WallServiceImpl implements WallService {
     }
 
     @Override
+    @Async
     public List<Integer> getTopicCommentsWithLikes(Integer ownerId, Integer postId) {
         final List<Integer> comments;
         try {

@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface AnalysisService {
     AnalyseDTO analyseUsers(List<User> users, AnalyseDTO analyseDTO);
+    List<User> filterUsers(List<User> users, AnalyseDTO analyseDTO);
 }
