@@ -38,7 +38,7 @@ public class WallResource {
                                                           @RequestParam Integer postId,
                                                           @RequestParam String taskInfo) throws URISyntaxException {
         UserTaskSettings settings = new UserTaskSettings(userService.getUserWithAuthorities(), true, taskInfo);
-        List<Integer> userIds = wallService.getTopicCommentsWithLikes(settings, ownerId, postId);
+        wallService.getTopicCommentsWithLikes(settings, ownerId, postId);
         return ResponseEntity.ok().build();
     }
 }

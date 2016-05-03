@@ -11,8 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
+import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 import ru.tcns.vktrgt.web.rest.util.PaginationUtil;
 
@@ -33,7 +35,7 @@ public class GroupResource {
     @Inject
     private GroupService groupService;
     @Inject
-    private GroupIdRepository groupIdRepository;
+    UserService userService;
 
     @RequestMapping(value = "/groups",
         method = RequestMethod.POST,
@@ -84,9 +86,12 @@ public class GroupResource {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<Integer>> intersectUsersFromGroups(@RequestParam List<String> names) throws URISyntaxException {
-        List<Integer> userIds = groupService.intersectGroups(names);
-        return ResponseEntity.ok(userIds);
+    public ResponseEntity<Void> intersectUsersFromGroups(@RequestParam List<String> names,
+                                                                  @RequestParam String taskInfo) throws URISyntaxException {
+
+        groupService.intersectGroups(new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo), names);
+        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(value = "/groups",

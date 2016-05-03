@@ -10,7 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import ru.tcns.vktrgt.domain.UserTask;
+import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupIds;
@@ -20,6 +23,7 @@ import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
+import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
 import ru.tcns.vktrgt.repository.external.vk.GroupRepository;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
@@ -35,98 +39,23 @@ import java.util.stream.Collectors;
  * Created by Тимур on 13.04.2016.
  */
 @Service
-public class GroupServiceImpl implements GroupService {
+public class GroupServiceImpl extends AbstractGroupService {
 
-
-    private final Logger log = LoggerFactory.getLogger(GroupServiceImpl.class);
+    public static final String BEAN_NAME = "GroupServiceImpl";
+    public static final String ALL_USERS = BEAN_NAME + "AllUsers";
+    public static final String INTERSECT_GROUPS = BEAN_NAME + "IntersectGroups";
+    public static final String USER_GROUPS = BEAN_NAME + "UserGroups";
+    public static final String GROUP_INFO = BEAN_NAME + "GroupInfo";
     @Inject
-    GroupRepository groupRepository;
-    @Inject
-    GroupIdRepository groupIdRepository;
+    UserTaskRepository repository;
 
     @Override
-    public Group findOne(Long id) {
-        return groupRepository.findOne(id);
-    }
-
-    @Override
-    public List<Group> saveAll(List<Group> group) {
-        return groupRepository.save(group);
-    }
-
-    @Override
-    public Group save(Group group) {
-        return groupRepository.save(group);
-    }
-
-    @Override
-    public Page<Group> findAll(Pageable pageable) {
-        return groupRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<Group> findAll() {
-        return groupRepository.findAll();
-    }
-
-    @Override
-    public void deleteAll() {
-        groupRepository.deleteAll();
-    }
-
-    @Override
-    public void delete(Long id) {
-        groupRepository.delete(id);
-    }
-
-    @Override
-    public Page<Group> searchByName(String name, Boolean restrict, Pageable pageable) {
-        if (!restrict) {
-            Predicate predicate = QGroup.group.name.containsIgnoreCase(name.toLowerCase());
-            return groupRepository.findAll(predicate, pageable);
-        } else {
-            return groupRepository.findByNameIgnoreCase(name.toLowerCase(), pageable);
-        }
-
-    }
-
-    @Override
-    public List<Group> searchByNames(List<String> names) {
-        ArrayList<Long> ids = new ArrayList<>();
-        for (String name : names) {
-            try {
-                Long val = Long.parseLong(name);
-                ids.add(val);
-            } catch (Exception ex) {
-            }
-
-        }
-        Predicate predicate = QGroup.group.screenName.in(names).or(
-            QGroup.group.id.in(ids)
-        );
-        return Lists.newArrayList(groupRepository.findAll(predicate));
-    }
-
-    private CommonIDResponse getGroupUsers(String groupId, int offset, int count) {
-        CommonIDResponse response = new CommonIDResponse();
-        try {
-            String url = PREFIX + "getMembers?group_id=" + groupId + "&offset=" + offset
-                + "&count=" + count + VERSION;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            response = new ResponseParser<>(CommonIDResponse.class).parseResponseString(ans, RESPONSE_STRING);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return response;
-    }
-
-    @Override
-    public GroupUsers getAllGroupUsers(String groupId) {
+    @Async
+    public Future<GroupUsers> getAllGroupUsers(UserTaskSettings settings, String groupId) {
+        UserTask userTask = new UserTask(ALL_USERS, settings, repository);
         CommonIDResponse initial = getGroupUsers(groupId, 0, 1);
         int count = initial.getCount();
+        userTask = userTask.saveInitial(count);
         ExecutorService service = Executors.newFixedThreadPool(10);
         GroupUsers users = new GroupUsers(count, groupId);
         List<Future<CommonIDResponse>> tasks = new ArrayList<>();
@@ -140,50 +69,47 @@ public class GroupServiceImpl implements GroupService {
         }
         for (Future<CommonIDResponse> f : tasks) {
             try {
-                users.append(f.get());
+                CommonIDResponse response = f.get();
+                userTask = userTask.saveProgress(response.getItems().size());
+                users.append(response);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
         service.shutdown();
-        return users;
+        userTask.saveFinal(users);
+        return new AsyncResult<>(users);
     }
 
     @Override
-    public List<Integer> intersectGroups(List<String> groups) {
-        GroupUsers init = getAllGroupUsers(groups.get(0));
-        ArrayUtils utils = new ArrayUtils();
-        List<Integer> result = init.getUsers();
-        for (int i = 1; i < groups.size(); i++) {
-            GroupUsers cur = getAllGroupUsers(groups.get(i));
-            result = utils.intersect(result, cur.getUsers());
-        }
-        return result;
-    }
-
-    @Override
-    public List<Group> getGroupInfoById(String ids) {
-        String fields = "city,country,place,description,wiki_page,members_count,counters,start_date,finish_date," +
-            "public_date_label,activity,status,contacts,links,fixed_post,verified,site,main_album_id,main_section,market";
-
-        List<Group> groups = new ArrayList<>();
-        Content content = null;
+    @Async
+    public Future<List<Integer>> intersectGroups(UserTaskSettings settings, List<String> groups) {
+        UserTask userTask = new UserTask(INTERSECT_GROUPS, settings, repository);
+        GroupUsers init = null;
         try {
-            String url = PREFIX + "getById?group_ids=" + ids + "&fields=" + fields;
-            content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            List<Group> groupResponse = VKResponseParser.parseGroupGetByIdResponse(ans);
-            if (groupResponse != null) {
-                groups.addAll(groupResponse);
-            } else {
-                System.out.println(ans);
-                System.out.println(ids);
-            }
-
-        } catch (IOException e) {
+            init = getAllGroupUsers(settings, groups.get(0)).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        return groups;
+        ArrayUtils utils = new ArrayUtils();
+        List<Integer> result = init.getUsers();
+        userTask = userTask.saveInitial(groups.size());
+        for (int i = 1; i < groups.size(); i++) {
+            userTask = userTask.saveProgress(1);
+            GroupUsers cur = null;
+            try {
+                cur = getAllGroupUsers(new UserTaskSettings(settings.getUser(), false, settings.getTaskDescription()), groups.get(i)).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            result = utils.intersect(result, cur.getUsers());
+        }
+        userTask.saveFinal(result);
+        return new AsyncResult<>(result);
     }
 
     @Override
@@ -229,33 +155,23 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<Integer> getUserGroups(String userId) {
+    public List<Integer> getUserGroups(UserTaskSettings settings, String userId) {
+        UserTask userTask = new UserTask(USER_GROUPS, settings, repository);
         try {
             String url = PREFIX + "get?user_id=" + userId + ACCESS_TOKEN + VERSION;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             CommonIDResponse response = new ResponseParser<>(CommonIDResponse.class).parseResponseString(ans, RESPONSE_STRING);
+            userTask.saveFinal(response.getItems());
             return response.getItems();
         } catch (IOException ex) {
+            userTask.saveError(ex);
             ex.printStackTrace();
         } catch (JSONException e) {
+            userTask.saveError(e);
             e.printStackTrace();
         }
         return new ArrayList<>();
-    }
-
-    private int getGroupRequestCount(int toCur) {
-        int requestCount = VKDicts.MAX_GROUP_REQUEST_COUNT;
-        if (toCur >= 1000000) {
-            requestCount = 400;
-        }
-        if (toCur >= 10000000) {
-            requestCount = 350;
-        }
-        if (toCur >= 100000000) {
-            requestCount = 300;
-        }
-        return requestCount;
     }
 
 }

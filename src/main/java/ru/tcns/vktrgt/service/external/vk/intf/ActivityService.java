@@ -6,11 +6,12 @@ import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * Created by TIMUR on 30.04.2016.
  */
 public interface ActivityService {
-    Map<Integer, Map<Integer, Integer>> getActiveAuditory(UserTaskSettings settings, ActiveAuditoryDTO activeAuditoryDTO);
-    Map<Integer, Map<Integer, Integer>> getActiveTopicAuditory(UserTaskSettings settings, List<String> topicUrls, Integer minCount);
+    Future<Map<Integer, Map<Integer, Integer>>> getActiveAuditory(UserTaskSettings settings, ActiveAuditoryDTO activeAuditoryDTO);
+    Future<Map<Integer, Map<Integer, Integer>>> getActiveTopicAuditory(UserTaskSettings settings, List<String> topicUrls, Integer minCount);
 }

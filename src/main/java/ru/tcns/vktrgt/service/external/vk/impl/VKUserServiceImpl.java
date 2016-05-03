@@ -3,7 +3,11 @@ package ru.tcns.vktrgt.service.external.vk.impl;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import ru.tcns.vktrgt.domain.UserTask;
+import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.FriendsResponse;
@@ -11,8 +15,9 @@ import ru.tcns.vktrgt.domain.external.vk.response.SubscriptionsResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
-import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
+import ru.tcns.vktrgt.repository.UserTaskRepository;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -24,27 +29,22 @@ import java.util.concurrent.Future;
  * Created by TIMUR on 21.04.2016.
  */
 @Service
-public class VKUserServiceImpl implements VKUserService {
+public class VKUserServiceImpl extends AbstractVKUserService {
+    public static final String BEAN_NAME = "VKUserServiceImpl";
+    public static final String USER_INFO = BEAN_NAME + "userInfo";
+    public static final String FOLLOWERS = BEAN_NAME + "followers";
+    public static final String SUBSCRIPTIONS = BEAN_NAME + "subscriptions";
+    public static final String USERS = BEAN_NAME + "users";
+
+    @Inject
+    UserTaskRepository repository;
 
     @Override
-    public FriendsResponse getUserFriends(Integer userId) {
-        try {
-            String url = FRIENDS_PREFIX + "get?user_id=" + userId;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            FriendsResponse response = VKResponseParser.parseFriendsResponse(ans);
-            return response;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new FriendsResponse();
-    }
-
-    @Override
-    public List<User> getUserInfo(List<String> userIds) {
+    @Async
+    public Future<List<User>> getUserInfo(UserTaskSettings settings, List<String> userIds) {
         List<User> response = new ArrayList<>();
+        UserTask userTask = new UserTask(USER_INFO, settings, repository);
+        userTask = userTask.saveInitial(userIds.size());
         String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts";
         List<String> users = ArrayUtils.getDelimetedLists(userIds, 1000);
         ExecutorService service = Executors.newFixedThreadPool(100);
@@ -59,14 +59,17 @@ public class VKUserServiceImpl implements VKUserService {
         }
         for (Future<List<User>> future : tasks) {
             try {
-                response.addAll(future.get());
+                List<User> list = future.get();
+                userTask = userTask.saveProgress(list.size());
+                response.addAll(list);
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
 
         }
         service.shutdown();
-        return response;
+        userTask.saveFinal(response);
+        return new AsyncResult<>(response);
     }
 
     @Override
@@ -87,37 +90,33 @@ public class VKUserServiceImpl implements VKUserService {
     }
 
     @Override
-    public Map<Integer, Integer> intersectSubscriptions(List<Integer> users, Integer min) {
+    @Async
+    public Future<Map<Integer, Integer>> intersectSubscriptions(UserTaskSettings settings, List<Integer> users, Integer min) {
         Map<Integer, Integer> result = new HashMap<>();
+        UserTask userTask = new UserTask(SUBSCRIPTIONS, settings, repository);
+        userTask  = userTask.saveInitial(users.size());
         ArrayUtils utils = new ArrayUtils();
+
         for (int i = 0; i < users.size(); i++) {
             SubscriptionsResponse cur = getSubscriptions("" + users.get(i));
             List<Integer> curResult = cur.getGroups();
             result = utils.intersectWithCount(result, curResult);
+            userTask = userTask.saveProgress(1);
         }
-        return ArrayUtils.sortByValue(result, min);
+        Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);
+        userTask.saveFinal(response);
+        return new AsyncResult<>(response);
     }
 
-    private CommonIDResponse getFollowers(int userId, int offset, int count) {
-        try {
-            String url = USERS_PREFIX + "getFollowers?user_id=" + userId + "&offset=" + offset
-                + "&count=" + count;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            CommonIDResponse response = VKResponseParser.parseCommonResponseWithCount(ans);
-            return response;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new CommonIDResponse();
-    }
+
 
     @Override
-    public List<Integer> getFollowers(Integer userId) {
+    @Async
+    public Future<List<Integer>> getFollowers(UserTaskSettings settings, Integer userId) {
         CommonIDResponse initial = getFollowers(userId, 0, 1);
         int count = initial.getCount();
+        UserTask userTask = new UserTask(FOLLOWERS, settings, repository);
+        userTask = userTask.saveInitial(count);
         List<Integer> users = new ArrayList<>(count);
         ExecutorService service = Executors.newFixedThreadPool(100);
         List<Future<List<Integer>>> tasks = new ArrayList<>();
@@ -128,15 +127,18 @@ public class VKUserServiceImpl implements VKUserService {
         }
         for (Future<List<Integer>> task: tasks) {
             try {
-                users.addAll(task.get());
+                List<Integer> list = task.get();
+                userTask = userTask.saveProgress(list.size());
+                users.addAll(list);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
         }
+        userTask.saveFinal(users);
         service.shutdown();
-        return users;
+        return new AsyncResult<>(users);
     }
 
     @Override
@@ -156,14 +158,20 @@ public class VKUserServiceImpl implements VKUserService {
     }
 
     @Override
-    public Map<Integer, Integer> intersectUsers(List<Integer> users, Integer min) {
+    @Async
+    public Future<Map<Integer, Integer>> intersectUsers(UserTaskSettings settings, List<Integer> users, Integer min) {
         Map<Integer, Integer> result = new HashMap<>();
+        UserTask userTask = new UserTask(USERS, settings, repository);
+        userTask = userTask.saveInitial(users.size());
         ArrayUtils utils = new ArrayUtils();
         for (int i = 0; i < users.size(); i++) {
             CommonIDResponse cur = getUserFriendIds(users.get(i));
             List<Integer> curResult = cur.getItems();
             result = utils.intersectWithCount(result, curResult);
+            userTask = userTask.saveProgress(1);
         }
-        return ArrayUtils.sortByValue(result, min);
+        Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);
+        userTask.saveFinal(response);
+        return new AsyncResult<>(response);
     }
 }

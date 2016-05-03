@@ -1,5 +1,6 @@
 package ru.tcns.vktrgt;
 
+import org.springframework.scheduling.annotation.EnableAsync;
 import ru.tcns.vktrgt.config.Constants;
 import ru.tcns.vktrgt.config.JHipsterProperties;
 
@@ -26,6 +27,7 @@ import java.util.Collection;
 @ComponentScan
 @EnableAutoConfiguration(exclude = { MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class })
 @EnableConfigurationProperties({ JHipsterProperties.class, LiquibaseProperties.class })
+@EnableAsync
 public class Application {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);

@@ -35,7 +35,7 @@ public abstract class AbstractWallService implements WallService {
     @Inject
     protected UserService userService;
 
-    protected WallPostsResponse getWallPosts(UserTaskSettings settings, int ownerId, int offset, int count) {
+    protected WallPostsResponse getWallPosts(int ownerId, int offset, int count) {
         try {
             String url = PREFIX + "get?owner_id=" + ownerId + "&offset=" + offset
                 + "&count=" + count + VERSION;

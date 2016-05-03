@@ -2,10 +2,13 @@ package ru.tcns.vktrgt.service.external.vk.intf;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Created by Тимур on 13.04.2016.
@@ -23,10 +26,10 @@ public interface GroupService extends VKService {
     void deleteAll();
     Page<Group> searchByName(String name, Boolean restrict, Pageable pageable);
     List<Group> searchByNames(List<String> names);
-    GroupUsers getAllGroupUsers(String groupId);
-    List<Integer> intersectGroups(List<String> groups);
-    List<Group> getGroupInfoById(String ids);
+
+    Future<GroupUsers> getAllGroupUsers(UserTaskSettings settings, String groupId);
+    Future<List<Integer>> intersectGroups(UserTaskSettings settings, List<String> groups);
     void getGroupInfoById(Integer from, Integer to, Boolean saveIds, Boolean useIds);
-    List<Integer> getUserGroups(String userId);
+    List<Integer> getUserGroups(UserTaskSettings settings, String userId);
 
 }

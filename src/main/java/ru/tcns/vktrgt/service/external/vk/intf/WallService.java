@@ -5,6 +5,7 @@ import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * Created by TIMUR on 29.04.2016.
@@ -17,10 +18,10 @@ public interface WallService extends VKService {
     String LIKES_PREFIX = URL_PREFIX + LIKES_METHOD_PREFIX;
     String TOPIC_PREFIX = URL_PREFIX + TOPIC_METHOD_PREFIX;
 
-    List<WallPost> getWallPosts(UserTaskSettings settings, Integer ownerId, Integer maxDays);
-    List<Integer> getLikes (UserTaskSettings settings, Integer ownerId, Integer postId, String type);
-    List<Integer> getComments (UserTaskSettings settings, Integer ownerId, Integer postId);
-    List<Integer> getTopicCommentsWithLikes (UserTaskSettings settings, Integer ownerId, Integer postId);
-    List<Integer> getReposts (UserTaskSettings settings, Integer ownerId, Integer postId);
+    Future<List<WallPost>> getWallPosts(UserTaskSettings settings, Integer ownerId, Integer maxDays);
+    Future<List<Integer>> getLikes (UserTaskSettings settings, Integer ownerId, Integer postId, String type);
+    Future<List<Integer>> getComments (UserTaskSettings settings, Integer ownerId, Integer postId);
+    Future<List<Integer>> getTopicCommentsWithLikes (UserTaskSettings settings, Integer ownerId, Integer postId);
+    Future<List<Integer>> getReposts (UserTaskSettings settings, Integer ownerId, Integer postId);
 
 }
