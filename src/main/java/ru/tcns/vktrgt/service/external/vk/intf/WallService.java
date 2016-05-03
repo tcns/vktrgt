@@ -1,5 +1,7 @@
 package ru.tcns.vktrgt.service.external.vk.intf;
 
+import ru.tcns.vktrgt.domain.User;
+import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 
 import java.util.List;
@@ -15,11 +17,10 @@ public interface WallService extends VKService {
     String LIKES_PREFIX = URL_PREFIX + LIKES_METHOD_PREFIX;
     String TOPIC_PREFIX = URL_PREFIX + TOPIC_METHOD_PREFIX;
 
-    List<WallPost> getWallPosts(Integer ownerId, Integer maxDays);
-
-    List<Integer> getLikes (Integer ownerId, Integer postId, String type);
-    List<Integer> getComments (Integer ownerId, Integer postId);
-    List<Integer> getTopicCommentsWithLikes (Integer ownerId, Integer postId);
-    List<Integer> getReposts (Integer ownerId, Integer postId);
+    List<WallPost> getWallPosts(UserTaskSettings settings, Integer ownerId, Integer maxDays);
+    List<Integer> getLikes (UserTaskSettings settings, Integer ownerId, Integer postId, String type);
+    List<Integer> getComments (UserTaskSettings settings, Integer ownerId, Integer postId);
+    List<Integer> getTopicCommentsWithLikes (UserTaskSettings settings, Integer ownerId, Integer postId);
+    List<Integer> getReposts (UserTaskSettings settings, Integer ownerId, Integer postId);
 
 }

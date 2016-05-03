@@ -1,20 +1,14 @@
 package ru.tcns.vktrgt.service.external.vk.impl;
-
-import org.apache.http.client.fluent.Content;
-import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import ru.tcns.vktrgt.domain.UserTask;
+import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.internal.Comment;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 import ru.tcns.vktrgt.domain.external.vk.response.*;
-import ru.tcns.vktrgt.domain.util.DateUtils;
-import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
-import ru.tcns.vktrgt.service.external.vk.intf.WallService;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -23,31 +17,16 @@ import java.util.stream.Collectors;
  * Created by TIMUR on 29.04.2016.
  */
 @Service
-public class WallServiceImpl implements WallService {
-
-    private WallPostsResponse getWallPosts(int ownerId, int offset, int count) {
-        try {
-            String url = PREFIX + "get?owner_id=" + ownerId + "&offset=" + offset
-                + "&count=" + count + VERSION;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            WallPostsResponse response = new ResponseParser<>(WallPostsResponse.class).parseResponseString
-                (ans, RESPONSE_STRING);
-            return response;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new WallPostsResponse();
-    }
+public class WallServiceImpl extends AbstractWallService {
 
     @Override
-    public List<WallPost> getWallPosts(Integer ownerId, Integer maxCount) {
+    public List<WallPost> getWallPosts(UserTaskSettings settings, Integer ownerId, Integer maxCount) {
+        UserTask userTask = new UserTask(WALL_POSTS, settings, userTaskRepository);
         final List<WallPost> posts;
         try {
-            Integer count = getWallPosts(ownerId, 0, 1).getCount();
+            Integer count = getWallPosts(settings, ownerId, 0, 1).getCount();
             count = Math.min(maxCount, count);
+            userTask = userTask.saveInitial(count);
             if (count == null) {
                 count = 0;
             }
@@ -56,48 +35,37 @@ public class WallServiceImpl implements WallService {
             posts = new ArrayList<>(count);
             for (int i = 0; i < count; i += 100) {
                 final int cur = i;
-                tasks.add(service.submit(() -> getWallPosts(ownerId, cur, 100).getItems()));
+                tasks.add(service.submit(() -> getWallPosts(settings, ownerId, cur, 100).getItems()));
             }
-            tasks.forEach(a -> {
+            for (Future<List<WallPost>> a: tasks) {
                 try {
-                    posts.addAll(a.get());
+                    List<WallPost> list = a.get();
+                    userTask = userTask.saveProgress(list.size());
+                    posts.addAll(list);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-            });
+            }
             service.shutdown();
+            userTask.saveFinal(posts);
             return posts;
         } catch (JSONException e) {
+            userTask.saveError(e);
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
-    private LikesResponse getLikes(Integer ownerId, String type, int wallId, int offset, int count) {
-        try {
-            String url = LIKES_PREFIX + "getList?owner_id=" + ownerId + "&item_id=" + wallId + "&type=" + type + "&offset=" + offset
-                + "&count=" + count + VERSION;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            LikesResponse response = new ResponseParser<>(LikesResponse.class).parseResponseString
-                (ans, RESPONSE_STRING);
-            return response;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new LikesResponse();
-    }
-
     @Override
     @Async
-    public List<Integer> getTopicCommentsWithLikes(Integer ownerId, Integer postId) {
+    public List<Integer> getTopicCommentsWithLikes(UserTaskSettings settings, Integer ownerId, Integer postId) {
+        UserTask userTask = new UserTask(TOPIC_COMMENTS, settings, userTaskRepository);
         final List<Integer> comments;
         try {
             Integer count = getTopicComments(ownerId, postId, 0, 1).getCount();
+            userTask = userTask.saveInitial(count);
             comments = new ArrayList<>(count);
             ExecutorService service = Executors.newFixedThreadPool(100);
             List<Future<List<Integer>>> tasks = new ArrayList<>();
@@ -108,68 +76,40 @@ public class WallServiceImpl implements WallService {
                         List<Integer> cur = items
                             .stream().map(a -> a.getFromId()).collect(Collectors.toList());
                         for (Comment comment : items) {
-                            cur.addAll(getLikes(postId, comment.getId(), "topic_comment"));
+                            cur.addAll(getLikes(settings, postId, comment.getId(), "topic_comment"));
                         }
                         return cur;
                     }
                 ));
             }
-            tasks.forEach(a -> {
+            for (Future<List<Integer>> task: tasks) {
                 try {
-                    comments.addAll(a.get());
+                    List<Integer> resp = task.get();
+                    userTask = userTask.saveProgress(resp.size());
+                    comments.addAll(resp);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-            });
+            }
             service.shutdown();
+            userTask.saveFinal(comments);
             return comments;
         } catch (JSONException e) {
+            userTask.saveError(e);
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
-    private CommentsResponse getTopicComments(Integer groupId, int topicId, int offset, int count) {
-        try {
-            String url = TOPIC_PREFIX + "getComments?group_id=" + Math.abs(groupId) + "&topic_id=" + topicId + "&offset=" + offset
-                + "&count=" + count + VERSION;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            CommentsResponse response = new ResponseParser<>(CommentsResponse.class).parseResponseString
-                (ans, RESPONSE_STRING);
-            return response;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new CommentsResponse();
-    }
-
-    private CommentsResponse getComments(Integer ownerId, int postId, int offset, int count) {
-        try {
-            String url = PREFIX + "getComments?owner_id=" + ownerId + "&post_id=" + postId + "&offset=" + offset
-                + "&count=" + count + VERSION;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            CommentsResponse response = new ResponseParser<>(CommentsResponse.class).parseResponseString
-                (ans, RESPONSE_STRING);
-            return response;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new CommentsResponse();
-    }
-
     @Override
-    public List<Integer> getComments(Integer ownerId, Integer postId) {
+    public List<Integer> getComments(UserTaskSettings settings, Integer ownerId, Integer postId) {
         final List<Integer> comments;
+        UserTask userTask = new UserTask(COMMENTS, settings, userTaskRepository);
         try {
             Integer count = getComments(ownerId, postId, 0, 1).getCount();
+            userTask = userTask.saveInitial(count);
             comments = new ArrayList<>(count);
             ExecutorService service = Executors.newFixedThreadPool(100);
             List<Future<List<Integer>>> tasks = new ArrayList<>();
@@ -178,46 +118,35 @@ public class WallServiceImpl implements WallService {
                 tasks.add(service.submit(() -> getComments(ownerId, postId, cur, 100).getItems()
                     .stream().map(a -> a.getFromId()).collect(Collectors.toList())));
             }
-            tasks.forEach(a -> {
+            for (Future<List<Integer>> a: tasks) {
                 try {
-                    comments.addAll(a.get());
+                    List<Integer> list = a.get();
+                    userTask = userTask.saveProgress(list.size());
+                    comments.addAll(list);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-            });
+            }
             service.shutdown();
+            userTask.saveFinal(comments);
             return comments;
         } catch (JSONException e) {
+            userTask.saveError(e);
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
-    private RepostResponse getReposts(Integer ownerId, int postId, int offset, int count) {
-        try {
-            String url = PREFIX + "getReposts?owner_id=" + ownerId + "&post_id=" + postId + "&offset=" + offset
-                + "&count=" + count + VERSION;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            RepostResponse response = new ResponseParser<>(RepostResponse.class).parseResponseString
-                (ans, RESPONSE_STRING);
-            return response;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new RepostResponse();
-    }
-
     @Override
-    public List<Integer> getReposts(Integer ownerId, Integer postId) {
+    public List<Integer> getReposts(UserTaskSettings settings, Integer ownerId, Integer postId) {
         List<Integer> reposts = new ArrayList<>();
+        UserTask userTask = new UserTask(REPOSTS, settings, userTaskRepository);
         try {
             reposts = new ArrayList<>(1000);
             int i = 0;
+            //TODO Это пиздец, можно делать запрос сначала на количество репостов
             while (true) {
                 RepostResponse repostResponse = getReposts(ownerId, postId, i, 1000);
                 if (repostResponse.getItems() == null || repostResponse.getItems().isEmpty()) {
@@ -227,19 +156,24 @@ public class WallServiceImpl implements WallService {
                     .stream().map(a -> a.getFromId()).collect(Collectors.toList());
                 reposts.addAll(cur);
                 i += 1000;
+                userTask = userTask.saveProgress(i);
             }
+            userTask.saveFinal(reposts);
             return reposts;
         } catch (JSONException e) {
+            userTask.saveError(e);
             e.printStackTrace();
         }
         return reposts;
     }
 
     @Override
-    public List<Integer> getLikes(Integer ownerId, Integer postId, String type) {
+    public List<Integer> getLikes(UserTaskSettings settings, Integer ownerId, Integer postId, String type) {
         final List<Integer> likes;
+        UserTask userTask = new UserTask(LIKES, settings, userTaskRepository);
         try {
             Integer count = getLikes(ownerId, type, postId, 0, 1).getCount();
+            userTask = userTask.saveInitial(count);
             likes = new ArrayList<>(count);
             ExecutorService service = Executors.newFixedThreadPool(10);
             List<Future<List<Integer>>> tasks = new ArrayList<>();
@@ -247,24 +181,24 @@ public class WallServiceImpl implements WallService {
                 final int cur = i;
                 tasks.add(service.submit(() -> getLikes(ownerId, type, postId, cur, 1000).getItems()));
             }
-            tasks.forEach(a -> {
+            for(Future<List<Integer>> a: tasks) {
                 try {
-                    likes.addAll(a.get());
+                    List<Integer> list = a.get();
+                    userTask = userTask.saveProgress(list.size());
+                    likes.addAll(list);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-            });
+            }
+            userTask.saveFinal(likes);
             service.shutdown();
             return likes;
         } catch (JSONException e) {
+            userTask.saveError(e);
             e.printStackTrace();
         }
         return new ArrayList<>();
-    }
-
-    private boolean isBefore(Integer maxDays, WallPost post) {
-        return DateUtils.parseUnixTime("" + post.getDate()).before(org.apache.commons.lang.time.DateUtils.addDays(new Date(), -maxDays));
     }
 }
