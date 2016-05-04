@@ -28,4 +28,5 @@ public abstract class AbstractVKUserService implements VKUserService {
         }
         return new CommonIDResponse();
     }
+
 }

@@ -134,7 +134,7 @@ public class GroupServiceImpl extends AbstractGroupService {
                 tasks.add(service.submit(() -> {
                     List<Group> groups = getGroupInfoById(s);
                     if (saveIds) {
-                        List<GroupIds> groupIdsList = groups.stream().map(p -> new GroupIds(p.getId().intValue())).collect(Collectors.toList());
+                        List<GroupIds> groupIdsList = groups.parallelStream().map(p -> new GroupIds(p.getId().intValue())).collect(Collectors.toList());
                         groupIdRepository.save(groupIdsList);
                     }
                     saveAll(groups);

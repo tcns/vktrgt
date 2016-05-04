@@ -20,7 +20,8 @@ public interface VKUserService extends VKService {
     String FRIENDS_PREFIX = URL_PREFIX + FRIENDS_METHOD_PREFIX;
     String USERS_PREFIX = URL_PREFIX + USER_METHOD_PREFIX;
 
-    Future<List<User>> getUserInfo(UserTaskSettings settings, List<String> userId);
+    Future<List<User>> getUserInfo(UserTaskSettings settings, List<String> userIds);
+    Future<List<String>> getUserURL(UserTaskSettings settings, List<String> userIds);
     CommonIDResponse getUserFriendIds(Integer userId);
     SubscriptionsResponse getSubscriptions(String userId);
     Future<Map<Integer, Integer>> intersectUsers(UserTaskSettings settings, List<Integer> users, Integer min);

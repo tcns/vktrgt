@@ -34,11 +34,11 @@ public class AnalysisResource {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Void> collectGroups(@RequestParam AnalyseDTO analyseDTO,
+    public ResponseEntity<Void> analyseUsers(@RequestParam AnalyseDTO analyseDTO,
                                               @RequestParam List<User> users,
                                               @RequestParam String taskInfo) throws URISyntaxException {
         analysisService.analyseUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo), users, new AnalyseDTO());
+            taskInfo), users, analyseDTO);
         return ResponseEntity.ok().build();
     }
 }

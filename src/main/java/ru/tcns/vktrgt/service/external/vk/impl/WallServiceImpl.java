@@ -76,7 +76,7 @@ public class WallServiceImpl extends AbstractWallService {
                 tasks.add(service.submit(()-> {
                         List<Comment> items = getTopicComments(ownerId, postId, curId, 100).getItems();
                         List<Integer> cur = items
-                            .stream().map(a -> a.getFromId()).collect(Collectors.toList());
+                            .parallelStream().map(a -> a.getFromId()).collect(Collectors.toList());
                         for (Comment comment : items) {
                             cur.addAll(getLikes(settings, postId, comment.getId(), "topic_comment").get());
                         }
@@ -118,7 +118,7 @@ public class WallServiceImpl extends AbstractWallService {
             for (int i = 0; i < count; i += 100) {
                 final int cur = i;
                 tasks.add(service.submit(() -> getComments(ownerId, postId, cur, 100).getItems()
-                    .stream().map(a -> a.getFromId()).collect(Collectors.toList())));
+                    .parallelStream().map(a -> a.getFromId()).collect(Collectors.toList())));
             }
             for (Future<List<Integer>> a: tasks) {
                 try {
@@ -155,7 +155,7 @@ public class WallServiceImpl extends AbstractWallService {
                     break;
                 }
                 List<Integer> cur = repostResponse.getItems()
-                    .stream().map(a -> a.getFromId()).collect(Collectors.toList());
+                    .parallelStream().map(a -> a.getFromId()).collect(Collectors.toList());
                 reposts.addAll(cur);
                 i += 1000;
                 userTask = userTask.saveProgress(i);

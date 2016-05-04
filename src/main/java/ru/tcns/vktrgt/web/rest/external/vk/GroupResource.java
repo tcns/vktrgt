@@ -12,7 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
+import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
+import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
+import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
 import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
@@ -91,6 +94,17 @@ public class GroupResource {
 
         groupService.intersectGroups(new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo), names);
+        return ResponseEntity.ok().build();
+    }
+    @RequestMapping(value = "/groups/members",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Void> getGroupMembers(@RequestParam String groupId,
+                                                         @RequestParam String taskInfo) throws URISyntaxException {
+
+        groupService.getAllGroupUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo), groupId);
         return ResponseEntity.ok().build();
     }
 

@@ -61,6 +61,16 @@ public class VKUserResource {
     public ResponseEntity<Void> getUsersInfo(@RequestParam List<String> userIds,
                                                    @RequestParam String taskInfo) throws URISyntaxException {
         vkUserService.getUserInfo(new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo), userIds);
+        return ResponseEntity.ok().build();
+    }
+    @RequestMapping(value = "/users/info",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Void> getUsersUrl(@RequestParam List<String> userIds,
+                                             @RequestParam String taskInfo) throws URISyntaxException {
+        vkUserService.getUserURL(new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo),userIds);
         return ResponseEntity.ok().build();
     }

@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * Created by TIMUR on 21.04.2016.
@@ -35,9 +36,44 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     public static final String FOLLOWERS = BEAN_NAME + "followers";
     public static final String SUBSCRIPTIONS = BEAN_NAME + "subscriptions";
     public static final String USERS = BEAN_NAME + "users";
+    public static final String USER_URL = BEAN_NAME + "userUrl";
 
     @Inject
     UserTaskRepository repository;
+
+    @Override
+    public Future<List<String>> getUserURL(UserTaskSettings settings, List<String> userIds) {
+        List<String> response = new ArrayList<>();
+        UserTask userTask = new UserTask(USER_URL, settings, repository);
+        userTask = userTask.saveInitial(userIds.size());
+        String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts";
+        List<String> users = ArrayUtils.getDelimetedLists(userIds, 1000);
+        ExecutorService service = Executors.newFixedThreadPool(100);
+        List<Future<List<User>>> tasks = new ArrayList<>();
+        for (String user : users) {
+            tasks.add(service.submit(() -> {
+                String url = USERS_PREFIX + "get?user_ids=" + user + "&fields=" + fields + VERSION;
+                Content content = Request.Get(url).execute().returnContent();
+                String ans = content.asString();
+                return VKResponseParser.parseUsersResponse(ans);
+            }));
+        }
+        for (Future<List<User>> future : tasks) {
+            try {
+                List<User> list = future.get();
+                List<String> stringList = list.parallelStream().map(a -> a.getId() + ": " + DOMAIN_PREFIX + a.getDomain())
+                    .collect(Collectors.toList());
+                userTask = userTask.saveProgress(list.size());
+                response.addAll(stringList);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+        service.shutdown();
+        userTask.saveFinal(response);
+        return new AsyncResult<>(response);
+    }
 
     @Override
     @Async
