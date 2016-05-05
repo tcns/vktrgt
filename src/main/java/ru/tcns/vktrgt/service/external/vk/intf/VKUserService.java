@@ -21,6 +21,7 @@ public interface VKUserService extends VKService {
     String USERS_PREFIX = URL_PREFIX + USER_METHOD_PREFIX;
 
     Future<List<User>> getUserInfo(UserTaskSettings settings, List<String> userIds);
+    List<User> searchUsersVK(String q, String token);
     Future<List<String>> getUserURL(UserTaskSettings settings, List<String> userIds);
     CommonIDResponse getUserFriendIds(Integer userId);
     SubscriptionsResponse getSubscriptions(String userId);

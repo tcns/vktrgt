@@ -8,10 +8,9 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
+import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
-import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
-import ru.tcns.vktrgt.domain.external.vk.response.FriendsResponse;
-import ru.tcns.vktrgt.domain.external.vk.response.SubscriptionsResponse;
+import ru.tcns.vktrgt.domain.external.vk.response.*;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
@@ -106,6 +105,24 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         service.shutdown();
         userTask.saveFinal(response);
         return new AsyncResult<>(response);
+    }
+
+    @Override
+    public List<User> searchUsersVK(String q, String token) {
+        List<User> users = new ArrayList<>();
+        Content content = null;
+        try {
+            String url = USERS_PREFIX + "search?q=" + q + "&count=1000&access_token=" + token+VERSION;
+            content = Request.Get(url).execute().returnContent();
+            String ans = content.asString();
+            UserResponse response = new ResponseParser<>(UserResponse.class).parseResponseString(ans, RESPONSE_STRING);
+            if (response != null) {
+                users.addAll(response.getItems());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 
     @Override

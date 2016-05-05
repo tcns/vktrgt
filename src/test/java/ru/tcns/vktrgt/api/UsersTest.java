@@ -4,8 +4,10 @@ import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.math.IntRange;
 import org.apache.commons.lang.math.Range;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
+import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.service.external.vk.impl.AnalysisServiceImpl;
@@ -34,6 +36,13 @@ public class UsersTest {
         List<User> analyseDTO = analysisService.filterUsers(users, getDto());
         Long time = (System.currentTimeMillis() - cur) / 1000L;
         assertThat(analyseDTO).isNotNull();*/
+    }
+    @Test
+    public void testVKSearch() {
+        VKUserServiceImpl groupService = new VKUserServiceImpl();
+        List<User> groups = groupService.searchUsersVK("Тимур%20Артем", "af84afcbd82ddbbd8321467b8dd8cf0bd768f04a6279bb8d34085b3b99e9238827d115f7f79712fd098ab");
+        Assertions.assertThat(groups).isNotNull();
+
     }
     private AnalyseDTO getDto() {
         AnalyseDTO dto = new AnalyseDTO();

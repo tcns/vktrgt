@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
+import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
@@ -71,7 +72,7 @@ public class VKUserResource {
     public ResponseEntity<Void> getUsersUrl(@RequestParam List<String> userIds,
                                              @RequestParam String taskInfo) throws URISyntaxException {
         vkUserService.getUserURL(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo),userIds);
+            taskInfo), userIds);
         return ResponseEntity.ok().build();
     }
 
@@ -82,8 +83,17 @@ public class VKUserResource {
     public ResponseEntity<Void> getUserFollowers(@RequestParam Integer userId,
                                                  @RequestParam String taskInfo) throws URISyntaxException {
        vkUserService.getFollowers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo),userId);
+           taskInfo), userId);
         return ResponseEntity.ok().build();
+    }
+    @RequestMapping(value = "/users/vk",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<User>> searchUsersVk(@RequestParam String q,
+                                                        @RequestParam String token) throws URISyntaxException {
+        List<User> groups = vkUserService.searchUsersVK(q, token);
+        return ResponseEntity.ok(groups);
     }
 
 }

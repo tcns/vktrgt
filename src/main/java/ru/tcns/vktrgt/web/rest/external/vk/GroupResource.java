@@ -63,6 +63,15 @@ public class GroupResource {
         return new ResponseEntity<>(groups.getContent().stream()
             .collect(Collectors.toCollection(LinkedList::new)), headers, HttpStatus.OK);
     }
+    @RequestMapping(value = "/groups/vk",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<Group>> searchGroupsVk(@RequestParam String q,
+                                                        @RequestParam String token) throws URISyntaxException {
+        List<Group> groups = groupService.searchVk(q, token);
+        return ResponseEntity.ok(groups);
+    }
     @RequestMapping(value = "/groups/search/name",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
