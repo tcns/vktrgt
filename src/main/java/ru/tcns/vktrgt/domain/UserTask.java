@@ -1,12 +1,12 @@
 package ru.tcns.vktrgt.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import ru.tcns.vktrgt.domain.util.parser.JsonParser;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
-import ru.tcns.vktrgt.security.SecurityUtils;
 
 /**
  * Created by TIMUR on 02.05.2016.
@@ -35,10 +35,15 @@ public class UserTask {
     private Integer maxProgress;
 
     @Transient
+    @JsonIgnore
     private UserTaskSettings settings;
     @Transient
+    @JsonIgnore
     private UserTaskRepository repository;
 
+    public UserTask() {
+
+    }
     public UserTask(String kind, UserTaskSettings settings, UserTaskRepository repository) {
         setUserId(settings.getUser().getId());
         this.kind = kind;

@@ -3,6 +3,7 @@ package ru.tcns.vktrgt.service.external.vk.impl;
 import org.apache.commons.lang.math.IntRange;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Created by TIMUR on 01.05.2016.
  */
+@Service
 public class AnalysisServiceImpl implements AnalysisService {
 
     public final static String BEAN_NAME = "AnalysisServiceImpl";

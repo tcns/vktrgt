@@ -26,6 +26,7 @@ public interface GroupService extends VKService {
     void deleteAll();
     Page<Group> searchByName(String name, Boolean restrict, Pageable pageable);
     List<Group> searchByNames(List<String> names);
+    List<Group> searchVk(String q, String token);
 
     Future<GroupUsers> getAllGroupUsers(UserTaskSettings settings, String groupId);
     Future<List<Integer>> intersectGroups(UserTaskSettings settings, List<String> groups);

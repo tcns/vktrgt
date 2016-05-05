@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import ru.tcns.vktrgt.anno.JsonEntity;
+import ru.tcns.vktrgt.anno.JsonIgnore;
 import ru.tcns.vktrgt.domain.external.vk.dict.GroupType;
 
 import java.util.Date;
@@ -13,18 +15,19 @@ import java.util.Date;
  * Created by timur on 3/28/16.
  */
 @Document(collection = "group")
+@JsonEntity
 public class Group {
     @Id
-    private Long id;
+    private Integer id;
 
     @Indexed
     private String name;
 
     private String screenName;
 
-    private Boolean isClosed;
+    private Integer isClosed;
 
-    private GroupType type;
+    private String type;
 
     private String photo50;
 
@@ -74,11 +77,11 @@ public class Group {
     private Market market;
 
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -98,19 +101,19 @@ public class Group {
         this.screenName = screenName;
     }
 
-    public Boolean getIsClosed() {
+    public Integer getIsClosed() {
         return isClosed;
     }
 
-    public void setIsClosed(Boolean isClosed) {
+    public void setIsClosed(Integer isClosed) {
         this.isClosed = isClosed;
     }
 
-    public GroupType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(GroupType type) {
+    public void setType(String type) {
         this.type = type;
     }
 

@@ -77,7 +77,7 @@ public final class VKResponseParser {
     }
 
 
-    public static GroupResponse parseGroupSearchResponse(String response) throws JSONException {
+    public static GroupResponse parseGroupSearchResponse(String response) throws JSONException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         JSONObject object = new JSONObject(response);
         JSONObject jsonResponse = object.getJSONObject("response");
         GroupResponse groupResponse = new GroupResponse();
@@ -86,21 +86,21 @@ public final class VKResponseParser {
         ArrayList<Group> items = new ArrayList<>(jsonArray.length());
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonGroup = jsonArray.getJSONObject(i);
-            Group group = getGroupFromJson(jsonGroup);
+            Group group = new ResponseParser<>(Group.class).parseObject(jsonGroup);
             items.add(group);
         }
-        groupResponse.setGroups(items);
+        groupResponse.setItems(items);
         return groupResponse;
     }
 
-    public static List<Group> parseGroupGetByIdResponse(String response) throws JSONException {
+    public static List<Group> parseGroupGetByIdResponse(String response) throws JSONException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         JSONObject object = new JSONObject(response);
         JSONArray jsonArray = object.optJSONArray("response");
         if (jsonArray!=null) {
             ArrayList<Group> items = new ArrayList<>(jsonArray.length());
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonGroup = jsonArray.getJSONObject(i);
-                Group group = getGroupFromJson(jsonGroup);
+                Group group = new ResponseParser<>(Group.class).parseObject(jsonGroup);
                 if (group.getId() != null && group.getId() != 0L) {
                     items.add(group);
                 }
@@ -108,54 +108,6 @@ public final class VKResponseParser {
             return items;
         }
         return null;
-    }
-
-    private static Group getGroupFromJson(JSONObject jsonGroup) {
-        Group group = new Group();
-        if (jsonGroup.getInt("is_closed") == VKDicts.OPEN_GROUP &&
-            !jsonGroup.has("deactivated")) {
-            try {
-                group.setMembersCount(jsonGroup.optInt("members_count"));
-                group.setName(jsonGroup.optString("name"));
-                if (group.getMembersCount() > VKDicts.MEMBER_COUNT_THRESHOLD &&
-                    !VKDicts.NAME_DELETED.equals(group.getName())) {
-                    group.setId(jsonGroup.getLong("gid"));
-                    group.setScreenName(jsonGroup.optString("screen_name"));
-                    group.setType(GroupType.get(jsonGroup.getString("type")));
-                    group.setPhoto50(jsonGroup.optString("photo"));
-                    group.setPhoto100(jsonGroup.optString("photo_medium"));
-                    group.setPhoto200(jsonGroup.optString("photo_big"));
-                    group.setActivity(jsonGroup.optString("activity"));
-                    group.setCity(jsonGroup.optInt("city"));
-                    group.setContacts(parseContacts(jsonGroup.optJSONArray("contacts")));
-                    group.setCountry(jsonGroup.optInt("country"));
-                    group.setDescription(jsonGroup.getString("description"));
-                    if (GroupType.EVENT.equals(group.getType())) {
-                        group.setFinishDate(DateUtils.parseUnixTime("" + jsonGroup.optLong("finish_date")));
-                        group.setStartDate(DateUtils.parseUnixTime("" + jsonGroup.optLong("start_date")));
-                    } else {
-                        group.setStartDate(DateUtils.parseString(String.valueOf(jsonGroup.optInt("start_date")), VKDicts.VK_DATE_FORMAT));
-                    }
-                    if (jsonGroup.has("fixed_post")) {
-                        group.setFixedPost(jsonGroup.getLong("fixed_post"));
-                    }
-                    group.setMainAlbumId(jsonGroup.optLong("main_album_id"));
-                    group.setMainSection(jsonGroup.optLong("main_section"));
-                    group.setMarket(parseMarket(jsonGroup.optJSONObject("market")));
-                    group.setPlace(parsePlace(jsonGroup.optJSONObject("place")));
-                    group.setPublicDateLabel(jsonGroup.optString("public_date_label"));
-                    group.setScreenName(jsonGroup.optString("screen_name"));
-                    group.setSite(jsonGroup.optString("site"));
-                    group.setStatus(jsonGroup.optString("status"));
-                    group.setVerified(jsonGroup.optInt("verified"));
-                    group.setWikiPage(jsonGroup.optString("wiki_page"));
-                }
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return group;
     }
 
     public static Contact[] parseContacts(JSONArray json) {

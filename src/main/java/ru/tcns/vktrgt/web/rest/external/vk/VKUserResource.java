@@ -64,7 +64,7 @@ public class VKUserResource {
             taskInfo), userIds);
         return ResponseEntity.ok().build();
     }
-    @RequestMapping(value = "/users/info",
+    @RequestMapping(value = "/users/url",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed

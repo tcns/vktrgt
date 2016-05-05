@@ -85,7 +85,7 @@ public abstract class AbstractGroupService implements GroupService {
                 System.out.println(ids);
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return groups;

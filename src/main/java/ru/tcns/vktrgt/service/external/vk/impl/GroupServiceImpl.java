@@ -20,6 +20,7 @@ import ru.tcns.vktrgt.domain.external.vk.internal.GroupIds;
 import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
 import ru.tcns.vktrgt.domain.external.vk.internal.QGroup;
 import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
+import ru.tcns.vktrgt.domain.external.vk.response.GroupResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
@@ -48,6 +49,24 @@ public class GroupServiceImpl extends AbstractGroupService {
     public static final String GROUP_INFO = BEAN_NAME + "GroupInfo";
     @Inject
     UserTaskRepository repository;
+
+    @Override
+    public List<Group> searchVk(String q, String token) {
+        List<Group> groups = new ArrayList<>();
+        Content content = null;
+        try {
+            String url = PREFIX + "search?q=" + q + "&count=1000&access_token=" + token+VERSION;
+            content = Request.Get(url).execute().returnContent();
+            String ans = content.asString();
+            GroupResponse groupResponse = new ResponseParser<>(GroupResponse.class).parseResponseString(ans, RESPONSE_STRING);
+            if (groupResponse != null) {
+                groups.addAll(groupResponse.getItems());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return groups;
+    }
 
     @Override
     @Async
@@ -140,7 +159,7 @@ public class GroupServiceImpl extends AbstractGroupService {
                     saveAll(groups);
                 }));
             }
-            for (Future task: tasks) {
+            for (Future task : tasks) {
                 try {
                     task.get();
                 } catch (InterruptedException e) {

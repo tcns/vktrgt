@@ -1,8 +1,11 @@
 package ru.tcns.vktrgt.domain.external.vk.internal;
 
+import ru.tcns.vktrgt.anno.JsonEntity;
+
 /**
  * Created by TIMUR on 16.04.2016.
  */
+@JsonEntity
 public class Contact {
     private Long userId;
     private String desc;
