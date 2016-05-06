@@ -14,6 +14,7 @@ bower_components
 .idea
 target
 build
+template_temp
 ######################
 # SASS
 ######################
