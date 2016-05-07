@@ -7,6 +7,24 @@
 .nav-sm .hidden-small {
   visibility: hidden;
 }
+ul#strength {
+    display: inline;
+    list-style: none;
+    margin: 0;
+    margin-left: 15px;
+    padding: 0;
+    vertical-align: 2px; }
+
+.point:last {
+    margin: 0 !important; }
+
+.point {
+    background: #DDD;
+    border-radius: 2px;
+    display: inline-block;
+    height: 5px;
+    margin-right: 1px;
+    width: 20px; }
 .nav-sm .container.body .right_col {
   padding: 10px 20px;
   margin-left: 70px;
@@ -156,7 +174,7 @@
 .nav-sm .menu_section {
   margin: 0;
 }
-.nav-sm span.fa, 
+.nav-sm span.fa,
 .nav-sm .menu_section h3 {
   display: none;
 }
@@ -528,11 +546,11 @@ a:hover, a:focus {
   color: #E7E7E7;
   font-weight: 500;
 }
-.nav.child_menu li li:hover, 
+.nav.child_menu li li:hover,
 .nav.child_menu li li.active {
   background: none;
 }
-.nav.child_menu li li a:hover, 
+.nav.child_menu li li a:hover,
 .nav.child_menu li li a.active {
   color: #fff;
 }
@@ -677,7 +695,7 @@ footer {
   }
 }
 .nav-sm footer {
-  margin-left: 70px ;  
+  margin-left: 70px ;
 }
 .tile-stats.sparkline {
   padding: 10px;
@@ -1353,7 +1371,7 @@ ul.msg_list li a .message {
   border: 1px solid #D9DEE4;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  
+
 }
 .dropdown-menu>li>a {
   color: #5A738E;
@@ -1540,9 +1558,9 @@ span.right {
   }
 }
 .tile_count .tile_stats_count:before {
-  content:""; 
-  position: absolute; 
-  left: 0; 
+  content:"";
+  position: absolute;
+  left: 0;
   height: 65px;
   border-left: 2px solid #ADB2B5;
   margin-top: 10px;
@@ -3729,11 +3747,11 @@ header {
 #editor {
   min-height: 250px;
   background-color: white;
-  border-collapse: separate; 
-  border: 1px solid rgb(204, 204, 204); 
-  padding: 4px; 
-  box-sizing: content-box; 
-  -webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset; 
+  border-collapse: separate;
+  border: 1px solid rgb(204, 204, 204);
+  padding: 4px;
+  box-sizing: content-box;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
   box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
   border-top-right-radius: 3px; border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px; border-top-left-radius: 3px;
@@ -4679,7 +4697,7 @@ ul.notifications {
 
 /** FullCalendar **/
 .fc-state-default {
-  background: #f5f5f5; 
+  background: #f5f5f5;
   color: #73879C;
 }
 
