@@ -86,7 +86,8 @@
             "delete": "Delete",
             "edit": "Edit",
             "save": "Save",
-            "view": "View"
+            "view": "View",
+            "submit": "Submit"
         },
         "detail": {
             "field": "Field",
