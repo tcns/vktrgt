@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
-import ru.tcns.vktrgt.domain.external.vk.internal.Group;
-import ru.tcns.vktrgt.domain.external.vk.internal.GroupIds;
-import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
-import ru.tcns.vktrgt.domain.external.vk.internal.QGroup;
+import ru.tcns.vktrgt.domain.external.vk.internal.*;
 import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.GroupResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
@@ -98,6 +95,32 @@ public class GroupServiceImpl extends AbstractGroupService {
         service.shutdown();
         userTask.saveFinal(users);
         return new AsyncResult<>(users);
+    }
+
+    @Override
+    public Future<List<Group>> getGroupsInfo(UserTaskSettings settings, List<String> groups) {
+        List<Group> response = new ArrayList<>();
+        UserTask userTask = new UserTask(GROUP_INFO, settings, repository);
+        List<String> groupsIds = ArrayUtils.getDelimetedLists(groups, 1000);
+        userTask = userTask.saveInitial(groupsIds.size());
+        ExecutorService service = Executors.newFixedThreadPool(100);
+        List<Future<List<Group>>> tasks = new ArrayList<>();
+        for (String id : groupsIds) {
+            tasks.add(service.submit(() -> getGroupInfoById(id)));
+        }
+        for (Future<List<Group>> future : tasks) {
+            try {
+                List<Group> list = future.get();
+                userTask = userTask.saveProgress(list.size());
+                response.addAll(list);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+        service.shutdown();
+        userTask.saveFinal(response);
+        return new AsyncResult<>(response);
     }
 
     @Override

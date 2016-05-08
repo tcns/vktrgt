@@ -10,6 +10,7 @@ import ru.tcns.vktrgt.anno.JsonIgnore;
 import ru.tcns.vktrgt.domain.external.vk.dict.GroupType;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by timur on 3/28/16.
@@ -35,9 +36,11 @@ public class Group {
 
     private String photo200;
 
-    private Integer city;
+    @Field
+    private City city;
 
-    private Integer country;
+    @Field
+    private Country country;
     @Field
     private Place place;
 
@@ -60,19 +63,19 @@ public class Group {
     private String status;
 
     @Field
-    private Contact[] contacts;
+    private List<Contact> contacts;
 
     private String links;
 
-    private Long fixedPost;
+    private Integer fixedPost;
 
     private Integer verified;
 
     private String site;
 
-    private Long mainAlbumId;
+    private Integer mainAlbumId;
 
-    private Long mainSection;
+    private Integer mainSection;
     @Field
     private Market market;
 
@@ -141,19 +144,19 @@ public class Group {
         this.photo200 = photo200;
     }
 
-    public Integer getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(Integer city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
-    public Integer getCountry() {
+    public Country getCountry() {
         return country;
     }
 
-    public void setCountry(Integer country) {
+    public void setCountry(Country country) {
         this.country = country;
     }
 
@@ -237,11 +240,11 @@ public class Group {
         this.status = status;
     }
 
-    public Contact[] getContacts() {
+    public List<Contact> getContacts() {
         return contacts;
     }
 
-    public void setContacts(Contact[] contacts) {
+    public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
     }
 
@@ -253,11 +256,11 @@ public class Group {
         this.links = links;
     }
 
-    public Long getFixedPost() {
+    public Integer getFixedPost() {
         return fixedPost;
     }
 
-    public void setFixedPost(Long fixedPost) {
+    public void setFixedPost(Integer fixedPost) {
         this.fixedPost = fixedPost;
     }
 
@@ -277,19 +280,19 @@ public class Group {
         this.site = site;
     }
 
-    public Long getMainAlbumId() {
+    public Integer getMainAlbumId() {
         return mainAlbumId;
     }
 
-    public void setMainAlbumId(Long mainAlbumId) {
+    public void setMainAlbumId(Integer mainAlbumId) {
         this.mainAlbumId = mainAlbumId;
     }
 
-    public Long getMainSection() {
+    public Integer getMainSection() {
         return mainSection;
     }
 
-    public void setMainSection(Long mainSection) {
+    public void setMainSection(Integer mainSection) {
         this.mainSection = mainSection;
     }
 

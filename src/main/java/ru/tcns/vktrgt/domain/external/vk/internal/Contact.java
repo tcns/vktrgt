@@ -7,15 +7,15 @@ import ru.tcns.vktrgt.anno.JsonEntity;
  */
 @JsonEntity
 public class Contact {
-    private Long userId;
+    private Integer userId;
     private String desc;
     private String email;
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

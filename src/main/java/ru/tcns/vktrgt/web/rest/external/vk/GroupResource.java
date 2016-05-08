@@ -72,6 +72,16 @@ public class GroupResource {
         List<Group> groups = groupService.searchVk(q, token);
         return ResponseEntity.ok(groups);
     }
+    @RequestMapping(value = "/groups/info/vk",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Void> searchGroupsInfoVk(@RequestParam List<String> names,
+                                                      @RequestParam String taskInfo) throws URISyntaxException {
+        groupService.getGroupsInfo(new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo), names);
+        return ResponseEntity.ok().build();
+    }
     @RequestMapping(value = "/groups/search/name",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)

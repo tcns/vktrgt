@@ -61,7 +61,31 @@
                 </ul>
             </div>
             <div class="menu_section">
-                <h3>Вконтакте</h3>
+                <h3 translate="global.menu.vk.main">VK</h3>
+                <ul class="nav side-menu">
+                    <li ng-class="{active: $state.includes('admin')}">
+                        <a dropdown-link>
+                        <span>
+                            <i class="glyphicon glyphicon-tower"></i>
+                            <span translate="global.menu.vk.main">Administration</span>
+                            <span class="fa fa-chevron-down"></span>
+                        </span>
+                        </a>
+                        <ul class="nav child_menu">
+                            <li ui-sref-active="active"><a ui-sref="group-intersect" data-toggle="collapse"
+                                                           data-target=".navbar-collapse.in"><span
+                                class="glyphicon glyphicon-user"></span>
+                                &#xA0;<span translate="global.menu.vk.group-intersection">Group intersection</span></a>
+                            </li>
+                            <li ui-sref-active="active"><a ui-sref="group-info" data-toggle="collapse"
+                                                           data-target=".navbar-collapse.in"><span
+                                class="glyphicon glyphicon-user"></span>
+                                &#xA0;<span translate="global.menu.vk.group-info">Group Info</span></a>
+                            </li>
+                            <!-- jhipster-needle-add-element-to-admin-menu - JHipster will add entities to the admin menu here -->
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

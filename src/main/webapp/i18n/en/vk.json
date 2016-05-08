@@ -1,0 +1,17 @@
+{
+    "vk":{
+        "title": "VK Cloud",
+        "groups": {
+            "intersect": {
+                "title": "Group Intersection by User Ids",
+                "definition": "This is stub definition for group intersection",
+                "group-list": "Enter group list (one to the line)",
+                "task-info": "Task Description"
+            },
+            "info": {
+                "definition": "This is stub definition for info search",
+                "title": "Group Info By Ids"
+            }
+        }
+    }
+}

@@ -74,7 +74,7 @@ public abstract class AbstractGroupService implements GroupService {
         List<Group> groups = new ArrayList<>();
         Content content = null;
         try {
-            String url = PREFIX + "getById?group_ids=" + ids + "&fields=" + fields;
+            String url = PREFIX + "getById?group_ids=" + ids + "&fields=" + fields+VERSION;
             content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             List<Group> groupResponse = VKResponseParser.parseGroupGetByIdResponse(ans);

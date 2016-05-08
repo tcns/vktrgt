@@ -1,26 +1,28 @@
 package ru.tcns.vktrgt.domain.external.vk.internal;
 
 import org.springframework.data.annotation.Id;
+import ru.tcns.vktrgt.anno.JsonEntity;
 
 /**
  * Created by Тимур on 09.04.2016.
  */
+@JsonEntity
 public class Place {
     @Id
-    private Long id;
+    private Integer id;
     private String title;
     private Double longitude;
     private Double latitude;
-    private String type;
+    private Integer type;
     private Integer country;
     private Integer city;
     private String address;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -48,11 +50,11 @@ public class Place {
         this.latitude = latitude;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

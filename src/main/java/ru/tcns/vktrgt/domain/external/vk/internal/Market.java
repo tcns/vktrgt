@@ -1,22 +1,25 @@
 package ru.tcns.vktrgt.domain.external.vk.internal;
 
+import ru.tcns.vktrgt.anno.JsonEntity;
+
 /**
  * Created by Тимур on 09.04.2016.
  */
+@JsonEntity
 public class Market {
-    private Boolean enabled;
+    private Integer enabled;
     private Double priceMin;
     private Double priceMax;
-    private Long mainAlbumId;
-    private Long contactId;
-    private Long currencyId;
+    private Integer mainAlbumId;
+    private Integer contactId;
+    private Integer currencyId;
     private String currencyName;
 
-    public Boolean getEnabled() {
+    public Integer getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Boolean enabled) {
+    public void setEnabled(Integer enabled) {
         this.enabled = enabled;
     }
 
@@ -36,27 +39,27 @@ public class Market {
         this.priceMax = priceMax;
     }
 
-    public Long getMainAlbumId() {
+    public Integer getMainAlbumId() {
         return mainAlbumId;
     }
 
-    public void setMainAlbumId(Long mainAlbumId) {
+    public void setMainAlbumId(Integer mainAlbumId) {
         this.mainAlbumId = mainAlbumId;
     }
 
-    public Long getContactId() {
+    public Integer getContactId() {
         return contactId;
     }
 
-    public void setContactId(Long contactId) {
+    public void setContactId(Integer contactId) {
         this.contactId = contactId;
     }
 
-    public Long getCurrencyId() {
+    public Integer getCurrencyId() {
         return currencyId;
     }
 
-    public void setCurrencyId(Long currencyId) {
+    public void setCurrencyId(Integer currencyId) {
         this.currencyId = currencyId;
     }
 

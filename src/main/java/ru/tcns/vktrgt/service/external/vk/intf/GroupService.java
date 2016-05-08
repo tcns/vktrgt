@@ -30,6 +30,7 @@ public interface GroupService extends VKService {
 
     Future<GroupUsers> getAllGroupUsers(UserTaskSettings settings, String groupId);
     Future<List<Integer>> intersectGroups(UserTaskSettings settings, List<String> groups);
+    Future<List<Group>> getGroupsInfo(UserTaskSettings settings, List<String> groups);
     void getGroupInfoById(Integer from, Integer to, Boolean saveIds, Boolean useIds);
     List<Integer> getUserGroups(UserTaskSettings settings, String userId);
 

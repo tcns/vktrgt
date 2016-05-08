@@ -33,6 +33,11 @@
                 "database": "Database",
                 "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
             },
+            "vk": {
+                "main" : "Vkontakte",
+                "group-intersection": "Group intersection",
+                "group-info": "Search Group Info"
+            },
             "language": "Language"
         },
         "form": {

@@ -1,6 +1,7 @@
 package ru.tcns.vktrgt.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +19,10 @@ import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.web.rest.util.PaginationUtil;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,17 +59,23 @@ public class TaskResource {
         produces = "text/plain")
     @Timed
     @ResponseBody
-    public FileSystemResource exportTaskToTxt(@RequestParam String taskId,
-                                              @RequestParam String fileName) throws URISyntaxException {
+    public void exportTaskToTxt(@RequestParam String taskId,
+                                              @RequestParam String fileName,
+                                              HttpServletResponse httpServletResponse) throws URISyntaxException {
         UserTask task = repository.findOne(taskId);
         if (task == null) {
-            return null;
+            return;
         }
         if (!userService.getUserWithAuthorities().getId().equals(task.getUserId())) {
-            return null;
+            return;
         }
-        File f = exportService.getFileCSVFromJson(task.getPayload(), fileName);
-        FileSystemResource resource = new FileSystemResource(f);
-        return resource;
+        InputStream stream = exportService.getFileCSVFromJson(task.getPayload());
+        httpServletResponse.setHeader("Content-Disposition", "attachment; filename="+fileName+".txt");
+        try {
+            IOUtils.copy(stream, httpServletResponse.getOutputStream());
+            httpServletResponse.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

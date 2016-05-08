@@ -110,55 +110,7 @@ public final class VKResponseParser {
         return null;
     }
 
-    public static Contact[] parseContacts(JSONArray json) {
-        int len = 0;
-        if (json != null) {
-            len = json.length();
-        }
-        Contact[] contacts = new Contact[len];
-        for (int i = 0; i<len; i++) {
-            JSONObject object = json.getJSONObject(i);
-            Contact contact = new Contact();
-            contact.setDesc(object.optString("desc"));
-            contact.setUserId(object.optLong("user_id"));
-            contact.setEmail(object.optString("email"));
-            contacts[i] = contact;
-        }
-        return contacts;
-    }
 
-    public static Market parseMarket(JSONObject from) {
-        if (from!=null) {
-            Market m = new Market();
-            m.setContactId(from.optLong("contact_id"));
-            m.setCurrencyId(from.optLong("currency_id"));
-            m.setCurrencyName(from.optString("currency_name"));
-            m.setEnabled(from.getInt("enabled") == 1);
-            m.setMainAlbumId(from.optLong("main_album_id"));
-            m.setPriceMax(from.optDouble("price_max"));
-            m.setPriceMin(from.optDouble("price_min"));
-            return m;
-        }
-        return null;
-
-    }
-
-    public static Place parsePlace(JSONObject from) {
-        if (from != null) {
-            Place place = new Place();
-            place.setId(from.getLong("pid"));
-            place.setAddress(from.optString("address"));
-            place.setCity(from.optInt("city"));
-            place.setCountry(from.optInt("country"));
-            place.setLatitude(from.optDouble("latitude"));
-            place.setLongitude(from.optDouble("longitude"));
-            place.setTitle(from.optString("title"));
-            place.setType(from.optString("type"));
-            return place;
-        }
-        return null;
-
-    }
 
 
     public static SubscriptionsResponse parseUserSubscriptions(String response) {

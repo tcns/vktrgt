@@ -4,17 +4,17 @@
 angular.module('vktrgtApp')
     .config(function ($stateProvider) {
         $stateProvider
-            .state('group-intersect', {
+            .state('group-info', {
                 parent: 'vk',
-                url: '/vk/group-intersect',
+                url: '/vk/group-info',
                 data: {
                     authorities: ['ROLE_USER'],
-                    pageTitle: 'global.menu.vk.groupintersect'
+                    pageTitle: 'global.menu.vk.group-info'
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'scripts/app/vk/group-intersect/group-intersect.html',
-                        controller: 'GroupIntersectController'
+                        templateUrl: 'scripts/app/vk/group-info/group-info.html',
+                        controller: 'GroupInfoController'
                     }
                 },
                 resolve: {
