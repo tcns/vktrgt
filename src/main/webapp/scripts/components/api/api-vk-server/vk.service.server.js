@@ -37,8 +37,20 @@ angular.module('vktrgtApp')
                             return $.param(data);
                         }
                     });
+            }, groupMembers: function (groupId, taskInfo) {
+                return $http.post('/api/groups/members',
+                    {
+                        'groupId': groupId,
+                        'taskInfo': taskInfo
+                    }, {
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                        transformRequest: function (data) {
+                            return $.param(data);
+                        }
+                    });
             }
 
         }
 
-    })
+    }
+)

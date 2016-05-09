@@ -1,0 +1,16 @@
+{
+    "task-manager": {
+        "title": "Task Manager",
+        "table": {
+            "id": "ID",
+            "kind": "Task Kind",
+            "task-info": "Task Info",
+            "current-status": "Current Task Status",
+            "current-status-desc": "Status Description",
+            "current-progress": "Task Progress",
+            "download": {
+                "txt": "TXT"
+            }
+        }
+    }
+}

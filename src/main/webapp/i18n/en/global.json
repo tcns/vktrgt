@@ -38,9 +38,11 @@
                 "group-intersect": "Group intersection",
                 "group-info": "Search Group Info",
                 "group-activity": "Wall Activity",
-                "topic-activity": "Topic Activity"
+                "topic-activity": "Topic Activity",
+                "group-members": "Group Members"
             },
-            "language": "Language"
+            "language": "Language",
+            "task-manager": "Task Manager"
         },
         "form": {
             "username": "Username",

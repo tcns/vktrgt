@@ -12,6 +12,12 @@
                 "definition": "This is stub definition for info search",
                 "title": "Group Info By Ids"
             },
+            "members": {
+                "definition": "This is stub for Group Members",
+                "group-id": "Group Id",
+                "title": "Group Members List",
+                "task-info": "Task Description"
+            },
             "activity": {
                 "title": "Wall Activity",
                 "list": "Enter Group & Users Ids (group id with '-' prefix)",

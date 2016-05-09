@@ -63,6 +63,11 @@
             <div class="menu_section">
                 <h3 translate="global.menu.vk.main">VK</h3>
                 <ul class="nav side-menu">
+                    <li ui-sref-active="active"><a ui-sref="task-manager" data-toggle="collapse"
+                                                   data-target=".navbar-collapse.in"><span
+                        class="glyphicon glyphicon-user"></span>
+                        &#xA0;<span translate="global.menu.task-manager">Task Manager</span></a>
+                    </li>
                     <li ng-class="{active: $state.includes('admin')}">
                         <a dropdown-link>
                         <span>
@@ -91,6 +96,11 @@
                                                            data-target=".navbar-collapse.in"><span
                                 class="glyphicon glyphicon-user"></span>
                                 &#xA0;<span translate="global.menu.vk.topic-activity">Topic Activity</span></a>
+                            </li>
+                            <li ui-sref-active="active"><a ui-sref="group-members" data-toggle="collapse"
+                                                           data-target=".navbar-collapse.in"><span
+                                class="glyphicon glyphicon-user"></span>
+                                &#xA0;<span translate="global.menu.vk.group-members">Group Members</span></a>
                             </li>
                         </ul>
                     </li>
