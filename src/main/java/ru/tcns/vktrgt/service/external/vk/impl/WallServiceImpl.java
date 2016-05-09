@@ -59,7 +59,7 @@ public class WallServiceImpl extends AbstractWallService {
             userTask.saveFinal(posts);
             return new AsyncResult<>(posts);
         } catch (JSONException e) {
-            userTask.saveError(e);
+            userTask.saveFinalError(e);
             e.printStackTrace();
         }
         return new AsyncResult<>(new ArrayList<>());
@@ -104,7 +104,7 @@ public class WallServiceImpl extends AbstractWallService {
             userTask.saveFinal(comments);
             return new AsyncResult<>(comments);
         } catch (JSONException e) {
-            userTask.saveError(e);
+            userTask.saveFinalError(e);
             e.printStackTrace();
         }
         return new AsyncResult<>(new ArrayList<>());
@@ -141,7 +141,7 @@ public class WallServiceImpl extends AbstractWallService {
             userTask.saveFinal(comments);
             return new AsyncResult<>(comments);
         } catch (JSONException e) {
-            userTask.saveError(e);
+            userTask.saveFinalError(e);
             e.printStackTrace();
         }
         return new AsyncResult<>(new ArrayList<>());
@@ -170,7 +170,7 @@ public class WallServiceImpl extends AbstractWallService {
             userTask.saveFinal(reposts);
             return new AsyncResult<>(reposts);
         } catch (JSONException e) {
-            userTask.saveError(e);
+            userTask.saveFinalError(e);
             e.printStackTrace();
         }
         return new AsyncResult<>(reposts);
@@ -206,7 +206,7 @@ public class WallServiceImpl extends AbstractWallService {
             service.shutdown();
             return new AsyncResult<>(likes);
         } catch (JSONException e) {
-            userTask.saveError(e);
+            userTask.saveFinalError(e);
             e.printStackTrace();
         }
         return new AsyncResult<>(new ArrayList<>());

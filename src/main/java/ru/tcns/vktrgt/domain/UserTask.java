@@ -5,8 +5,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import ru.tcns.vktrgt.domain.dict.UserTaskStatuses;
 import ru.tcns.vktrgt.domain.util.parser.JsonParser;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by TIMUR on 02.05.2016.
@@ -34,6 +38,16 @@ public class UserTask {
     private Integer currentProgress;
     private Integer maxProgress;
 
+    public List<String> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<String> errors) {
+        this.errors = errors;
+    }
+
+    private List<String> errors;
+
     @Transient
     @JsonIgnore
     private UserTaskSettings settings;
@@ -42,9 +56,10 @@ public class UserTask {
     private UserTaskRepository repository;
 
     public UserTask() {
-
+        errors = new ArrayList<>();
     }
     public UserTask(String kind, UserTaskSettings settings, UserTaskRepository repository) {
+        this();
         setUserId(settings.getUser().getId());
         this.kind = kind;
         this.taskInfo = settings.getTaskDescription();
@@ -81,16 +96,29 @@ public class UserTask {
         if (settings.isCreateTask()) {
             this.setPayload(JsonParser.objectToJson(payload));
             this.setCurrentProgress(this.getMaxProgress());
-            this.setCurrentStatus(1);
-            this.setCurrentStatusDesc("Задача завершена успешно");
+            if (errors.size() > 0) {
+                this.setCurrentStatus(UserTaskStatuses.COMPLETED_WITH_ERRORS);
+                this.setCurrentStatusDesc("Задача завершена с ошибками");
+            } else {
+                this.setCurrentStatus(UserTaskStatuses.SUCCESS);
+                this.setCurrentStatusDesc("Задача завершена успешно");
+            }
             return repository.save(this);
         }
         return this;
     }
     @Transient
-    public UserTask saveError(Exception error) {
+    public UserTask saveError(String error) {
         if (settings.isCreateTask()) {
-            this.setCurrentStatus(2);
+            this.errors.add(error);
+            return repository.save(this);
+        }
+        return this;
+    }
+    @Transient
+    public UserTask saveFinalError(Exception error) {
+        if (settings.isCreateTask()) {
+            this.setCurrentStatus(UserTaskStatuses.ERROR);
             this.setCurrentStatusDesc("Задача завершена с ошибкой");
             this.setPayload(error.getMessage());
             return repository.save(this);

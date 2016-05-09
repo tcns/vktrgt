@@ -223,6 +223,8 @@ public class VKUserServiceImpl extends AbstractVKUserService {
             if (curResult!=null) {
                 result = utils.intersectWithCount(result, curResult);
                 userTask = userTask.saveProgress(1);
+            } else {
+                userTask = userTask.saveError("Не удалось получить от пользователя с id "+users.get(i));
             }
         }
         Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);

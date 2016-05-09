@@ -1,30 +1,19 @@
 package ru.tcns.vktrgt.service.external.vk.impl;
 
-import com.google.common.collect.Lists;
-import com.mysema.query.types.Predicate;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
-import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.internal.*;
 import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.GroupResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
-import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
-import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
-import ru.tcns.vktrgt.repository.external.vk.GroupRepository;
-import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -207,10 +196,10 @@ public class GroupServiceImpl extends AbstractGroupService {
             userTask.saveFinal(response.getItems());
             return response.getItems();
         } catch (IOException ex) {
-            userTask.saveError(ex);
+            userTask.saveFinalError(ex);
             ex.printStackTrace();
         } catch (JSONException e) {
-            userTask.saveError(e);
+            userTask.saveFinalError(e);
             e.printStackTrace();
         }
         return new ArrayList<>();
