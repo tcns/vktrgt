@@ -128,7 +128,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     @Override
     public CommonIDResponse getUserFriendIds(Integer userId) {
         try {
-            String url = FRIENDS_PREFIX + "get?user_id=" + userId + "&order=id";
+            String url = FRIENDS_PREFIX + "get?user_id=" + userId + "&order=id"+VERSION;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             CommonIDResponse response = new ResponseParser<>(CommonIDResponse.class).parseResponseString(ans, RESPONSE_STRING);
@@ -220,8 +220,10 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         for (int i = 0; i < users.size(); i++) {
             CommonIDResponse cur = getUserFriendIds(users.get(i));
             List<Integer> curResult = cur.getItems();
-            result = utils.intersectWithCount(result, curResult);
-            userTask = userTask.saveProgress(1);
+            if (curResult!=null) {
+                result = utils.intersectWithCount(result, curResult);
+                userTask = userTask.saveProgress(1);
+            }
         }
         Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);
         userTask.saveFinal(response);

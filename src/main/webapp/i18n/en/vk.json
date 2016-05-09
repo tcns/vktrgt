@@ -1,6 +1,15 @@
 {
     "vk":{
         "title": "VK Cloud",
+        "user": {
+            "leaders": {
+                "title": "Search opinion leaders",
+                "definition": "This is stub definition for opinion leaders",
+                "user-list": "Enter users list (one to the line)",
+                "task-info": "Task Description",
+                "min": "Minimum occurrences"
+            }
+        },
         "groups": {
             "intersect": {
                 "title": "Group Intersection by User Ids",

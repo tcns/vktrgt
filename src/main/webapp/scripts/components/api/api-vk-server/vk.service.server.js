@@ -12,6 +12,18 @@ angular.module('vktrgtApp')
                             return $.param(data);
                         }
                     });
+            },intersectUsers: function (ids, taskInfo, min) {
+                return $http.post('/api/users/leaders',
+                    {
+                        'users': ids.join(','),
+                        'min': min,
+                        'taskInfo': taskInfo
+                    }, {
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                        transformRequest: function (data) {
+                            return $.param(data);
+                        }
+                    });
             }, groupsInfo: function (ids, taskInfo) {
                 return $http.post('/api/groups/info/vk',
                     {
