@@ -1,10 +1,12 @@
 package ru.tcns.vktrgt.service.external.vk.impl;
+
 import org.json.JSONException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
+import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.internal.Comment;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 import ru.tcns.vktrgt.domain.external.vk.response.*;
@@ -27,11 +29,14 @@ public class WallServiceImpl extends AbstractWallService {
         final List<WallPost> posts;
         try {
             Integer count = getWallPosts(ownerId, 0, 1).getCount();
+            if (maxCount == null) {
+                maxCount = VKDicts.MAX_DAYS_COUNT_FOR_WALL_PARSING;
+            }
+            if (count == null) {
+                return new AsyncResult<>(new ArrayList<>());
+            }
             count = Math.min(maxCount, count);
             userTask = userTask.saveInitial(count);
-            if (count == null) {
-                count = 0;
-            }
             ExecutorService service = Executors.newFixedThreadPool(50);
             List<Future<List<WallPost>>> tasks = new ArrayList<>();
             posts = new ArrayList<>(count);
@@ -39,7 +44,7 @@ public class WallServiceImpl extends AbstractWallService {
                 final int cur = i;
                 tasks.add(service.submit(() -> getWallPosts(ownerId, cur, 100).getItems()));
             }
-            for (Future<List<WallPost>> a: tasks) {
+            for (Future<List<WallPost>> a : tasks) {
                 try {
                     List<WallPost> list = a.get();
                     userTask = userTask.saveProgress(list.size());
@@ -73,7 +78,7 @@ public class WallServiceImpl extends AbstractWallService {
             List<Future<List<Integer>>> tasks = new ArrayList<>();
             for (int i = 0; i < count; i += 100) {
                 final int curId = i;
-                tasks.add(service.submit(()-> {
+                tasks.add(service.submit(() -> {
                         List<Comment> items = getTopicComments(ownerId, postId, curId, 100).getItems();
                         List<Integer> cur = items
                             .parallelStream().map(a -> a.getFromId()).collect(Collectors.toList());
@@ -84,7 +89,7 @@ public class WallServiceImpl extends AbstractWallService {
                     }
                 ));
             }
-            for (Future<List<Integer>> task: tasks) {
+            for (Future<List<Integer>> task : tasks) {
                 try {
                     List<Integer> resp = task.get();
                     userTask = userTask.saveProgress(resp.size());
@@ -106,6 +111,7 @@ public class WallServiceImpl extends AbstractWallService {
     }
 
     @Override
+    @Async
     public Future<List<Integer>> getComments(UserTaskSettings settings, Integer ownerId, Integer postId) {
         final List<Integer> comments;
         UserTask userTask = new UserTask(COMMENTS, settings, userTaskRepository);
@@ -120,7 +126,7 @@ public class WallServiceImpl extends AbstractWallService {
                 tasks.add(service.submit(() -> getComments(ownerId, postId, cur, 100).getItems()
                     .parallelStream().map(a -> a.getFromId()).collect(Collectors.toList())));
             }
-            for (Future<List<Integer>> a: tasks) {
+            for (Future<List<Integer>> a : tasks) {
                 try {
                     List<Integer> list = a.get();
                     userTask = userTask.saveProgress(list.size());
@@ -142,6 +148,7 @@ public class WallServiceImpl extends AbstractWallService {
     }
 
     @Override
+    @Async
     public Future<List<Integer>> getReposts(UserTaskSettings settings, Integer ownerId, Integer postId) {
         List<Integer> reposts = new ArrayList<>();
         UserTask userTask = new UserTask(REPOSTS, settings, userTaskRepository);
@@ -170,6 +177,7 @@ public class WallServiceImpl extends AbstractWallService {
     }
 
     @Override
+    @Async
     public Future<List<Integer>> getLikes(UserTaskSettings settings, Integer ownerId, Integer postId, String type) {
         final List<Integer> likes;
         UserTask userTask = new UserTask(LIKES, settings, userTaskRepository);
@@ -183,7 +191,7 @@ public class WallServiceImpl extends AbstractWallService {
                 final int cur = i;
                 tasks.add(service.submit(() -> getLikes(ownerId, type, postId, cur, 1000).getItems()));
             }
-            for(Future<List<Integer>> a: tasks) {
+            for (Future<List<Integer>> a : tasks) {
                 try {
                     List<Integer> list = a.get();
                     userTask = userTask.saveProgress(list.size());

@@ -11,6 +11,20 @@
             "info": {
                 "definition": "This is stub definition for info search",
                 "title": "Group Info By Ids"
+            },
+            "activity": {
+                "title": "Wall Activity",
+                "list": "Enter Group & Users Ids (group id with '-' prefix)",
+                "post-list": "Enter separate post ids (if required)",
+                "max-days": "Enter max days before today",
+                "min-count": "Enter min activity to add in report",
+                "count-by-all-groups": "Count By All Ids (instead in report will be grouping by ids)",
+                "count-likes": "Count Likes",
+                "count-reposts": "Count Reposts",
+                "count-comments": "Count Comments",
+                "task-info": "Task Info",
+                "definition": "Activity Stub Definition"
+
             }
         }
     }

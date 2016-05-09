@@ -78,12 +78,14 @@ public class ActivityServiceImpl implements ActivityService {
         Map<Integer, List<WallPost>> wallPosts = new HashMap<>();
         userTask = userTask.saveInitial(activeAuditoryDTO.getGroups().size());
         userTask = userTask.updateStatusMessage("Сбор постов со стены");
-        for (Integer i : activeAuditoryDTO.getGroups()) {
+        for (String i : activeAuditoryDTO.getGroups()) {
             try {
-                wallPosts.put(i, getWallService().getWallPosts(
+                Integer val = Integer.valueOf(i);
+                wallPosts.put(val, getWallService().getWallPosts(
                     new UserTaskSettings(settings.getUser(), false, settings.getTaskDescription()),
-                    i, activeAuditoryDTO.getMaxDays()).get());
-            } catch (InterruptedException e) {
+                    val, activeAuditoryDTO.getMaxDays()).get());
+            } catch (NumberFormatException e){}
+            catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -93,10 +95,14 @@ public class ActivityServiceImpl implements ActivityService {
         if (activeAuditoryDTO.getPostIds() != null &&
             !activeAuditoryDTO.getPostIds().isEmpty()) {
             List<WallPost> posts = new ArrayList<>();
-            for (Integer id : activeAuditoryDTO.getPostIds()) {
-                WallPost post = new WallPost();
-                post.setId(id);
-                posts.add(post);
+            for (String id : activeAuditoryDTO.getPostIds()) {
+                try {
+                    Integer val = Integer.valueOf(id);
+                    WallPost post = new WallPost();
+                    post.setId(Integer.valueOf(id));
+                    posts.add(post);
+                } catch (NumberFormatException e){}
+
             }
             wallPosts.put(0, posts);
         }

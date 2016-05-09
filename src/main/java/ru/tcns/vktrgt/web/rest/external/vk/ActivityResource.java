@@ -3,10 +3,7 @@ package ru.tcns.vktrgt.web.rest.external.vk;
 import com.codahale.metrics.annotation.Timed;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
@@ -16,6 +13,7 @@ import ru.tcns.vktrgt.service.external.vk.intf.ActivityService;
 import ru.tcns.vktrgt.service.external.vk.intf.AnalysisService;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -34,10 +32,9 @@ public class ActivityResource {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Void> getActiveAuditory(@RequestParam ActiveAuditoryDTO activeAuditoryDTO,
-                                                  @RequestParam String taskInfo) throws URISyntaxException {
+    public ResponseEntity<Void> getActiveAuditory(@RequestBody ActiveAuditoryDTO activeAuditoryDTO) throws URISyntaxException {
         activityService.getActiveAuditory(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo), activeAuditoryDTO);
+            activeAuditoryDTO.getTaskInfo()), activeAuditoryDTO);
         return ResponseEntity.ok().build();
     }
 

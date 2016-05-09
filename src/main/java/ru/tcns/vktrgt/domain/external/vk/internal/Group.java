@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by timur on 3/28/16.
  */
-@Document(collection = "group")
+@Document(collection = "vk_groups")
 @JsonEntity
 public class Group {
     @Id

@@ -35,7 +35,7 @@ public class AnalysisResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> analyseUsers(@RequestParam AnalyseDTO analyseDTO,
-                                              @RequestParam List<User> users,
+                                              @RequestParam List<String> users,
                                               @RequestParam String taskInfo) throws URISyntaxException {
         analysisService.analyseUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo), users, analyseDTO);

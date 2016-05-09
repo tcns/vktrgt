@@ -11,6 +11,6 @@ import java.util.concurrent.Future;
  * Created by TIMUR on 01.05.2016.
  */
 public interface AnalysisService {
-    Future<AnalyseDTO> analyseUsers(UserTaskSettings settings, List<User> users, AnalyseDTO analyseDTO);
-    Future<List<User>> filterUsers(UserTaskSettings settings, List<User> users, AnalyseDTO analyseDTO);
+    Future<AnalyseDTO> analyseUsers(UserTaskSettings settings, List<String> users, AnalyseDTO analyseDTO);
+    Future<List<User>> filterUsers(UserTaskSettings settings, List<String> users, AnalyseDTO analyseDTO);
 }

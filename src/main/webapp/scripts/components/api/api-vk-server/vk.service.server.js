@@ -1,6 +1,3 @@
-/**
- * Created by Тимур on 08.05.2016.
- */
 angular.module('vktrgtApp')
     .factory('VKCloudService', function ($rootScope, $cookies, $http, $q) {
         return {
@@ -26,6 +23,8 @@ angular.module('vktrgtApp')
                             return $.param(data);
                         }
                     });
+            }, getGroupActivity: function (activeAuditoryDTO) {
+                return $http.post('/api/activity', activeAuditoryDTO);
             }
 
         }

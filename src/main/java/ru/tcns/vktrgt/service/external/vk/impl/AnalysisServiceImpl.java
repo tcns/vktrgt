@@ -12,9 +12,11 @@ import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.domain.util.DateUtils;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.service.external.vk.intf.AnalysisService;
+import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -30,12 +32,22 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     @Inject
     private UserTaskRepository repository;
+    @Inject
+    private VKUserService vkUserService;
 
     @Async
     @Override
-    public Future<List<User>> filterUsers(UserTaskSettings settings, List<User> users, AnalyseDTO analyseDTO) {
+    public Future<List<User>> filterUsers(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
         UserTask userTask = new UserTask(FILTER_USERS, settings, repository);
         userTask = userTask.saveInitial(1);
+        List<User> users = new ArrayList<>();
+        try {
+            users = getUsers(settings, userIds).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         if (analyseDTO.getAge() != null) {
             userTask = userTask.updateStatusMessage("Фильтрация по возрасту");
             for (IntRange range : analyseDTO.getAge().keySet()) {
@@ -75,11 +87,24 @@ public class AnalysisServiceImpl implements AnalysisService {
         return new AsyncResult<>(users);
     }
 
+    private Future<List<User>> getUsers(UserTaskSettings settings, List<String> userIds) {
+        return vkUserService.getUserInfo(new UserTaskSettings(settings.getUser(), false, settings.getTaskDescription()), userIds);
+    }
+
+
     @Override
     @Async
-    public Future<AnalyseDTO> analyseUsers(UserTaskSettings settings, List<User> users, AnalyseDTO analyseDTO) {
+    public Future<AnalyseDTO> analyseUsers(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
         UserTask userTask = new UserTask(ANALYSE_USERS, settings, repository);
         userTask = userTask.saveInitial(1);
+        List<User> users = new ArrayList<>();
+        try {
+            users = getUsers(settings, userIds).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         if (analyseDTO.getAge() != null) {
 
             userTask = userTask.updateStatusMessage("Анализ по возрасту");
