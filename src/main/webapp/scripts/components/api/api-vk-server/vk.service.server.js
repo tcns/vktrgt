@@ -7,8 +7,8 @@ angular.module('vktrgtApp')
                         'names': ids.join(','),
                         'taskInfo': taskInfo
                     }, {
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                        transformRequest: function(data){
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                        transformRequest: function (data) {
                             return $.param(data);
                         }
                     });
@@ -18,13 +18,25 @@ angular.module('vktrgtApp')
                         'names': ids.join(','),
                         'taskInfo': taskInfo
                     }, {
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                        transformRequest: function(data){
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                        transformRequest: function (data) {
                             return $.param(data);
                         }
                     });
             }, getGroupActivity: function (activeAuditoryDTO) {
                 return $http.post('/api/activity', activeAuditoryDTO);
+            }, topicActivity: function (ids, minCount, taskInfo) {
+                return $http.post('/api/topics',
+                    {
+                        'topicUrls': ids.join(','),
+                        'minCount': minCount,
+                        'taskInfo': taskInfo
+                    }, {
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                        transformRequest: function (data) {
+                            return $.param(data);
+                        }
+                    });
             }
 
         }

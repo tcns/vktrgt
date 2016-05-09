@@ -37,7 +37,8 @@
                 "main" : "Vkontakte",
                 "group-intersect": "Group intersection",
                 "group-info": "Search Group Info",
-                "group-activity": "Wall Activity"
+                "group-activity": "Wall Activity",
+                "topic-activity": "Topic Activity"
             },
             "language": "Language"
         },

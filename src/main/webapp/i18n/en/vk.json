@@ -26,6 +26,16 @@
                 "definition": "Activity Stub Definition"
 
             }
+        },
+        "topic": {
+            "activity": {
+                "title": "Topic Activity",
+                "list": "Enter Walls Urls (with vk.com prefix)",
+                "min-count": "Enter min activity to add in report",
+                "task-info": "Task Info",
+                "definition": "Topic Activity Stub Definition"
+
+            }
         }
     }
 }
