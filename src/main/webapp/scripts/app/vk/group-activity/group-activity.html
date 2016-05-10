@@ -17,7 +17,7 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <form class="form-horizontal form-label-left">
+                    <form class="form-horizontal form-label-left" name="form" novalidate show-validation>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="groups"
                                    translate="vk.groups.activity.list">
@@ -25,8 +25,13 @@
                             </label>
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <textarea ng-model="dto.groups" type="text" id="groups"
+                                <textarea name="groups" ng-model="dto.groups" type="text" id="groups"
                                           class="form-control col-md-7 col-xs-12"/>
+                                <div ng-show="form.groups.$dirty && form.groups.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.groups.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -36,8 +41,13 @@
                             </label>
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <textarea ng-model="dto.postIds" type="text" id="posts"
+                                <textarea ng-model="dto.postIds" type="text" name="posts" id="posts"
                                           class="form-control col-md-7 col-xs-12"/>
+                                <div ng-show="form.posts.$dirty && form.posts.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.posts.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -47,25 +57,36 @@
                             </label>
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input ng-model="dto.maxDays" type="number" min="1" max="200" id="max-days" required="required"
+                                <input ng-model="dto.maxDays" type="number" min="1" max="200" name="maxDays" id="max-days" required="required"
                                           class="form-control col-md-7 col-xs-12"/>
+                                <div ng-show="form.maxDays.$dirty && form.maxDays.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.maxDays.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                    <p class="help-block"
+                                       ng-show="form.maxDays.$error.min || form.maxDays.$error.max" translate="vk.general.validation.range"
+                                        translate-values="{min: '1', max: '200'}">
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="min-count"
                                    translate="vk.groups.activity.min-count">
-                                min count <span class="required">*</span>
                             </label>
-
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input ng-model="dto.minCount" type="number" min="0" id="min-count" required="required"
+                                <input ng-model="dto.minCount" type="number" min="0" name="minCount" id="min-count"  required="required"
                                        class="form-control col-md-7 col-xs-12"/>
+                                <div ng-show="form.minCount.$dirty && form.minCount.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.minCount.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="count-by-all-groups"
                                    translate="vk.groups.activity.count-by-all-groups">
-                               count by all groups <span class="required">*</span>
                             </label>
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -109,17 +130,21 @@
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="task-info"
                                    translate="vk.groups.activity.task-info">
-                                Task Info <span class="required">*</span>
                             </label>
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input ng-model="dto.taskInfo" type="text" id="task-info" required="required"
+                                <input ng-model="dto.taskInfo" type="text" id="task-info" name="taskInfo" required="required"
                                        class="form-control col-md-7 col-xs-12"/>
+                                <div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.taskInfo.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <button ng-click="submit()" class="btn btn-success" translate="entity.action.submit">
+                                <button ng-click="submit()" ng-disabled="form.$invalid" class="btn btn-success" translate="entity.action.submit">
                                     Отправить
                                 </button>
                             </div>

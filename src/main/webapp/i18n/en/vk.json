@@ -3,7 +3,8 @@
         "title": "VK Cloud",
         "general": {
             "validation": {
-                "required":"This field must not be empty"
+                "required":"This field must not be empty",
+                "range": "Field must be between {{min}}-{{max}}"
             }
         },
         "user": {
