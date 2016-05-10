@@ -1,6 +1,11 @@
 {
     "vk":{
         "title": "VK Cloud",
+        "general": {
+            "validation": {
+                "required":"This field must not be empty"
+            }
+        },
         "user": {
             "leaders": {
                 "title": "Search opinion leaders",
@@ -14,7 +19,10 @@
             "intersect": {
                 "title": "Group Intersection by User Ids",
                 "definition": "This is stub definition for group intersection",
-                "group-list": "Enter group list (one to the line)",
+                "group-list": {
+                    "title":"Enter group list (one to the line)"
+
+                } ,
                 "task-info": "Task Description"
             },
             "info": {

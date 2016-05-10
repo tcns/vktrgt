@@ -17,33 +17,41 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <form class="form-horizontal form-label-left">
+                    <form name="form" class="form-horizontal form-label-left" novalidate show-validation>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="groups"
-                                   translate="vk.groups.intersect.group-list">
-                                Список групп (по одной в строку) <span class="required">*</span>
+                                   translate="vk.groups.intersect.group-list.title">
                             </label>
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <textarea ng-model="groups" type="text" id="groups" required="required"
+                                <textarea ng-model="groups" type="text" name="groups" id="groups" required
                                           class="form-control col-md-7 col-xs-12"/>
+                                <div ng-show="form.groups.$dirty && form.groups.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.groups.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                </div>
                             </div>
+
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="task-info"
                                    translate="vk.groups.intersect.task-info">
-                                Описание задачи <span class="required">*</span>
                             </label>
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input ng-model="taskInfo" type="text" id="task-info" required="required"
+                                <input ng-model="taskInfo" type="text" name="taskInfo" id="task-info" required
                                        class="form-control col-md-7 col-xs-12"/>
+                                <div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.taskInfo.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <button ng-click="submit()" class="btn btn-success" translate="entity.action.submit">
-                                    Отправить
+                                <button ng-click="submit()" class="btn btn-success" ng-disabled="form.$invalid" translate="entity.action.submit">
                                 </button>
                             </div>
                         </div>
