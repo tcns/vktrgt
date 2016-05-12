@@ -3,7 +3,7 @@
 var fs = require('fs');
 
 // Returns the first occurence of the version number
-var parseVersionFromBuildGradle = function() {
+var parseVersionFromBuildGradle = function () {
     var versionRegex = /^version\s*=\s*[',"]([^',"]*)[',"]/gm; // Match and group the version number
     var buildGradle = fs.readFileSync('build.gradle', "utf8");
     return versionRegex.exec(buildGradle)[1];
@@ -12,8 +12,8 @@ var parseVersionFromBuildGradle = function() {
 // usemin custom step
 var useminAutoprefixer = {
     name: 'autoprefixer',
-    createConfig: function(context, block) {
-        if(block.src.length === 0) {
+    createConfig: function (context, block) {
+        if (block.src.length === 0) {
             return {};
         } else {
             return require('grunt-usemin/lib/config/cssmin').createConfig(context, block) // Reuse cssmins createConfig
@@ -111,7 +111,7 @@ module.exports = function (grunt) {
         browserSync: {
             dev: {
                 bsFiles: {
-                    src : [
+                    src: [
                         'src/main/webapp/**/*.html',
                         'src/main/webapp/**/*.json',
                         'src/main/webapp/assets/styles/**/*.css',
@@ -184,7 +184,8 @@ module.exports = function (grunt) {
                         '<%= yeoman.dist %>/scripts/**/*.js',
                         '<%= yeoman.dist %>/assets/styles/**/*.css',
                         '<%= yeoman.dist %>/assets/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
-                        '<%= yeoman.dist %>/assets/fonts/*'
+                        '<%= yeoman.dist %>/assets/fonts/*',
+                        '<%= yeoman.dist %>/assets/js/**/*.js'
                     ]
                 }
             }
@@ -197,17 +198,18 @@ module.exports = function (grunt) {
                     html: {
                         steps: {
                             js: ['concat', 'uglifyjs'],
-                            css: ['cssmin', useminAutoprefixer] // Let cssmin concat files so it corrects relative paths to fonts and images
+                            css: ['concat', 'cssmin', useminAutoprefixer] // Let cssmin concat files so it corrects relative paths to fonts and images
                         },
-                            post: {}
-                        }
+                        post: {}
                     }
+                }
             }
         },
         usemin: {
             html: ['<%= yeoman.dist %>/**/*.html'],
             css: ['<%= yeoman.dist %>/assets/styles/**/*.css'],
-            js: ['<%= yeoman.dist %>/scripts/**/*.js'],
+            js: ['<%= yeoman.dist %>/scripts/**/*.js',
+                '<%= yeoman.dist %>/assets/js/**/*.js'],
             options: {
                 assetsDirs: ['<%= yeoman.dist %>', '<%= yeoman.dist %>/assets/styles', '<%= yeoman.dist %>/assets/images', '<%= yeoman.dist %>/assets/fonts'],
                 patterns: {
@@ -241,7 +243,7 @@ module.exports = function (grunt) {
         cssmin: {
             // src and dest is configured in a subtask called "generated" by usemin
         },
-        ngtemplates:    {
+        ngtemplates: {
             dist: {
                 cwd: 'src/main/webapp',
                 src: ['scripts/app/**/*.html', 'scripts/components/**/*.html',],
@@ -285,7 +287,8 @@ module.exports = function (grunt) {
                     cwd: 'src/main/webapp',
                     dest: '<%= yeoman.dist %>/assets/fonts',
                     src: [
-                      'bower_components/bootstrap/fonts/*.*'
+                        'bower_components/bootstrap/fonts/*.*',
+                        'bower_components/font-awesome/fonts/*.*'
                     ]
                 }]
             },
