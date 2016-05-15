@@ -14,6 +14,17 @@
                 "user-list": "Enter users list (one to the line)",
                 "task-info": "Task Description",
                 "min": "Minimum occurrences"
+            },
+            "analyse": {
+                "title": "User Analyse",
+                "definition": "This is stub definition User Analyse",
+                "list": "User List",
+                "sex-female": "Female",
+                "sex-male": "Male",
+                "sex-all": "All",
+                "age": "Age(split groups by ',' and '<line ending>'. for example 1-10<br />11-90)</p>",
+                "countries": "Countries",
+                "cities": "Cities"
             }
         },
         "groups": {

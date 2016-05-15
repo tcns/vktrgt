@@ -55,8 +55,6 @@ module.exports = function (config) {
             'main/webapp/bower_components/google-code-prettify/bin/prettify.min.js',
             'main/webapp/bower_components/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js',
             'main/webapp/bower_components/jquery.tagsinput/src/jquery.tagsinput.js',
-            'main/webapp/bower_components/transitionize/dist/transitionize.js',
-            'main/webapp/bower_components/switchery/dist/switchery.js',
             'main/webapp/bower_components/select2/dist/js/select2.js',
             'main/webapp/bower_components/autosize/dist/autosize.js',
             'main/webapp/bower_components/parsleyjs/dist/parsley.js',

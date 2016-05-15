@@ -3,17 +3,20 @@ package ru.tcns.vktrgt.domain.external.vk.dict;
 import org.apache.commons.lang.math.IntRange;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by TIMUR on 01.05.2016.
  */
-public class AnalyseDTO {
+public class AnalyseDTO implements Serializable {
     private Map<Integer, List<User>> sex;
     private Map<IntRange, List<User>> age;
     private Map<Integer, List<User>> cities;
     private Map<Integer, List<User>> countries;
+    private List<String> users;
+    private String taskInfo;
 
     public Map<Integer, List<User>> getSex() {
         return sex;
@@ -45,5 +48,21 @@ public class AnalyseDTO {
 
     public void setCountries(Map<Integer, List<User>> countries) {
         this.countries = countries;
+    }
+
+    public List<String> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<String> users) {
+        this.users = users;
+    }
+
+    public String getTaskInfo() {
+        return taskInfo;
+    }
+
+    public void setTaskInfo(String taskInfo) {
+        this.taskInfo = taskInfo;
     }
 }

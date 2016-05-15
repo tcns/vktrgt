@@ -3,10 +3,7 @@ package ru.tcns.vktrgt.web.rest.external.vk;
 import com.codahale.metrics.annotation.Timed;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
@@ -34,11 +31,9 @@ public class AnalysisResource {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Void> analyseUsers(@RequestParam AnalyseDTO analyseDTO,
-                                              @RequestParam List<String> users,
-                                              @RequestParam String taskInfo) throws URISyntaxException {
+    public ResponseEntity<Void> analyseUsers(@RequestBody AnalyseDTO analyseDTO) throws URISyntaxException {
         analysisService.analyseUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo), users, analyseDTO);
+            analyseDTO.getTaskInfo()), analyseDTO.getUsers(), analyseDTO);
         return ResponseEntity.ok().build();
     }
 }

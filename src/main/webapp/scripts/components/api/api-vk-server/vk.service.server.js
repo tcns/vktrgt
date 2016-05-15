@@ -60,6 +60,8 @@ angular.module('vktrgtApp')
                             return $.param(data);
                         }
                     });
+            }, analyseUsers: function (model) {
+                return $http.post('/api/analyse', model);
             }
 
         }

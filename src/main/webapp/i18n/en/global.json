@@ -40,7 +40,8 @@
                 "group-activity": "Wall Activity",
                 "topic-activity": "Topic Activity",
                 "group-members": "Group Members",
-                "user-leaders": "Opinion Leaders"
+                "user-leaders": "Opinion Leaders",
+                "user-analyse": "User Analyse"
             },
             "language": "Language",
             "task-manager": "Task Manager"

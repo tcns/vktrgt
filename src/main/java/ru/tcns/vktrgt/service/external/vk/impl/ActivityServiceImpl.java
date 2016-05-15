@@ -110,7 +110,7 @@ public class ActivityServiceImpl implements ActivityService {
         if (activeAuditoryDTO.getCountByAllGroups()) {
             activity.put(0, new HashMap<>());
         }
-        userTask = userTask.saveInitial(wallPosts.entrySet().size());
+        userTask = userTask.saveInitial(countSteps(activeAuditoryDTO, wallPosts));
         for (Map.Entry<Integer, List<WallPost>> e : wallPosts.entrySet()) {
             Map<Integer, Integer> groupActivity = new HashMap<>();
             if (activeAuditoryDTO.getCountByAllGroups()) {
@@ -130,6 +130,7 @@ public class ActivityServiceImpl implements ActivityService {
                         e1.printStackTrace();
                     }
                     groupActivity = utils.intersectWithCount(groupActivity, list);
+                    userTask = userTask.saveProgress(1);
                 }
                 if (activeAuditoryDTO.getCountLikes()) {
 
@@ -144,9 +145,11 @@ public class ActivityServiceImpl implements ActivityService {
                         e1.printStackTrace();
                     }
                     groupActivity = utils.intersectWithCount(groupActivity, list);
+                    userTask = userTask.saveProgress(1);
                 }
                 if (activeAuditoryDTO.getCountReposts()) {
                     userTask = userTask.updateStatusMessage("Сбор репостов");
+
                     List<Integer> list = null;
                     try {
                         list = getWallService().getReposts(
@@ -158,16 +161,17 @@ public class ActivityServiceImpl implements ActivityService {
                         e1.printStackTrace();
                     }
                     groupActivity = utils.intersectWithCount(groupActivity, list);
+                    userTask = userTask.saveProgress(1);
                 }
             }
             userTask = userTask.updateStatusMessage("Обработка результатов");
+
             if (activeAuditoryDTO.getCountByAllGroups()) {
                 activity.put(0, groupActivity);
             } else {
                 groupActivity = ArrayUtils.sortByValue(groupActivity, activeAuditoryDTO.getMinCount());
                 activity.put(e.getKey(), groupActivity);
             }
-
             userTask = userTask.saveProgress(1);
         }
         if (activeAuditoryDTO.getCountByAllGroups()) {
@@ -175,6 +179,28 @@ public class ActivityServiceImpl implements ActivityService {
         }
         userTask.saveFinal(activity);
         return new AsyncResult<>(activity) ;
+    }
+
+    private int countSteps(ActiveAuditoryDTO activeAuditoryDTO, Map<Integer, List<WallPost>> wallPosts) {
+        int count = 0;
+        for (Map.Entry<Integer, List<WallPost>> e : wallPosts.entrySet()) {
+            count += e.getValue().size();
+        }
+        int mult = 3;
+        if (!activeAuditoryDTO.getCountComments()) {
+            mult--;
+        }
+        if (!activeAuditoryDTO.getCountLikes()) {
+            mult--;
+        }
+        if (!activeAuditoryDTO.getCountReposts()) {
+            mult--;
+        }
+        if (mult==0) {
+            mult = 1;
+        }
+        count*=mult;
+        return count + wallPosts.entrySet().size();
     }
 
     public WallService getWallService() {
