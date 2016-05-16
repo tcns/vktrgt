@@ -17,6 +17,14 @@ public class IntRangeDeserializer extends KeyDeserializer {
 
     @Override
     public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        try {
+            String[] vals = key.split("-");
+            int min = Integer.parseInt(vals[0]);
+            int max = Integer.parseInt(vals[1]);
+            return new IntRange(min, max);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return null;
     }
 }

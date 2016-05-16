@@ -11,10 +11,10 @@ angular.module('vktrgtApp')
         ]
 
         $scope.dto = {
-            sex : [],
-            age: [],
-            cities: [],
-            countries: []
+            sex : {},
+            age: {},
+            cities: {},
+            countries: {}
         }
 
         $scope.submit = function () {
@@ -22,13 +22,13 @@ angular.module('vktrgtApp')
             if ($scope.age) {
                 var ages = $scope.age.split('\n');
                 for (var i in ages) {
-                    var range = ages[i].split('-');
-                    $scope.dto.age[i] =  [];
+                    var range = ages[i];
+                    $scope.dto.age[range] =  [];
                 };
             }
             for (var i in $scope.sex) {
                 if ($scope.sex[i]) {
-                    $scope.dto.sex[i] = [];
+                    $scope.dto.sex['' + i] = [];
                 }
             }
             if ($scope.countries) {
@@ -46,10 +46,10 @@ angular.module('vktrgtApp')
             }
             model.users = $scope.users.split("\n");
             model.taskInfo = $scope.taskInfo;
-            model.sex = DataUtils.mapToJson($scope.dto.sex);
-            model.countries = DataUtils.mapToJson($scope.dto.countries);
-            model.cities = DataUtils.mapToJson($scope.dto.cities);
-            model.age = DataUtils.mapToJson($scope.dto.age);
+            model.sex = $scope.dto.sex;
+            model.countries = $scope.dto.countries;
+            model.cities = $scope.dto.cities;
+            model.age = $scope.dto.age;
             VKCloudService.analyseUsers(model).success(function (response) {
                 $scope.message = "Задача добавлена";
             }).error(function (response) {

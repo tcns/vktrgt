@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
+import ru.tcns.vktrgt.domain.external.vk.dict.Sex;
+import ru.tcns.vktrgt.domain.external.vk.dict.VKDefault;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.domain.util.DateUtils;
@@ -105,6 +107,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+        collectFields(analyseDTO, users);
         if (analyseDTO.getAge() != null) {
 
             userTask = userTask.updateStatusMessage("Анализ по возрасту");
@@ -113,7 +116,8 @@ public class AnalysisServiceImpl implements AnalysisService {
                 for (User user : users) {
                     if (user.getBdate() != null &&
                         !user.getBdate().isEmpty() &&
-                        range.containsInteger(DateUtils.getAge(user.getBdate(), VKDicts.BDAY_FORMATS, 0))) {
+                        range.containsInteger(DateUtils.getAge(user.getBdate(), VKDicts.BDAY_FORMATS, 0)) ||
+                        ((user.getBdate()==null || user.getBdate().isEmpty()) && range.equals(VKDefault.DEFAULT_RANGE))) {
                         uList.add(user);
                     }
                 }
@@ -127,7 +131,8 @@ public class AnalysisServiceImpl implements AnalysisService {
                 List<User> uList = new ArrayList<>();
                 for (User user : users) {
                     if (user.getCity() != null &&
-                        user.getCity().getId().equals(city)) {
+                        user.getCity().getId().equals(city) ||
+                        user.getCity()==null && city==VKDefault.CITY) {
                         uList.add(user);
                     }
                 }
@@ -141,7 +146,8 @@ public class AnalysisServiceImpl implements AnalysisService {
                 List<User> uList = new ArrayList<>();
                 for (User user : users) {
                     if (user.getCountry() != null &&
-                        user.getCountry().getId().equals(country)) {
+                        user.getCountry().getId().equals(country) ||
+                        user.getCountry() == null && country == VKDefault.COUNTRY) {
                         uList.add(user);
                     }
                 }
@@ -162,7 +168,35 @@ public class AnalysisServiceImpl implements AnalysisService {
                 analyseDTO.getSex().put(sex, uList);
             }
         }
-        userTask.saveFinal(users);
+        userTask.saveFinal(analyseDTO);
         return new AsyncResult<>(analyseDTO);
+    }
+
+    private void collectFields(AnalyseDTO analyseDTO, List<User> users) {
+        if (analyseDTO.getCities() == null) {
+            analyseDTO.setCities(new LinkedHashMap<>());
+        }
+        if (analyseDTO.getCountries() == null) {
+            analyseDTO.setCountries(new LinkedHashMap<>());
+        }
+        if (analyseDTO.getSex() == null) {
+            analyseDTO.setSex(new LinkedHashMap<>());
+        }
+        analyseDTO.getCities().put(VKDefault.CITY, new ArrayList<>());
+        analyseDTO.getCountries().put(VKDefault.COUNTRY, new ArrayList<>());
+        analyseDTO.getAge().put(VKDefault.DEFAULT_RANGE, new ArrayList<>());
+        for (User user : users) {
+
+            if (user.getCity() != null) {
+                analyseDTO.getCities().put(user.getCity().getId(), new ArrayList<>());
+            }
+            if (user.getCountry() != null) {
+                analyseDTO.getCountries().put(user.getCountry().getId(), new ArrayList<>());
+            }
+
+        }
+        for (Sex sex : Sex.values()) {
+            analyseDTO.getSex().put(sex.getIntValue(), new ArrayList<>());
+        }
     }
 }
