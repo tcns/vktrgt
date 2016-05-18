@@ -2,7 +2,7 @@
  * Created by Тимур on 08.05.2016.
  */
 angular.module('vktrgtApp')
-    .controller('UserAnalyseController', function ($scope, VKCloudService, DataUtils) {
+    .controller('UserAnalyseController', function ($scope, VKCloudService, VKService) {
 
         $scope.sex = [
             false,//0
@@ -16,6 +16,16 @@ angular.module('vktrgtApp')
             cities: {},
             countries: {}
         }
+        $scope.countryList = [];
+        $scope.cityList = [];
+
+        VKService.getCountries().then(function(data){
+            $scope.countryList = data;
+        });
+        VKService.getCities().then(function(data){
+            $scope.cityList = data;
+        });
+
 
         $scope.submit = function () {
             var model = {};
@@ -32,16 +42,13 @@ angular.module('vktrgtApp')
                 }
             }
             if ($scope.countries) {
-                var countriesArray = $scope.countries.split('\n');
-                for (var i in countriesArray) {
-                    $scope.dto.countries[countriesArray[i]] =  [];
+                for (var i in $scope.countries) {
+                    $scope.dto.countries[$scope.countries[i].id] =  [];
                 }
             }
             if ($scope.cities) {
-                var citiesArray = $scope.cities.split('\n');
-                for (var i in citiesArray) {
-                    var city = citiesArray[i];
-                    $scope.dto.cities[city] = [];
+                for (var i in $scope.cities) {
+                    $scope.dto.cities[$scope.cities[i].id] = [];
                 }
             }
             model.users = $scope.users.split("\n");

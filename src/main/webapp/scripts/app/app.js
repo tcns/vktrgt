@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('vktrgtApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalprecht.translate', 
-    'ngResource', 'ngCookies', 'ngAria', 'ngCacheBuster', 'ngFileUpload',
+angular.module('vktrgtApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalprecht.translate',
+    'ngResource', 'ngCookies', 'ngAria', 'ngCacheBuster', 'ngFileUpload', 'multipleSelect',
     // jhipster-needle-angularjs-add-module JHipster will add new module here
     'ui.bootstrap', 'ui.router',  'infinite-scroll', 'angular-loading-bar'])
 
@@ -19,7 +19,7 @@ angular.module('vktrgtApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalp
                 $window.document.title = title;
             });
         };
-        
+
         $rootScope.ENV = ENV;
         $rootScope.VERSION = VERSION;
         $rootScope.$on('$stateChangeStart', function (event, toState, toStateParams) {
@@ -29,13 +29,13 @@ angular.module('vktrgtApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalp
             if (Principal.isIdentityResolved()) {
                 Auth.authorize();
             }
-			
-            
+
+
             // Update the language
             Language.getCurrent().then(function (language) {
                 $translate.use(language);
             });
-            
+
         });
 
         $rootScope.$on('$stateChangeSuccess',  function(event, toState, toParams, fromState, fromParams) {
@@ -56,11 +56,11 @@ angular.module('vktrgtApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalp
             }
             updateTitle(titleKey);
         });
-        
+
         // if the current translation changes, update the window title
         $rootScope.$on('$translateChangeSuccess', function() { updateTitle(); });
 
-        
+
         $rootScope.back = function() {
             // If previous state is 'activate' or do not exist go to 'home'
             if ($rootScope.previousStateName === 'activate' || $state.get($rootScope.previousStateName) === null) {
@@ -106,7 +106,7 @@ angular.module('vktrgtApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalp
         $httpProvider.interceptors.push('authExpiredInterceptor');
         $httpProvider.interceptors.push('notificationInterceptor');
         // jhipster-needle-angularjs-add-interceptor JHipster will add new application interceptor here
-        
+
         // Initialize angular-translate
         $translateProvider.useLoader('$translatePartialLoader', {
             urlTemplate: 'i18n/{lang}/{part}.json'
@@ -120,7 +120,7 @@ angular.module('vktrgtApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalp
         tmhDynamicLocaleProvider.localeLocationPattern('bower_components/angular-i18n/angular-locale_{{locale}}.js');
         tmhDynamicLocaleProvider.useCookieStorage();
         tmhDynamicLocaleProvider.storageKey('NG_TRANSLATE_LANG_KEY');
-        
+
     })
     // jhipster-needle-angularjs-add-config JHipster will add new application configuration here
     .config(['$urlMatcherFactoryProvider', function($urlMatcherFactory) {
@@ -132,4 +132,10 @@ angular.module('vktrgtApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalp
             is: function(val) { return [true,false,0,1].indexOf(val) >= 0 },
             pattern: /bool|true|0|1/
         });
-    }]);
+    }])
+    .factory('CacheService', function($cacheFactory) {
+        var cache = $cacheFactory('cacheService', {
+            capacity: 100
+        });
+        return cache;
+    });
