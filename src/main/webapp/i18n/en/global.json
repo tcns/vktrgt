@@ -41,7 +41,8 @@
                 "topic-activity": "Topic Activity",
                 "group-members": "Group Members",
                 "user-leaders": "Opinion Leaders",
-                "user-analyse": "User Analyse"
+                "user-analyse": "User Analyse",
+                "user-filter": "User Filter"
             },
             "language": "Language",
             "task-manager": "Task Manager"

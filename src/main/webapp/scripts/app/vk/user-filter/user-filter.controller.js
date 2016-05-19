@@ -2,7 +2,7 @@
  * Created by Тимур on 08.05.2016.
  */
 angular.module('vktrgtApp')
-    .controller('UserAnalyseController', function ($scope, VKCloudService, VKService) {
+    .controller('UserFilterController', function ($scope, VKCloudService, VKService) {
 
         $scope.sex = [
             false,//0
@@ -57,7 +57,7 @@ angular.module('vktrgtApp')
             model.countries = $scope.dto.countries;
             model.cities = $scope.dto.cities;
             model.age = $scope.dto.age;
-            VKCloudService.analyseUsers(model).success(function (response) {
+            VKCloudService.filterUsers(model).success(function (response) {
                 $scope.message = "Задача добавлена";
             }).error(function (response) {
                 $scope.message = "Произошла ошибка";

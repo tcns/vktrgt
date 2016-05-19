@@ -25,6 +25,10 @@
                 "age": "Age(split groups by ',' and '<line ending>'. for example 1-10<br />11-90)</p>",
                 "countries": "Countries",
                 "cities": "Cities"
+            },
+            "filter": {
+                "title": "User Filter",
+                "definition": "This is stub definition User Filter"
             }
         },
         "groups": {

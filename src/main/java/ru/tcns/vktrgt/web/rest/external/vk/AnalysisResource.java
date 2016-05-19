@@ -36,4 +36,13 @@ public class AnalysisResource {
             analyseDTO.getTaskInfo()), analyseDTO.getUsers(), analyseDTO);
         return ResponseEntity.ok().build();
     }
+    @RequestMapping(value = "/filter",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Void> filterUsers(@RequestBody AnalyseDTO analyseDTO) throws URISyntaxException {
+        analysisService.filterUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            analyseDTO.getTaskInfo()), analyseDTO.getUsers(), analyseDTO);
+        return ResponseEntity.ok().build();
+    }
 }
