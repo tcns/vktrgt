@@ -1,6 +1,7 @@
 package ru.tcns.vktrgt.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import ru.tcns.vktrgt.config.Constants;
 import ru.tcns.vktrgt.domain.Authority;
 import ru.tcns.vktrgt.domain.User;
 import ru.tcns.vktrgt.repository.AuthorityRepository;
@@ -195,6 +196,15 @@ public class UserResource {
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUserInformation(login);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert( "user-management.deleted", login)).build();
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("user-management.deleted", login)).build();
+    }
+
+    @RequestMapping(value = "/users/drive",
+        method = RequestMethod.GET
+    )
+    @Timed
+    public void saveGoogleDriveToken(@RequestParam String token, HttpServletRequest request)
+        throws URISyntaxException {
+        request.getSession().setAttribute(Constants.GOOGLE_DRIVE_TOKEN, token);
     }
 }

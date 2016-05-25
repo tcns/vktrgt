@@ -7,7 +7,11 @@
             "lastname": "Last Name",
             "lastname.placeholder": "Your last name",
             "language": "Language",
-            "button": "Save"
+            "button": "Save",
+            "drive": {
+                "login": "Authorize Google Drive",
+                "auth": "You are already have Google Drive token"
+            }
         },
         "messages": {
             "error": {

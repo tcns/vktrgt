@@ -16,6 +16,8 @@ public final class Constants {
 
     public static final String SYSTEM_ACCOUNT = "system";
 
+    public static final String GOOGLE_DRIVE_TOKEN = "google.drive.token";
+
     private Constants() {
     }
 }
