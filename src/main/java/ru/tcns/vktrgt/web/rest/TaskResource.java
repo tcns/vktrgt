@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,9 +70,10 @@ public class TaskResource {
         if (!userService.getUserWithAuthorities().getId().equals(task.getUserId())) {
             return;
         }
-        InputStream stream = exportService.getFileCSVFromJson(task.getPayload());
-        httpServletResponse.setHeader("Content-Disposition", "attachment; filename="+fileName+".txt");
         try {
+            URL url = new URL(task.getPayload());
+            InputStream stream = url.openStream();
+            httpServletResponse.setHeader("Content-Disposition", "attachment; filename="+fileName+".txt");
             IOUtils.copy(stream, httpServletResponse.getOutputStream());
             httpServletResponse.flushBuffer();
         } catch (IOException e) {

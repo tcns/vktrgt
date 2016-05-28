@@ -18,6 +18,7 @@ import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
 import ru.tcns.vktrgt.service.UserService;
+import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 import ru.tcns.vktrgt.web.rest.util.PaginationUtil;
 
@@ -39,6 +40,8 @@ public class GroupResource {
     private GroupService groupService;
     @Inject
     UserService userService;
+    @Inject
+    GoogleDriveImpl googleDrive;
 
     @RequestMapping(value = "/groups",
         method = RequestMethod.POST,
@@ -79,7 +82,7 @@ public class GroupResource {
     public ResponseEntity<Void> searchGroupsInfoVk(@RequestParam List<String> names,
                                                       @RequestParam String taskInfo) throws URISyntaxException {
         groupService.getGroupsInfo(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo), names);
+            taskInfo, googleDrive), names);
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/groups/search/name",
@@ -112,7 +115,7 @@ public class GroupResource {
                                                                   @RequestParam String taskInfo) throws URISyntaxException {
 
         groupService.intersectGroups(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo), names);
+            taskInfo, googleDrive), names);
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/groups/members",
@@ -123,7 +126,7 @@ public class GroupResource {
                                                          @RequestParam String taskInfo) throws URISyntaxException {
 
         groupService.getAllGroupUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo), groupId);
+            taskInfo, googleDrive), groupId);
         return ResponseEntity.ok().build();
     }
 

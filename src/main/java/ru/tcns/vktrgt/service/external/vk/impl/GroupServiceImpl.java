@@ -14,6 +14,7 @@ import ru.tcns.vktrgt.domain.external.vk.response.GroupResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
+import ru.tcns.vktrgt.service.export.impl.ExportService;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -35,6 +36,8 @@ public class GroupServiceImpl extends AbstractGroupService {
     public static final String GROUP_INFO = BEAN_NAME + "GroupInfo";
     @Inject
     UserTaskRepository repository;
+    @Inject
+    ExportService exportService;
 
     @Override
     public List<Group> searchVk(String q, String token) {
@@ -131,7 +134,7 @@ public class GroupServiceImpl extends AbstractGroupService {
             userTask = userTask.saveProgress(1);
             GroupUsers cur = null;
             try {
-                cur = getAllGroupUsers(new UserTaskSettings(settings.getUser(), false, settings.getTaskDescription()), groups.get(i)).get();
+                cur = getAllGroupUsers(new UserTaskSettings(settings, false), groups.get(i)).get();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -139,7 +142,7 @@ public class GroupServiceImpl extends AbstractGroupService {
             }
             result = utils.intersect(result, cur.getUsers());
         }
-        userTask.saveFinal(result);
+        userTask.saveFinal(exportService.getStreamFromObject(result));
         return new AsyncResult<>(result);
     }
 

@@ -8,6 +8,7 @@ import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.service.UserService;
+import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
 import ru.tcns.vktrgt.service.external.vk.intf.AnalysisService;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 
@@ -26,6 +27,8 @@ public class AnalysisResource {
     private AnalysisService analysisService;
     @Inject
     UserService userService;
+    @Inject
+    GoogleDriveImpl googleDrive;
 
     @RequestMapping(value = "/analyse",
         method = RequestMethod.POST,
@@ -33,7 +36,7 @@ public class AnalysisResource {
     @Timed
     public ResponseEntity<Void> analyseUsers(@RequestBody AnalyseDTO analyseDTO) throws URISyntaxException {
         analysisService.analyseUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            analyseDTO.getTaskInfo()), analyseDTO.getUsers(), analyseDTO);
+            analyseDTO.getTaskInfo(), googleDrive), analyseDTO.getUsers(), analyseDTO);
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/filter",
@@ -42,7 +45,7 @@ public class AnalysisResource {
     @Timed
     public ResponseEntity<Void> filterUsers(@RequestBody AnalyseDTO analyseDTO) throws URISyntaxException {
         analysisService.filterUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            analyseDTO.getTaskInfo()), analyseDTO.getUsers(), analyseDTO);
+            analyseDTO.getTaskInfo(), googleDrive), analyseDTO.getUsers(), analyseDTO);
         return ResponseEntity.ok().build();
     }
 }

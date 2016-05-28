@@ -9,6 +9,7 @@ import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.service.UserService;
+import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
 import ru.tcns.vktrgt.service.external.vk.intf.ActivityService;
 import ru.tcns.vktrgt.service.external.vk.intf.AnalysisService;
 
@@ -27,6 +28,8 @@ public class ActivityResource {
     private ActivityService activityService;
     @Inject
     UserService userService;
+    @Inject
+    GoogleDriveImpl googleDrive;
 
     @RequestMapping(value = "/activity",
         method = RequestMethod.POST,
@@ -34,7 +37,7 @@ public class ActivityResource {
     @Timed
     public ResponseEntity<Void> getActiveAuditory(@RequestBody ActiveAuditoryDTO activeAuditoryDTO) throws URISyntaxException {
         activityService.getActiveAuditory(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            activeAuditoryDTO.getTaskInfo()), activeAuditoryDTO);
+            activeAuditoryDTO.getTaskInfo(), googleDrive), activeAuditoryDTO);
         return ResponseEntity.ok().build();
     }
 
@@ -46,7 +49,7 @@ public class ActivityResource {
                                                        @RequestParam Integer minCount,
                                                        @RequestParam String taskInfo) throws URISyntaxException {
         activityService.getActiveTopicAuditory(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo), topicUrls, minCount);
+            taskInfo, googleDrive), topicUrls, minCount);
         return ResponseEntity.ok().build();
     }
 }

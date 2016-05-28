@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.CDL;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import ru.tcns.vktrgt.domain.util.parser.JsonParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +17,10 @@ import java.nio.charset.StandardCharsets;
  */
 @Service
 public class ExportService {
-    public InputStream getFileCSVFromJson(String json) {
+    public InputStream getStreamFromJson(String json) {
         return IOUtils.toInputStream(json, StandardCharsets.UTF_8);
+    }
+    public InputStream getStreamFromObject(Object o) {
+        return IOUtils.toInputStream(JsonParser.objectToJson(o), StandardCharsets.UTF_8);
     }
 }

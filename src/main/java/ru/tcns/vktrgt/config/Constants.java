@@ -14,9 +14,15 @@ public final class Constants {
     // Spring profile used when deploying to Heroku
     public static final String SPRING_PROFILE_HEROKU = "heroku";
 
+    public static final String APPLICATION_NAME="vktrgt";
+
     public static final String SYSTEM_ACCOUNT = "system";
 
     public static final String GOOGLE_DRIVE_TOKEN = "google.drive.token";
+
+    public static final String GOOGLE_SECRET = "387946429490-qf7svfmvf8hvu8mo1v876p0j9395m4cp.apps.googleusercontent.com";
+
+    public static final String GOOGLE_FOLDER = "0B6fVHiSBdlZ9cFdKMEtaU0Y4NEk";
 
     private Constants() {
     }

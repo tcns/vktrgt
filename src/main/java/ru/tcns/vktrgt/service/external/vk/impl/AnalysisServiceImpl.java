@@ -90,7 +90,7 @@ public class AnalysisServiceImpl implements AnalysisService {
     }
 
     private Future<List<User>> getUsers(UserTaskSettings settings, List<String> userIds) {
-        return vkUserService.getUserInfo(new UserTaskSettings(settings.getUser(), false, settings.getTaskDescription()), userIds);
+        return vkUserService.getUserInfo(new UserTaskSettings(settings, false), userIds);
     }
 
 

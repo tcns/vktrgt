@@ -1,15 +1,22 @@
 package ru.tcns.vktrgt.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.api.services.drive.model.File;
+import com.google.common.net.MediaType;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import ru.tcns.vktrgt.config.Constants;
 import ru.tcns.vktrgt.domain.dict.UserTaskStatuses;
 import ru.tcns.vktrgt.domain.util.parser.JsonParser;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -96,6 +103,27 @@ public class UserTask {
         if (settings.isCreateTask()) {
             this.setPayload(JsonParser.objectToJson(payload));
             this.setCurrentProgress(this.getMaxProgress());
+            if (errors.size() > 0) {
+                this.setCurrentStatus(UserTaskStatuses.COMPLETED_WITH_ERRORS);
+                this.setCurrentStatusDesc("Задача завершена с ошибками");
+            } else {
+                this.setCurrentStatus(UserTaskStatuses.SUCCESS);
+                this.setCurrentStatusDesc("Задача завершена успешно");
+            }
+            return repository.save(this);
+        }
+        return this;
+    }
+    @Transient
+    public UserTask saveFinal(InputStream payload) {
+        if (settings.isCreateTask()) {
+            String fileName = settings.getUser().getId()+ (new Date()).toString();
+            String folder = settings.getGoogleDriveService().getOrCreateFolder(Constants.GOOGLE_FOLDER, settings.getUser().getLogin());
+            File file =  settings.getGoogleDriveService().saveFile(MediaType.PLAIN_TEXT_UTF_8.toString(),
+                fileName,
+                payload, folder);
+            this.setCurrentProgress(this.getMaxProgress());
+            this.setPayload(file.getWebContentLink());
             if (errors.size() > 0) {
                 this.setCurrentStatus(UserTaskStatuses.COMPLETED_WITH_ERRORS);
                 this.setCurrentStatusDesc("Задача завершена с ошибками");

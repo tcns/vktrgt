@@ -50,7 +50,7 @@ public class ActivityServiceImpl implements ActivityService {
             try {
                 wallPosts.put(urlDto.getElementId(),
                     getWallService().getTopicCommentsWithLikes(
-                        new UserTaskSettings(settings.getUser(), false, settings.getTaskDescription()),
+                        new UserTaskSettings(settings, false),
                         urlDto.getOwnerId(), urlDto.getElementId()).get());
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -82,7 +82,7 @@ public class ActivityServiceImpl implements ActivityService {
             try {
                 Integer val = Integer.valueOf(i);
                 wallPosts.put(val, getWallService().getWallPosts(
-                    new UserTaskSettings(settings.getUser(), false, settings.getTaskDescription()),
+                    new UserTaskSettings(settings, false),
                     val, activeAuditoryDTO.getMaxDays()).get());
             } catch (NumberFormatException e){}
             catch (InterruptedException e) {
@@ -123,7 +123,7 @@ public class ActivityServiceImpl implements ActivityService {
                     List<Integer> list = new ArrayList<>();
                     try {
                         list = getWallService().getComments(
-                            new UserTaskSettings(settings.getUser(), false, settings.getTaskDescription()), e.getKey(), post.getId()).get();
+                            new UserTaskSettings(settings, false), e.getKey(), post.getId()).get();
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     } catch (ExecutionException e1) {
@@ -138,7 +138,7 @@ public class ActivityServiceImpl implements ActivityService {
                     List<Integer> list = new ArrayList<>();
                     try {
                         list = getWallService().getLikes(
-                            new UserTaskSettings(settings.getUser(), false, settings.getTaskDescription()), e.getKey(), post.getId(), activeAuditoryDTO.getType()).get();
+                            new UserTaskSettings(settings, false), e.getKey(), post.getId(), activeAuditoryDTO.getType()).get();
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     } catch (ExecutionException e1) {
@@ -153,8 +153,7 @@ public class ActivityServiceImpl implements ActivityService {
                     List<Integer> list = null;
                     try {
                         list = getWallService().getReposts(
-                            new UserTaskSettings(settings.getUser(), false,
-                                settings.getTaskDescription()), e.getKey(), post.getId()).get();
+                            new UserTaskSettings(settings, false), e.getKey(), post.getId()).get();
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     } catch (ExecutionException e1) {

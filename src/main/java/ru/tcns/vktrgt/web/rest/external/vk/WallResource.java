@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.security.SecurityUtils;
 import ru.tcns.vktrgt.service.UserService;
+import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
 import ru.tcns.vktrgt.service.external.vk.intf.WallService;
 
 import javax.inject.Inject;
@@ -29,6 +30,8 @@ public class WallResource {
 
     @Inject
     UserService userService;
+    @Inject
+    GoogleDriveImpl googleDrive;
 
     @RequestMapping(value = "/wall/leaders",
         method = RequestMethod.POST,
@@ -37,7 +40,7 @@ public class WallResource {
     public ResponseEntity<Void> getTopicCommentsWithLikes(@RequestParam Integer ownerId,
                                                           @RequestParam Integer postId,
                                                           @RequestParam String taskInfo) throws URISyntaxException {
-        UserTaskSettings settings = new UserTaskSettings(userService.getUserWithAuthorities(), true, taskInfo);
+        UserTaskSettings settings = new UserTaskSettings(userService.getUserWithAuthorities(), true, taskInfo, googleDrive);
         wallService.getTopicCommentsWithLikes(settings, ownerId, postId);
         return ResponseEntity.ok().build();
     }

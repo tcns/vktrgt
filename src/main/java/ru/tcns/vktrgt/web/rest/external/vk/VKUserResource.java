@@ -13,6 +13,7 @@ import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.service.UserService;
+import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
 import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 
 import javax.inject.Inject;
@@ -31,6 +32,8 @@ public class VKUserResource {
     VKUserService vkUserService;
     @Inject
     UserService userService;
+    @Inject
+    GoogleDriveImpl googleDrive;
 
     @RequestMapping(value = "/users/leaders",
         method = RequestMethod.POST,
@@ -39,7 +42,7 @@ public class VKUserResource {
     public ResponseEntity<Void> intersectUsersFromFriends(@RequestParam List<Integer> users,
                                                           @RequestParam Integer min, @RequestParam String taskInfo) throws URISyntaxException {
         vkUserService.intersectUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo), users, min);
+            taskInfo, googleDrive), users, min);
         return ResponseEntity.ok().build();
     }
 
@@ -51,7 +54,7 @@ public class VKUserResource {
                                                          @RequestParam Integer min,
                                                          @RequestParam String taskInfo) throws URISyntaxException {
         vkUserService.intersectSubscriptions(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo), users, min);
+            taskInfo, googleDrive), users, min);
         return ResponseEntity.ok().build();
     }
 
@@ -62,7 +65,7 @@ public class VKUserResource {
     public ResponseEntity<Void> getUsersInfo(@RequestParam List<String> userIds,
                                                    @RequestParam String taskInfo) throws URISyntaxException {
         vkUserService.getUserInfo(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo), userIds);
+            taskInfo, googleDrive), userIds);
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/users/url",
@@ -72,7 +75,7 @@ public class VKUserResource {
     public ResponseEntity<Void> getUsersUrl(@RequestParam List<String> userIds,
                                              @RequestParam String taskInfo) throws URISyntaxException {
         vkUserService.getUserURL(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo), userIds);
+            taskInfo, googleDrive), userIds);
         return ResponseEntity.ok().build();
     }
 
@@ -83,7 +86,7 @@ public class VKUserResource {
     public ResponseEntity<Void> getUserFollowers(@RequestParam Integer userId,
                                                  @RequestParam String taskInfo) throws URISyntaxException {
        vkUserService.getFollowers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-           taskInfo), userId);
+           taskInfo, googleDrive), userId);
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/users/vk",
