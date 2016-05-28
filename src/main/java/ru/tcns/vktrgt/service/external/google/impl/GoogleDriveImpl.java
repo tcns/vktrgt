@@ -35,7 +35,7 @@ import java.util.List;
 public class GoogleDriveImpl {
     private static final JsonFactory JSON_FACTORY =
         JacksonFactory.getDefaultInstance();
-    private static final java.io.File DATA_STORE_DIR = new java.io.File("resources/drive-credentials.json");
+    private static final java.io.File DATA_STORE_DIR = new java.io.File("src/main/resources/drive-credentials.json");
     private static FileDataStoreFactory DATA_STORE_FACTORY;
     private static HttpTransport HTTP_TRANSPORT;
     private static final List<String> SCOPES =
