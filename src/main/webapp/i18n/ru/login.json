@@ -1,0 +1,19 @@
+{
+    "login": {
+        "title": "Вход",
+        "form": {
+            "password": "Пароль",
+            "password.placeholder": "Ваш Пароль",
+            "rememberme": "Запомнить меня",
+            "button": "Вход"
+        },
+        "messages": {
+            "error": {
+                "authentication": "<strong>Не удалось войти!</strong> Пожалуйста, проверьте имя пользователя и пароль."
+            }
+        },
+        "password" : {
+            "forgot": "Забыли пароль?"
+        }
+    }
+}

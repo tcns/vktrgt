@@ -1,0 +1,27 @@
+{
+    "health": {
+        "title": "Состояние",
+        "refresh.button": "Обновить",
+        "stacktrace": "Трассировка стека",
+        "details": {
+            "details": "Детали",
+            "properties": "Атрибуты",
+            "name": "Имя",
+            "value": "Значение",
+            "error": "Ошибка"
+        },
+        "indicator": {
+            "diskSpace": "Место на диске",
+            "mail": "Email",
+            "mongo": "MongoDB"
+        },
+        "table": {
+            "service": "Имя сервиса",
+            "status": "Статус"
+        },
+        "status": {
+            "UP": "Готово",
+            "DOWN": "Отключено"
+        }
+    }
+}

@@ -10,7 +10,9 @@ import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.internal.Comment;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 import ru.tcns.vktrgt.domain.external.vk.response.*;
+import ru.tcns.vktrgt.service.export.impl.ExportService;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -21,6 +23,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class WallServiceImpl extends AbstractWallService {
+
+    @Inject
+    ExportService exportService;
 
     @Override
     @Async
@@ -56,7 +61,7 @@ public class WallServiceImpl extends AbstractWallService {
                 }
             }
             service.shutdown();
-            userTask.saveFinal(posts);
+            userTask.saveFinal(exportService.getStreamFromObject(posts));
             return new AsyncResult<>(posts);
         } catch (JSONException e) {
             userTask.saveFinalError(e);
@@ -101,7 +106,7 @@ public class WallServiceImpl extends AbstractWallService {
                 }
             }
             service.shutdown();
-            userTask.saveFinal(comments);
+            userTask.saveFinal(exportService.getStreamFromObject(comments));
             return new AsyncResult<>(comments);
         } catch (JSONException e) {
             userTask.saveFinalError(e);
@@ -138,7 +143,7 @@ public class WallServiceImpl extends AbstractWallService {
                 }
             }
             service.shutdown();
-            userTask.saveFinal(comments);
+            userTask.saveFinal(exportService.getStreamFromObject(comments));
             return new AsyncResult<>(comments);
         } catch (JSONException e) {
             userTask.saveFinalError(e);
@@ -167,7 +172,7 @@ public class WallServiceImpl extends AbstractWallService {
                 i += 1000;
                 userTask = userTask.saveProgress(i);
             }
-            userTask.saveFinal(reposts);
+            userTask.saveFinal(exportService.getStreamFromObject(reposts));
             return new AsyncResult<>(reposts);
         } catch (JSONException e) {
             userTask.saveFinalError(e);
@@ -202,7 +207,7 @@ public class WallServiceImpl extends AbstractWallService {
                     e.printStackTrace();
                 }
             }
-            userTask.saveFinal(likes);
+            userTask.saveFinal(exportService.getStreamFromObject(likes));
             service.shutdown();
             return new AsyncResult<>(likes);
         } catch (JSONException e) {

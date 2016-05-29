@@ -1,0 +1,133 @@
+{
+    "global": {
+        "title": "VK ТАРГЕТ",
+        "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
+        "menu": {
+            "home": "Домашня страница",
+            "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
+            "entities": {
+                "main": "Entities",
+                "blog": "Blog",
+                "tag": "Tag",
+                "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
+            },
+            "account": {
+                "main": "Аккаунт",
+                "settings": "Настройка",
+                "password": "Пароль",
+                "sessions": "Сессии",
+                "login": "Вход",
+                "logout": "Выход",
+                "register": "Регистрация"
+            },
+            "admin": {
+                "main": "Администрирование",
+                "user-management": "Настройка пользователей",
+                "tracker": "Отслеживание пользователей",
+                "metrics": "Метрики",
+                "health": "Состояние сервера",
+                "configuration": "Конфигурация",
+                "logs": "Логи",
+                "audits": "Аудит",
+                "apidocs": "API",
+                "database": "База данных",
+                "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
+            },
+            "vk": {
+                "main" : "ВКонтакте",
+                "group-intersect": "Пересечение групп",
+                "group-info": "Информация по группам",
+                "group-activity": "Активность на стене",
+                "topic-activity": "Активность в обсуждениях",
+                "group-members": "Участники групп",
+                "user-leaders": "Лидеры мнений",
+                "user-analyse": "Анализ пользователей",
+                "user-filter": "Фильтр по пользователя"
+            },
+            "language": "Язык",
+            "task-manager": "Менеджер задач"
+        },
+        "form": {
+            "username": "Имя пользователя",
+            "username.placeholder": "Ваш логин",
+            "newpassword": "Новый пароль",
+            "newpassword.placeholder": "Пароль",
+            "confirmpassword": "Подтверждение паролья",
+            "confirmpassword.placeholder": "Подтвердите ваш пароль",
+            "email": "E-mail",
+            "email.placeholder": "Ваш e-mail"
+        },
+        "messages": {
+            "info": {
+                "authenticated": "If you want to <a class=\"alert-link\" href=\"#/login\">sign in</a>, you can try the default accounts:<br/>- Administrator (login=\"admin\" and password=\"admin\") <br/>- User (login=\"user\" and password=\"user\").",
+                "register": "Еще не зарегистрированы? <a class=\"alert-link\" href=\"#/register\">Регистрация</a>"
+            },
+            "error": {
+                "dontmatch": "Пароли не совпадают!"
+            },
+            "validate": {
+                "newpassword": {
+                    "required": "Необходимо веести пароль.",
+                    "minlength": "Длина пароля должна быть по крайней мере 5 символов.",
+                    "maxlength": "Пароль не может иметь длину более 50 симолов.",
+                    "strength": "Сложность пароля:"
+                },
+                "confirmpassword": {
+                    "required": "Требуется подтверждение пароля.",
+                    "minlength": "Длина пароля должна быть по крайней мере 5 символов.",
+                    "maxlength": "Пароль не может иметь длину более 50 симолов."
+                },
+                "email": {
+                    "required": "Требуется e-mail.",
+                    "invalid": "Ваш e-mail невалиден.",
+                    "minlength": "Длина e-mail должна быть по крайней мере 5 символов.",
+                    "maxlength": "E-mail не может иметь длину более 50 симолов."
+                }
+            }
+        },
+        "field": {
+            "id": "ID"
+        }
+    },
+    "entity": {
+        "action": {
+            "addblob": "Добавить файл",
+            "addimage": "Добавить изображениея",
+            "back": "Назад",
+            "cancel": "Отмена",
+            "delete": "Удалить",
+            "edit": "Изменить",
+            "save": "Сохранить",
+            "view": "Просмотреть",
+            "submit": "Подтвердить"
+        },
+        "detail": {
+            "field": "Поле",
+            "value": "Значение"
+        },
+        "delete": {
+            "title": "Подтвердите удаление"
+        },
+        "validation": {
+            "required": "Это поле необходимо.",
+            "minlength": "Это поле необходимо и должно быть длиной по крайне мере {{ min }} символов(-а).",
+            "maxlength": "Поле не может быть длинее {{ max }} симолов(-а).",
+            "min": "Значение должно быть добльше {{ min }}.",
+            "max": "Значение не может быть больше {{ max }}.",
+            "minbytes": "Размер должен быть по краней мере {{ min }} байт.",
+            "maxbytes": "Размер не может превышать {{ max }} байт.",
+            "pattern": "Знаечние должно соответствовать маске {{ pattern }}.",
+            "number": "Значение должно быть числом.",
+            "datetimelocal": "Значение должно являться датой."
+        }
+    },
+    "error": {
+        "server.not.reachable": "Сервер не доступен",
+        "NotNull": "Значение поля {{ fieldName }} не может быть пустым!",
+        "Size": "Значение поля {{ fieldName }} не удовлетворяет требованием по размеру!",
+        "userexists": "Такое имя пользователя уже существует!",
+        "emailexists": "E-mail уже используется!",
+        "idexists": "Сущноть {{ entityName }} не может иметь ID"
+    },
+    "footer": "CEDRA 2016"
+}

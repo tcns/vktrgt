@@ -16,6 +16,7 @@ import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.security.SecurityUtils;
 import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
+import ru.tcns.vktrgt.web.rest.util.HeaderUtil;
 import ru.tcns.vktrgt.web.rest.util.PaginationUtil;
 
 import javax.inject.Inject;
@@ -53,6 +54,14 @@ public class TaskResource {
         List<UserTask> tasks = groups.getContent();
         tasks.parallelStream().forEach(userTask -> userTask.setPayload(""));
         return new ResponseEntity<>(tasks.parallelStream().collect(Collectors.toCollection(LinkedList::new)), headers, HttpStatus.OK);
+    }
+    @RequestMapping(value = "/tasks/{id}",
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Void> removeTask(@PathVariable String id) throws URISyntaxException {
+        repository.delete(id);
+        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(value = "/tasks/export/txt",

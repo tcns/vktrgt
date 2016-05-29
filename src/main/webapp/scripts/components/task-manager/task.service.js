@@ -12,6 +12,9 @@ angular.module('vktrgtApp')
                             return $.param(data);
                         }
                     });
+            },
+            removeTask: function (id) {
+                return $http.delete('/api/tasks/'+id);
             }
         }
     }

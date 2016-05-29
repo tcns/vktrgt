@@ -15,6 +15,7 @@ import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
+import ru.tcns.vktrgt.service.export.impl.ExportService;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -39,6 +40,8 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
     @Inject
     UserTaskRepository repository;
+    @Inject
+    ExportService exportService;
 
     @Override
     public Future<List<String>> getUserURL(UserTaskSettings settings, List<String> userIds) {
@@ -70,7 +73,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
         }
         service.shutdown();
-        userTask.saveFinal(response);
+        userTask.saveFinal(exportService.getStreamFromObject(response));
         return new AsyncResult<>(response);
     }
 
@@ -103,14 +106,14 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
         }
         service.shutdown();
-        userTask.saveFinal(response);
+        userTask.saveFinal(exportService.getStreamFromObject(response));
         return new AsyncResult<>(response);
     }
 
     @Override
     public List<User> searchUsersVK(String q, String token) {
         List<User> users = new ArrayList<>();
-        Content content = null;
+        Content content;
         try {
             String url = USERS_PREFIX + "search?q=" + q + "&count=1000&access_token=" + token+VERSION;
             content = Request.Get(url).execute().returnContent();
@@ -157,7 +160,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
             userTask = userTask.saveProgress(1);
         }
         Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);
-        userTask.saveFinal(response);
+        userTask.saveFinal(exportService.getStreamFromObject(response));
         return new AsyncResult<>(response);
     }
 
@@ -189,7 +192,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
                 e.printStackTrace();
             }
         }
-        userTask.saveFinal(users);
+        userTask.saveFinal(exportService.getStreamFromObject(users));
         service.shutdown();
         return new AsyncResult<>(users);
     }
@@ -228,7 +231,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
             }
         }
         Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);
-        userTask.saveFinal(response);
+        userTask.saveFinal(exportService.getStreamFromObject(response));
         return new AsyncResult<>(response);
     }
 }

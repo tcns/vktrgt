@@ -11,6 +11,7 @@ import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.VKUrlParser;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
+import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.service.external.vk.intf.ActivityService;
 import ru.tcns.vktrgt.service.external.vk.intf.WallService;
 
@@ -36,6 +37,8 @@ public class ActivityServiceImpl implements ActivityService {
     private WallService wallService;
     @Inject
     private UserTaskRepository repository;
+    @Inject
+    private ExportService exportService;
 
     @Override
     @Async
@@ -66,7 +69,7 @@ public class ActivityServiceImpl implements ActivityService {
             groupActivity = ArrayUtils.sortByValue(groupActivity, minCount);
             activity.put(e.getKey(), groupActivity);
         }
-        userTask.saveFinal(activity);
+        userTask.saveFinal(exportService.getStreamFromObject(activity));
         return new AsyncResult<>(activity);
     }
 
@@ -176,7 +179,7 @@ public class ActivityServiceImpl implements ActivityService {
         if (activeAuditoryDTO.getCountByAllGroups()) {
             activity.put(0, ArrayUtils.sortByValue(activity.get(0), activeAuditoryDTO.getMinCount()));
         }
-        userTask.saveFinal(activity);
+        userTask.saveFinal(exportService.getStreamFromObject(activity));
         return new AsyncResult<>(activity) ;
     }
 

@@ -1,0 +1,16 @@
+{
+    "task-manager": {
+        "title": "Менеджер задач",
+        "table": {
+            "id": "ID",
+            "kind": "Тип Задачи",
+            "task-info": "Информация о задаче",
+            "current-status": "Текущий статус",
+            "current-status-desc": "Описание статуса",
+            "current-progress": "Прогресс",
+            "download": {
+                "txt": "TXT"
+            }
+        }
+    }
+}

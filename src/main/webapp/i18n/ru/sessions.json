@@ -1,0 +1,15 @@
+{
+    "sessions": {
+        "title": "Активные сессии для [<b>{{username}}</b>]",
+        "table": {
+            "ipaddress": "IP",
+            "useragent": "Браузер",
+            "date": "Дата",
+            "button": "Сбросить сессию"
+        },
+        "messages": {
+            "success": "<strong>Сессия сброшена!</strong>",
+            "error": "<strong>Произошла ошибка!</strong> Сессия не может быть сброшена."
+        }
+    }
+}

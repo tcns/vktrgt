@@ -16,6 +16,13 @@ angular.module('vktrgtApp')
             $scope.page = page;
             $scope.loadAll();
         };
+        $scope.removeTask = function(id) {
+            "use strict";
+            $scope.tasks = _.without($scope.tasks, _.findWhere($scope.tasks, {id: id}));
+            //if (confirm("Вы действительно хотите удалить задание?")) {
+                TaskService.removeTask(id);
+            //}
+        }
         $scope.loadAll();
         $scope.submit = function () {
             $scope.newDto = angular.copy($scope.dto);

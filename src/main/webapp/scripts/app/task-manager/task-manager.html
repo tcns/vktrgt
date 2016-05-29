@@ -51,7 +51,8 @@
                                     </td>
                                 <td class="text-right">
                                     <div class="btn-group flex-btn-group-container">
-                                        <a class="btn btn-default" ng-href="/api/tasks/export/txt?taskId={{task.id}}&fileName={{task.kind}}" translate="task-manager.table.download.txt"></a>
+                                        <a class="btn btn-default" ng-href="/api/tasks/export/txt?taskId={{task.id}}&fileName={{task.kind}}"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                        <a class="btn btn-default" ng-click="removeTask(task.id)"><i class="fa fa-times" aria-hidden="true"></i></a>
                                     </div>
                                 </td>
                             </tr>

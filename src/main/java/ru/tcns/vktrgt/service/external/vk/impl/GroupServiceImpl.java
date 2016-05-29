@@ -85,7 +85,7 @@ public class GroupServiceImpl extends AbstractGroupService {
             }
         }
         service.shutdown();
-        userTask.saveFinal(users);
+        userTask.saveFinal(exportService.getStreamFromObject(users));
         return new AsyncResult<>(users);
     }
 
@@ -111,7 +111,7 @@ public class GroupServiceImpl extends AbstractGroupService {
 
         }
         service.shutdown();
-        userTask.saveFinal(response);
+        userTask.saveFinal(exportService.getStreamFromObject(response));
         return new AsyncResult<>(response);
     }
 
@@ -196,7 +196,7 @@ public class GroupServiceImpl extends AbstractGroupService {
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             CommonIDResponse response = new ResponseParser<>(CommonIDResponse.class).parseResponseString(ans, RESPONSE_STRING);
-            userTask.saveFinal(response.getItems());
+            userTask.saveFinal(exportService.getStreamFromObject(response.getItems()));
             return response.getItems();
         } catch (IOException ex) {
             userTask.saveFinalError(ex);

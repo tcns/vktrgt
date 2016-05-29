@@ -13,6 +13,7 @@ import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.domain.util.DateUtils;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
+import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.service.external.vk.intf.AnalysisService;
 import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 
@@ -36,6 +37,8 @@ public class AnalysisServiceImpl implements AnalysisService {
     private UserTaskRepository repository;
     @Inject
     private VKUserService vkUserService;
+    @Inject
+    private ExportService exportService;
 
     @Async
     @Override
@@ -85,7 +88,7 @@ public class AnalysisServiceImpl implements AnalysisService {
                         user.getSex().equals(sex)).collect(Collectors.toList());
             }
         }
-        userTask.saveFinal(users);
+        userTask.saveFinal(exportService.getStreamFromObject(users));
         return new AsyncResult<>(users);
     }
 
@@ -168,7 +171,7 @@ public class AnalysisServiceImpl implements AnalysisService {
                 analyseDTO.getSex().put(sex, uList);
             }
         }
-        userTask.saveFinal(analyseDTO);
+        userTask.saveFinal(exportService.getStreamFromObject(analyseDTO));
         return new AsyncResult<>(analyseDTO);
     }
 
