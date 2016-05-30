@@ -17,22 +17,38 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <form name="form" class="form-horizontal form-label-left" novalidate show-validation>
+                    <form name="form" enctype="multipart/form-data" class="form-horizontal form-label-left" novalidate
+                          show-validation>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="groups"
                                    translate="vk.groups.intersect.group-list">
                             </label>
 
-                            <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-md-5 col-sm-5 col-xs-10">
                                 <textarea ng-model="groups" type="text" name="groups" id="groups" required
                                           class="form-control col-md-7 col-xs-12"/>
+
                                 <div ng-show="form.groups.$dirty && form.groups.$invalid">
                                     <p class="help-block"
                                        ng-show="form.groups.$error.required" translate="vk.general.validation.required">
                                     </p>
                                 </div>
                             </div>
+                            <div class="col-md-2 col-sm-2 col-xs-2">
+                                <input type="file" id="file" name="file"/>
+                            </div>
 
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="min-count"
+                                   translate="vk.groups.intersect.min-count">
+                                min count <span class="required">*</span>
+                            </label>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input ng-model="minCount" type="number" min="0" id="min-count" required="required"
+                                       class="form-control col-md-7 col-xs-12"/>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="task-info"
@@ -42,16 +58,19 @@
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input ng-model="taskInfo" type="text" name="taskInfo" id="task-info" required
                                        class="form-control col-md-7 col-xs-12"/>
+
                                 <div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
                                     <p class="help-block"
-                                       ng-show="form.taskInfo.$error.required" translate="vk.general.validation.required">
+                                       ng-show="form.taskInfo.$error.required"
+                                       translate="vk.general.validation.required">
                                     </p>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <button ng-click="submit()" class="btn btn-success" ng-disabled="form.$invalid" translate="entity.action.submit">
+                                <button ng-click="submit()" class="btn btn-success" ng-disabled="form.$invalid"
+                                        translate="entity.action.submit">
                                 </button>
                             </div>
                         </div>

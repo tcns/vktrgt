@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
@@ -18,12 +19,16 @@ import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
 import ru.tcns.vktrgt.service.UserService;
+import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 import ru.tcns.vktrgt.web.rest.util.PaginationUtil;
 
 import javax.inject.Inject;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,6 +47,8 @@ public class GroupResource {
     UserService userService;
     @Inject
     GoogleDriveImpl googleDrive;
+    @Inject
+    ExportService exportService;
 
     @RequestMapping(value = "/groups",
         method = RequestMethod.POST,
@@ -112,10 +119,12 @@ public class GroupResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> intersectUsersFromGroups(@RequestParam List<String> names,
-                                                                  @RequestParam String taskInfo) throws URISyntaxException {
-
+                                                                  @RequestParam String taskInfo,
+                                                         @RequestParam Integer minCount,
+                                                         @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        names.addAll(exportService.getListOfStrings(file, "\n"));
         groupService.intersectGroups(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo, googleDrive), names);
+            taskInfo, googleDrive), names, minCount);
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/groups/members",

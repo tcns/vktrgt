@@ -1,18 +1,18 @@
 angular.module('vktrgtApp')
     .factory('VKCloudService', function ($rootScope, $cookies, $http, $q) {
         return {
-            intersectGroups: function (ids, taskInfo) {
+            intersectGroups: function (ids, taskInfo, file, minCount) {
+                var fd = new FormData();
+                fd.append('file', file);
+                fd.append('names', ids.join(','))
+                fd.append('taskInfo', taskInfo)
+                fd.append('minCount', minCount)
                 return $http.post('/api/groups/users',
-                    {
-                        'names': ids.join(','),
-                        'taskInfo': taskInfo
-                    }, {
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                        transformRequest: function (data) {
-                            return $.param(data);
-                        }
+                    fd, {
+                        headers: {'Content-Type': undefined},
+                        transformRequest: angular.identity
                     });
-            },intersectUsers: function (ids, taskInfo, min) {
+            }, intersectUsers: function (ids, taskInfo, min) {
                 return $http.post('/api/users/leaders',
                     {
                         'users': ids.join(','),

@@ -19,7 +19,9 @@ import ru.tcns.vktrgt.service.export.impl.ExportService;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -44,7 +46,7 @@ public class GroupServiceImpl extends AbstractGroupService {
         List<Group> groups = new ArrayList<>();
         Content content = null;
         try {
-            String url = PREFIX + "search?q=" + q + "&count=1000&access_token=" + token+VERSION;
+            String url = PREFIX + "search?q=" + q + "&count=1000&access_token=" + token + VERSION;
             content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             GroupResponse groupResponse = new ResponseParser<>(GroupResponse.class).parseResponseString(ans, RESPONSE_STRING);
@@ -62,6 +64,9 @@ public class GroupServiceImpl extends AbstractGroupService {
     public Future<GroupUsers> getAllGroupUsers(UserTaskSettings settings, String groupId) {
         UserTask userTask = new UserTask(ALL_USERS, settings, repository);
         CommonIDResponse initial = getGroupUsers(groupId, 0, 1);
+        if (initial == null || initial.getCount() == 0) {
+            return new AsyncResult<>(new GroupUsers(0, groupId));
+        }
         int count = initial.getCount();
         userTask = userTask.saveInitial(count);
         ExecutorService service = Executors.newFixedThreadPool(10);
@@ -117,20 +122,12 @@ public class GroupServiceImpl extends AbstractGroupService {
 
     @Override
     @Async
-    public Future<List<Integer>> intersectGroups(UserTaskSettings settings, List<String> groups) {
+    public Future<Map<Integer, Integer>> intersectGroups(UserTaskSettings settings, List<String> groups, Integer minCount) {
         UserTask userTask = new UserTask(INTERSECT_GROUPS, settings, repository);
-        GroupUsers init = null;
-        try {
-            init = getAllGroupUsers(settings, groups.get(0)).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
         ArrayUtils utils = new ArrayUtils();
-        List<Integer> result = init.getUsers();
         userTask = userTask.saveInitial(groups.size());
-        for (int i = 1; i < groups.size(); i++) {
+        Map<Integer, Integer> result = new HashMap<>();
+        for (int i = 0; i < groups.size(); i++) {
             userTask = userTask.saveProgress(1);
             GroupUsers cur = null;
             try {
@@ -140,8 +137,9 @@ public class GroupServiceImpl extends AbstractGroupService {
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-            result = utils.intersect(result, cur.getUsers());
+            result = utils.intersectWithCount(result, cur.getUsers());
         }
+        result = ArrayUtils.sortByValue(result, 1);
         userTask.saveFinal(exportService.getStreamFromObject(result));
         return new AsyncResult<>(result);
     }

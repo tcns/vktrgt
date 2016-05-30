@@ -25,8 +25,10 @@ angular.module('vktrgtApp')
             restrict: 'A',
             transclude: false,
             link: function (scope, element, attrs) {
+
                 $SIDEBAR_MENU = angular.element('#sidebar-menu');
                 element.on('click', function(ev) {
+
                     var $li = element.parent();
 
                     if ($li.is('.active')) {
@@ -60,6 +62,7 @@ angular.module('vktrgtApp')
                 $LEFT_COL = angular.element('.left_col');
                 $BODY = angular.element('body')
                 element.on('click', function() {
+
                     if ($BODY.hasClass('nav-md')) {
                         $BODY.removeClass('nav-md').addClass('nav-sm');
                         $LEFT_COL.removeClass('scroll-view').removeAttr('style');

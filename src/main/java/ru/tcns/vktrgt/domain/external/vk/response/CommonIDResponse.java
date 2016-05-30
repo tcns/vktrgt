@@ -13,6 +13,9 @@ public class CommonIDResponse {
     private ArrayList<Integer> items;
 
     public Integer getCount() {
+        if (count == null) {
+            return 0;
+        }
         return count;
     }
 

@@ -4,12 +4,17 @@
 angular.module('vktrgtApp')
     .controller('GroupIntersectController', function ($scope, VKCloudService) {
 
-        $scope.submit = function () {
+        var callService = function (file) {
+            "use strict";
             VKCloudService.intersectGroups($scope.groups.split('\n'),
-                $scope.taskInfo).success(function (response) {
+                $scope.taskInfo, file, $scope.minCount).success(function (response) {
                     $scope.message = "Задача добавлена";
                 }).error(function (response) {
                     $scope.message = "Произошла ошибка";
                 })
+        }
+        $scope.submit = function () {
+            var f = document.getElementById('file').files[0];
+            callService(f);
         };
     });
