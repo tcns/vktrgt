@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import ru.tcns.vktrgt.anno.JsonEntity;
+import ru.tcns.vktrgt.anno.JsonField;
 import ru.tcns.vktrgt.anno.JsonIgnore;
 import ru.tcns.vktrgt.domain.external.vk.dict.GroupType;
 
@@ -30,10 +31,13 @@ public class Group {
 
     private String type;
 
+    @JsonField(name = "photo_50")
     private String photo50;
 
+    @JsonField(name = "photo_100")
     private String photo100;
 
+    @JsonField(name = "photo_200")
     private String photo200;
 
     @Field
@@ -52,9 +56,9 @@ public class Group {
 
     private String counters;
 
-    private Date startDate;
+    private Integer startDate;
 
-    private Date finishDate;
+    private Integer finishDate;
 
     private String publicDateLabel;
 
@@ -200,19 +204,19 @@ public class Group {
         this.counters = counters;
     }
 
-    public Date getStartDate() {
+    public Integer getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Integer startDate) {
         this.startDate = startDate;
     }
 
-    public Date getFinishDate() {
+    public Integer getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(Date finishDate) {
+    public void setFinishDate(Integer finishDate) {
         this.finishDate = finishDate;
     }
 

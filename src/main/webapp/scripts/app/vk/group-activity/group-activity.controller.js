@@ -28,7 +28,7 @@ angular.module('vktrgtApp')
             } else {
                 $scope.newDto.postIds = [];
             }
-            VKCloudService.getGroupActivity($scope.newDto).success(function (response) {
+            VKCloudService.getGroupActivity($scope.newDto, document.getElementById('file').files[0]).success(function (response) {
                 $scope.message = "Задача добавлена";
             }).error(function (response) {
                 $scope.message = "Произошла ошибка";

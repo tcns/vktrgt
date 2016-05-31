@@ -26,7 +26,6 @@
                         <table class="jh-table table table-striped">
                             <thead>
                             <tr jh-sort="predicate" ascending="reverse" callback="loadAll()">
-                                <th jh-sort-by="id"><span translate="task-manager.table.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                                 <th jh-sort-by="kind"><span translate="task-manager.table.kind">Kind</span> <span class="glyphicon glyphicon-sort"></span></th>
                                 <th jh-sort-by="taskInfo"><span translate="task-manager.table.task-info">Task Info</span> <span class="glyphicon glyphicon-sort"></span></th>
                                 <th jh-sort-by="currentStatus"><span translate="task-manager.table.current-status">Current Status</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -37,7 +36,6 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="task in tasks track by task.id">
-                                <td>{{task.id}}</td>
                                 <td>{{task.kind}}</td>
                                 <td>{{task.taskInfo}}</td>
                                 <td>{{task.currentStatus}}</td>

@@ -6,7 +6,7 @@ angular.module('vktrgtApp')
 
         $scope.submit = function () {
             VKCloudService.groupsInfo($scope.groups.split('\n'),
-                $scope.taskInfo).success(function(response){
+                $scope.taskInfo, document.getElementById('file').files[0]).success(function(response){
                     $scope.message = "Задача добавлена";
                 }).error(function(response){
                     $scope.message = "Произошла ошибка";

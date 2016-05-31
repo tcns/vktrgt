@@ -8,8 +8,8 @@ import ru.tcns.vktrgt.anno.JsonEntity;
 @JsonEntity
 public class Market {
     private Integer enabled;
-    private Double priceMin;
-    private Double priceMax;
+    private String priceMin;
+    private String priceMax;
     private Integer mainAlbumId;
     private Integer contactId;
     private Integer currencyId;
@@ -23,19 +23,19 @@ public class Market {
         this.enabled = enabled;
     }
 
-    public Double getPriceMin() {
+    public String getPriceMin() {
         return priceMin;
     }
 
-    public void setPriceMin(Double priceMin) {
+    public void setPriceMin(String priceMin) {
         this.priceMin = priceMin;
     }
 
-    public Double getPriceMax() {
+    public String getPriceMax() {
         return priceMax;
     }
 
-    public void setPriceMax(Double priceMax) {
+    public void setPriceMax(String priceMax) {
         this.priceMax = priceMax;
     }
 

@@ -87,7 +87,9 @@ public class GroupResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> searchGroupsInfoVk(@RequestParam List<String> names,
-                                                      @RequestParam String taskInfo) throws URISyntaxException {
+                                                      @RequestParam String taskInfo,
+                                                   @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        names.addAll(exportService.getListOfStrings(file, "\n"));
         groupService.getGroupsInfo(new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo, googleDrive), names);
         return ResponseEntity.ok().build();

@@ -1,5 +1,7 @@
 package ru.tcns.vktrgt.domain.external.vk.dict;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.Serializable;
 import java.util.List;
 
