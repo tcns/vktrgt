@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.service.UserService;
+import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
 import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 
@@ -34,13 +36,17 @@ public class VKUserResource {
     UserService userService;
     @Inject
     GoogleDriveImpl googleDrive;
+    @Inject
+    ExportService exportService;
 
     @RequestMapping(value = "/users/leaders",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Void> intersectUsersFromFriends(@RequestParam List<Integer> users,
-                                                          @RequestParam Integer min, @RequestParam String taskInfo) throws URISyntaxException {
+    public ResponseEntity<Void> intersectUsersFromFriends(@RequestParam List<String> users,
+                                                          @RequestParam Integer min, @RequestParam String taskInfo,
+                                                          @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        users.addAll(exportService.getListOfStrings(file, "\n"));
         vkUserService.intersectUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo, googleDrive), users, min);
         return ResponseEntity.ok().build();
@@ -50,9 +56,11 @@ public class VKUserResource {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Void> intersectGroupsFromUsers(@RequestParam List<Integer> users,
+    public ResponseEntity<Void> intersectGroupsFromUsers(@RequestParam List<String> users,
                                                          @RequestParam Integer min,
-                                                         @RequestParam String taskInfo) throws URISyntaxException {
+                                                         @RequestParam String taskInfo,
+                                                         @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        users.addAll(exportService.getListOfStrings(file, "\n"));
         vkUserService.intersectSubscriptions(new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo, googleDrive), users, min);
         return ResponseEntity.ok().build();

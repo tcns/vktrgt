@@ -57,7 +57,7 @@ angular.module('vktrgtApp')
             model.countries = $scope.dto.countries;
             model.cities = $scope.dto.cities;
             model.age = $scope.dto.age;
-            VKCloudService.analyseUsers(model).success(function (response) {
+            VKCloudService.analyseUsers(model, document.getElementById('file').files[0]).success(function (response) {
                 $scope.message = "Задача добавлена";
             }).error(function (response) {
                 $scope.message = "Произошла ошибка";

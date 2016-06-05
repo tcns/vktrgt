@@ -25,7 +25,7 @@ public interface VKUserService extends VKService {
     Future<List<String>> getUserURL(UserTaskSettings settings, List<String> userIds);
     CommonIDResponse getUserFriendIds(Integer userId);
     SubscriptionsResponse getSubscriptions(String userId);
-    Future<Map<Integer, Integer>> intersectUsers(UserTaskSettings settings, List<Integer> users, Integer min);
-    Future<Map<Integer, Integer>> intersectSubscriptions(UserTaskSettings settings, List<Integer> users, Integer min);
+    Future<Map<Integer, Integer>> intersectUsers(UserTaskSettings settings, List<String> users, Integer min);
+    Future<Map<Integer, Integer>> intersectSubscriptions(UserTaskSettings settings, List<String> users, Integer min);
     Future<List<Integer>> getFollowers(UserTaskSettings settings, Integer userId);
 }

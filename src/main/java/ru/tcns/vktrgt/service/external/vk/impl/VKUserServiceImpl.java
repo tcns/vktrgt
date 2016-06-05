@@ -147,14 +147,14 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
     @Override
     @Async
-    public Future<Map<Integer, Integer>> intersectSubscriptions(UserTaskSettings settings, List<Integer> users, Integer min) {
+    public Future<Map<Integer, Integer>> intersectSubscriptions(UserTaskSettings settings, List<String> users, Integer min) {
         Map<Integer, Integer> result = new HashMap<>();
         UserTask userTask = new UserTask(SUBSCRIPTIONS, settings, repository);
         userTask  = userTask.saveInitial(users.size());
         ArrayUtils utils = new ArrayUtils();
 
         for (int i = 0; i < users.size(); i++) {
-            SubscriptionsResponse cur = getSubscriptions("" + users.get(i));
+            SubscriptionsResponse cur = getSubscriptions(users.get(i));
             List<Integer> curResult = cur.getGroups();
             result = utils.intersectWithCount(result, curResult);
             userTask = userTask.saveProgress(1);
@@ -215,13 +215,19 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
     @Override
     @Async
-    public Future<Map<Integer, Integer>> intersectUsers(UserTaskSettings settings, List<Integer> users, Integer min) {
+    public Future<Map<Integer, Integer>> intersectUsers(UserTaskSettings settings, List<String> users, Integer min) {
         Map<Integer, Integer> result = new HashMap<>();
         UserTask userTask = new UserTask(USERS, settings, repository);
         userTask = userTask.saveInitial(users.size());
         ArrayUtils utils = new ArrayUtils();
         for (int i = 0; i < users.size(); i++) {
-            CommonIDResponse cur = getUserFriendIds(users.get(i));
+            Integer id = null;
+            try{
+                id = Integer.parseInt(users.get(i));
+            } catch (NumberFormatException ex) {
+                continue;
+            }
+            CommonIDResponse cur = getUserFriendIds(id);
             List<Integer> curResult = cur.getItems();
             if (curResult!=null) {
                 result = utils.intersectWithCount(result, curResult);

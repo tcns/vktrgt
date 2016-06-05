@@ -8,30 +8,38 @@ angular.module('vktrgtApp')
                 fd.append('taskInfo', taskInfo)
                 fd.append('minCount', minCount)
                 return $http.post('/api/groups/users', fd, {
-                        headers: {'Content-Type': undefined},
-                        transformRequest: angular.identity
-                    });
-            }, intersectUsers: function (ids, taskInfo, min) {
-                return $http.post('/api/users/leaders',
-                    {
-                        'users': ids.join(','),
-                        'min': min,
-                        'taskInfo': taskInfo
-                    }, {
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                        transformRequest: function (data) {
-                            return $.param(data);
-                        }
-                    });
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
+            }, intersectUsers: function (ids, taskInfo, min, file) {
+                var fd = new FormData();
+                fd.append('file', file);
+                fd.append('users', ids.join(','))
+                fd.append('taskInfo', taskInfo)
+                fd.append('min', min)
+                return $http.post('/api/users/leaders', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
+            }, intersectUsersByGroups: function (ids, taskInfo, min, file) {
+                var fd = new FormData();
+                fd.append('file', file);
+                fd.append('users', ids.join(','))
+                fd.append('taskInfo', taskInfo)
+                fd.append('min', min)
+                return $http.post('/api/users/groups', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
             }, groupsInfo: function (ids, taskInfo, file) {
                 var fd = new FormData();
                 fd.append('file', file);
                 fd.append('names', ids.join(','))
                 fd.append('taskInfo', taskInfo)
                 return $http.post('/api/groups/info/vk', fd, {
-                        headers: {'Content-Type': undefined},
-                        transformRequest: angular.identity
-                    });
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
             }, getGroupActivity: function (activeAuditoryDTO, file) {
                 var fd = new FormData();
                 fd.append('file', file)
@@ -61,10 +69,22 @@ angular.module('vktrgtApp')
                             return $.param(data);
                         }
                     });
-            }, analyseUsers: function (model) {
-                return $http.post('/api/analyse', model);
-            }, filterUsers: function (model) {
-                return $http.post('/api/filter', model);
+            }, analyseUsers: function (model, file) {
+                var fd = new FormData();
+                fd.append('file', file)
+                fd.append('dto', JSON.stringify(model))
+                return $http.post('/api/analyse', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
+            }, filterUsers: function (model, file) {
+                var fd = new FormData();
+                fd.append('file', file)
+                fd.append('dto', JSON.stringify(model))
+                return $http.post('/api/filter', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
             }
 
         }
