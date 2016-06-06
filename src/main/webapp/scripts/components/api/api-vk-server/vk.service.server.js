@@ -85,6 +85,24 @@ angular.module('vktrgtApp')
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
                 });
+            }, userIdToURL: function (ids, taskInfo, file) {
+                var fd = new FormData();
+                fd.append('file', file)
+                fd.append('userIds', ids)
+                fd.append('taskInfo', taskInfo)
+                return $http.post('/api/users/url', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
+            }, userInfo: function (ids, taskInfo, file) {
+                var fd = new FormData();
+                fd.append('file', file)
+                fd.append('userIds', ids)
+                fd.append('taskInfo', taskInfo)
+                return $http.post('/api/users/info', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
             }
 
         }

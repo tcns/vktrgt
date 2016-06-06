@@ -112,7 +112,7 @@ angular.module('vktrgtApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalp
             urlTemplate: 'i18n/{lang}/{part}.json'
         });
 
-        $translateProvider.preferredLanguage('en');
+        $translateProvider.preferredLanguage('ru');
         $translateProvider.useCookieStorage();
         $translateProvider.useSanitizeValueStrategy('escaped');
         $translateProvider.addInterpolation('$translateMessageFormatInterpolation');

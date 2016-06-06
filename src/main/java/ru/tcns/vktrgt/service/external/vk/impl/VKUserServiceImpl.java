@@ -115,7 +115,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         List<User> users = new ArrayList<>();
         Content content;
         try {
-            String url = USERS_PREFIX + "search?q=" + q + "&count=1000&access_token=" + token+VERSION;
+            String url = USERS_PREFIX + "search?q=" + q + "&count=1000&access_token=" + token + VERSION;
             content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             UserResponse response = new ResponseParser<>(UserResponse.class).parseResponseString(ans, RESPONSE_STRING);
@@ -131,7 +131,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     @Override
     public CommonIDResponse getUserFriendIds(Integer userId) {
         try {
-            String url = FRIENDS_PREFIX + "get?user_id=" + userId + "&order=id"+VERSION;
+            String url = FRIENDS_PREFIX + "get?user_id=" + userId + "&order=id" + VERSION;
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             CommonIDResponse response = new ResponseParser<>(CommonIDResponse.class).parseResponseString(ans, RESPONSE_STRING);
@@ -150,20 +150,21 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     public Future<Map<Integer, Integer>> intersectSubscriptions(UserTaskSettings settings, List<String> users, Integer min) {
         Map<Integer, Integer> result = new HashMap<>();
         UserTask userTask = new UserTask(SUBSCRIPTIONS, settings, repository);
-        userTask  = userTask.saveInitial(users.size());
+        userTask = userTask.saveInitial(users.size());
         ArrayUtils utils = new ArrayUtils();
 
         for (int i = 0; i < users.size(); i++) {
             SubscriptionsResponse cur = getSubscriptions(users.get(i));
-            List<Integer> curResult = cur.getGroups();
-            result = utils.intersectWithCount(result, curResult);
+            if (cur != null && cur.getGroups() != null) {
+                List<Integer> curResult = cur.getGroups();
+                result = utils.intersectWithCount(result, curResult);
+            }
             userTask = userTask.saveProgress(1);
         }
         Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);
         userTask.saveFinal(exportService.getStreamFromObject(response));
         return new AsyncResult<>(response);
     }
-
 
 
     @Override
@@ -181,7 +182,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
             tasks.add(service.submit(() -> getFollowers(userId, cur, 1000).getItems()));
 
         }
-        for (Future<List<Integer>> task: tasks) {
+        for (Future<List<Integer>> task : tasks) {
             try {
                 List<Integer> list = task.get();
                 userTask = userTask.saveProgress(list.size());
@@ -204,7 +205,9 @@ public class VKUserServiceImpl extends AbstractVKUserService {
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             SubscriptionsResponse response = VKResponseParser.parseUserSubscriptions(ans);
-            return response;
+            if (response != null) {
+                return response;
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (JSONException e) {
@@ -222,18 +225,18 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         ArrayUtils utils = new ArrayUtils();
         for (int i = 0; i < users.size(); i++) {
             Integer id = null;
-            try{
+            try {
                 id = Integer.parseInt(users.get(i));
             } catch (NumberFormatException ex) {
                 continue;
             }
             CommonIDResponse cur = getUserFriendIds(id);
             List<Integer> curResult = cur.getItems();
-            if (curResult!=null) {
+            if (curResult != null) {
                 result = utils.intersectWithCount(result, curResult);
                 userTask = userTask.saveProgress(1);
             } else {
-                userTask = userTask.saveError("Не удалось получить от пользователя с id "+users.get(i));
+                userTask = userTask.saveError("Не удалось получить от пользователя с id " + users.get(i));
             }
         }
         Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);

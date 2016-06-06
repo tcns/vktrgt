@@ -71,7 +71,9 @@ public class VKUserResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> getUsersInfo(@RequestParam List<String> userIds,
-                                                   @RequestParam String taskInfo) throws URISyntaxException {
+                                                   @RequestParam String taskInfo,
+                                             @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        userIds.addAll(exportService.getListOfStrings(file, "\n"));
         vkUserService.getUserInfo(new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo, googleDrive), userIds);
         return ResponseEntity.ok().build();
@@ -81,7 +83,9 @@ public class VKUserResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> getUsersUrl(@RequestParam List<String> userIds,
-                                             @RequestParam String taskInfo) throws URISyntaxException {
+                                             @RequestParam String taskInfo,
+                                            @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        userIds.addAll(exportService.getListOfStrings(file, "\n"));
         vkUserService.getUserURL(new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo, googleDrive), userIds);
         return ResponseEntity.ok().build();
