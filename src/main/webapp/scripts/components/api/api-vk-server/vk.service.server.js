@@ -94,6 +94,15 @@ angular.module('vktrgtApp')
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
                 });
+            }, userURLToId: function (ids, taskInfo, file) {
+                var fd = new FormData();
+                fd.append('file', file)
+                fd.append('userUrl', ids)
+                fd.append('taskInfo', taskInfo)
+                return $http.post('/api/users/urlid', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
             }, userInfo: function (ids, taskInfo, file) {
                 var fd = new FormData();
                 fd.append('file', file)

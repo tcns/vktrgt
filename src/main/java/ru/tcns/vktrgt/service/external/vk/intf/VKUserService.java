@@ -23,6 +23,7 @@ public interface VKUserService extends VKService {
     Future<List<User>> getUserInfo(UserTaskSettings settings, List<String> userIds);
     List<User> searchUsersVK(String q, String token);
     Future<List<String>> getUserURL(UserTaskSettings settings, List<String> userIds);
+    Future<List<String>> getUserId(UserTaskSettings settings, List<String> userUrls);
     CommonIDResponse getUserFriendIds(Integer userId);
     SubscriptionsResponse getSubscriptions(String userId);
     Future<Map<Integer, Integer>> intersectUsers(UserTaskSettings settings, List<String> users, Integer min);

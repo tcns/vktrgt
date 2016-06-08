@@ -14,6 +14,7 @@ import ru.tcns.vktrgt.domain.external.vk.response.*;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
 import ru.tcns.vktrgt.domain.util.parser.VKResponseParser;
+import ru.tcns.vktrgt.domain.util.parser.VKUrlParser;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
 
@@ -37,6 +38,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     public static final String SUBSCRIPTIONS = BEAN_NAME + "subscriptions";
     public static final String USERS = BEAN_NAME + "users";
     public static final String USER_URL = BEAN_NAME + "userUrl";
+    public static final String USER_IDS = BEAN_NAME + "userIds";
 
     @Inject
     UserTaskRepository repository;
@@ -48,7 +50,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         List<String> response = new ArrayList<>();
         UserTask userTask = new UserTask(USER_URL, settings, repository);
         userTask = userTask.saveInitial(userIds.size());
-        String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts";
+        String fields = "domain";
         List<String> users = ArrayUtils.getDelimetedLists(userIds, 1000);
         ExecutorService service = Executors.newFixedThreadPool(100);
         List<Future<List<User>>> tasks = new ArrayList<>();
@@ -64,6 +66,41 @@ public class VKUserServiceImpl extends AbstractVKUserService {
             try {
                 List<User> list = future.get();
                 List<String> stringList = list.parallelStream().map(a -> a.getId() + ": " + DOMAIN_PREFIX + a.getDomain())
+                    .collect(Collectors.toList());
+                userTask = userTask.saveProgress(list.size());
+                response.addAll(stringList);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+        service.shutdown();
+        userTask.saveFinal(exportService.getStreamFromObject(response));
+        return new AsyncResult<>(response);
+    }
+
+    @Override
+    public Future<List<String>> getUserId(UserTaskSettings settings, List<String> userUrls) {
+        List<String> response = new ArrayList<>();
+        UserTask userTask = new UserTask(USER_IDS, settings, repository);
+        userTask = userTask.saveInitial(userUrls.size());
+        String fields = "domain";
+        List<String> urls = userUrls.parallelStream().map(a -> VKUrlParser.getName(a)).collect(Collectors.toList());
+        List<String> users = ArrayUtils.getDelimetedLists(urls, 1000);
+        ExecutorService service = Executors.newFixedThreadPool(100);
+        List<Future<List<User>>> tasks = new ArrayList<>();
+        for (String user : users) {
+            tasks.add(service.submit(() -> {
+                String url = USERS_PREFIX + "get?user_ids=" + user + "&fields=" + fields + VERSION;
+                Content content = Request.Get(url).execute().returnContent();
+                String ans = content.asString();
+                return VKResponseParser.parseUsersResponse(ans);
+            }));
+        }
+        for (Future<List<User>> future : tasks) {
+            try {
+                List<User> list = future.get();
+                List<String> stringList = list.parallelStream().map(a -> "" + a.getId())
                     .collect(Collectors.toList());
                 userTask = userTask.saveProgress(list.size());
                 response.addAll(stringList);

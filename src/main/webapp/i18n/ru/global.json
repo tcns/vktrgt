@@ -44,7 +44,8 @@
                 "user-intersect": "Пересечение пользователей по группам",
                 "user-analyse": "Анализ пользователей",
                 "user-filter": "Фильтр по пользователя",
-                "user-ids": "ID->URL Пользователей"
+                "user-ids": "ID->URL Пользователей",
+                "user-urls": "URL->ID Пользователей"
             },
             "language": "Язык",
             "task-manager": "Менеджер задач"

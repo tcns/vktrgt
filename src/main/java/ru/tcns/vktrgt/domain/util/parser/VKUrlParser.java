@@ -15,9 +15,24 @@ public class VKUrlParser {
         Matcher matcher = pattern.matcher(url);
         matcher.find();
         VKUrlDto vkUrlDto = new VKUrlDto();
-        vkUrlDto.setElementId(matcher.group(6));
-        vkUrlDto.setOwnerId(matcher.group(4));
-        vkUrlDto.setType(matcher.group(3));
+        try {
+            vkUrlDto.setElementId(matcher.group(6));
+            vkUrlDto.setOwnerId(matcher.group(4));
+            vkUrlDto.setType(matcher.group(3));
+        } catch (Exception e){}
+
         return vkUrlDto;
+    }
+    public static final String getName (String url) {
+        String regex = "^([\\w:\\/.]*\\/)?(id\\d*|[\\w\\d_]*)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(url);
+        matcher.find();
+        String res = "";
+        try {
+            res = matcher.group(2);
+
+        } catch (Exception e){}
+        return res;
     }
 }

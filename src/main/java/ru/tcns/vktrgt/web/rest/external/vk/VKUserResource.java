@@ -91,6 +91,19 @@ public class VKUserResource {
         return ResponseEntity.ok().build();
     }
 
+    @RequestMapping(value = "/users/urlid",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Void> getUsersId(@RequestParam List<String> userUrl,
+                                            @RequestParam String taskInfo,
+                                            @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        userUrl.addAll(exportService.getListOfStrings(file, "\n"));
+        vkUserService.getUserId(new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userUrl);
+        return ResponseEntity.ok().build();
+    }
+
     @RequestMapping(value = "/users/followers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
