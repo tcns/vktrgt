@@ -2,7 +2,7 @@
  * Created by root on 3/14/16.
  */
 angular.module('vktrgtApp')
-    .factory('GoogleDrive', function ($rootScope, $cookies, $http, $q, CLIENT_ID_GOOGLE_DRIVE, $cookies) {
+    .factory('GoogleDrive', function ($rootScope, $cookies, $http, $q, CLIENT_ID_GOOGLE_DRIVE) {
         var TOKEN_FIELD = "gd_token";
         return {
             authorize: function () {

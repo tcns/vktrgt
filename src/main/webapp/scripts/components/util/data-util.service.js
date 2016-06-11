@@ -2,26 +2,6 @@
 
 angular.module('vktrgtApp')
     .service('DataUtils', function ($filter) {
-        this.strMapToObj = function (strMap) {
-            let obj = Object.create(null);
-            for (let [k,v] of strMap) {
-                obj[k] = v;
-            }
-            return obj;
-        };
-        this.objToStrMap = function (obj) {
-            let strMap = new Map();
-            for (let k of Object.keys(obj)) {
-                strMap.set(k, obj[k]);
-            }
-            return strMap;
-        };
-        this.mapToJson = function (map) {
-            return JSON.stringify([...map]);
-        };
-        this.jsonToMap = function (jsonStr) {
-            return new Map(JSON.parse(jsonStr));
-        };
         this.byteSize = function (base64String) {
             if (!angular.isString(base64String)) {
                 return '';
