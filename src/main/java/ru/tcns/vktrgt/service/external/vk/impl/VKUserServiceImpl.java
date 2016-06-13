@@ -119,9 +119,10 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     public Future<List<User>> getUserInfo(UserTaskSettings settings, List<String> userIds) {
         List<User> response = new ArrayList<>();
         UserTask userTask = new UserTask(USER_INFO, settings, repository);
-        userTask = userTask.saveInitial(userIds.size());
+        List<String> convertedIds = userIds.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
+        userTask = userTask.saveInitial(convertedIds.size());
         String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts";
-        List<String> users = ArrayUtils.getDelimetedLists(userIds, 1000);
+        List<String> users = ArrayUtils.getDelimetedLists(convertedIds, 1000);
         ExecutorService service = Executors.newFixedThreadPool(100);
         List<Future<List<User>>> tasks = new ArrayList<>();
         for (String user : users) {
@@ -187,6 +188,15 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     public Future<Map<Integer, Integer>> intersectSubscriptions(UserTaskSettings settings, List<String> users, Integer min) {
         Map<Integer, Integer> result = new HashMap<>();
         UserTask userTask = new UserTask(SUBSCRIPTIONS, settings, repository);
+        try {
+            List<User> userList = getUserInfo(new UserTaskSettings(settings, false), users).get();
+            users = new ArrayList<>(userList.size());
+            for (User user: userList) {
+                users.add(""+user.getId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         userTask = userTask.saveInitial(users.size());
         ArrayUtils utils = new ArrayUtils();
 
@@ -259,6 +269,15 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         Map<Integer, Integer> result = new HashMap<>();
         UserTask userTask = new UserTask(USERS, settings, repository);
         userTask = userTask.saveInitial(users.size());
+        try {
+            List<User> userList = getUserInfo(new UserTaskSettings(settings, false), users).get();
+            users = new ArrayList<>(userList.size());
+            for (User user: userList) {
+                users.add(""+user.getId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         ArrayUtils utils = new ArrayUtils();
         for (int i = 0; i < users.size(); i++) {
             Integer id = null;

@@ -13,8 +13,10 @@ import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.GroupResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
+import ru.tcns.vktrgt.domain.util.parser.VKUrlParser;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
+import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -40,6 +42,8 @@ public class GroupServiceImpl extends AbstractGroupService {
     UserTaskRepository repository;
     @Inject
     ExportService exportService;
+    @Inject
+    VKUserService userService;
 
     @Override
     public List<Group> searchVk(String q, String token) {
@@ -75,7 +79,7 @@ public class GroupServiceImpl extends AbstractGroupService {
         for (int i = 0; i < count; i += 1000) {
             final int cur = i;
             try {
-                tasks.add(service.submit(() -> getGroupUsers(groupId, cur, 1000)));
+                tasks.add(service.submit(() -> getGroupUsers(VKUrlParser.getName(groupId), cur, 1000)));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -98,7 +102,8 @@ public class GroupServiceImpl extends AbstractGroupService {
     public Future<List<Group>> getGroupsInfo(UserTaskSettings settings, List<String> groups) {
         List<Group> response = new ArrayList<>();
         UserTask userTask = new UserTask(GROUP_INFO, settings, repository);
-        List<String> groupsIds = ArrayUtils.getDelimetedLists(groups, 1000);
+        List<String> convertedIds = groups.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
+        List<String> groupsIds = ArrayUtils.getDelimetedLists(convertedIds, 1000);
         userTask = userTask.saveInitial(groupsIds.size());
         ExecutorService service = Executors.newFixedThreadPool(100);
         List<Future<List<Group>>> tasks = new ArrayList<>();
@@ -125,13 +130,14 @@ public class GroupServiceImpl extends AbstractGroupService {
     public Future<Map<Integer, Integer>> intersectGroups(UserTaskSettings settings, List<String> groups, Integer minCount) {
         UserTask userTask = new UserTask(INTERSECT_GROUPS, settings, repository);
         ArrayUtils utils = new ArrayUtils();
-        userTask = userTask.saveInitial(groups.size());
+        List<String> convertedIds = groups.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
+        userTask = userTask.saveInitial(convertedIds.size());
         Map<Integer, Integer> result = new HashMap<>();
-        for (int i = 0; i < groups.size(); i++) {
+        for (int i = 0; i < convertedIds.size(); i++) {
             userTask = userTask.saveProgress(1);
             GroupUsers cur = null;
             try {
-                cur = getAllGroupUsers(new UserTaskSettings(settings, false), groups.get(i)).get();
+                cur = getAllGroupUsers(new UserTaskSettings(settings, false), convertedIds.get(i)).get();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {

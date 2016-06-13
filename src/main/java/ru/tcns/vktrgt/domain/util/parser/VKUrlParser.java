@@ -24,7 +24,7 @@ public class VKUrlParser {
         return vkUrlDto;
     }
     public static final String getName (String url) {
-        String regex = "^([\\w:\\/.]*\\/)?(id\\d*|[\\w\\d_]*)$";
+        String regex = "^([\\w:\\/.]*\\/)?(id\\d*|[\\w\\d_.]*)$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(url);
         matcher.find();

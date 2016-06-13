@@ -1,9 +1,9 @@
 {
     "main": {
-        "title": "Добро пожаловать!",
-        "subtitle": "Домашняя страница",
+        "title": "Р”РѕР±СЂРѕ РїРѕР¶Р°Р»РѕРІР°С‚СЊ!",
+        "subtitle": "Р”РѕРјР°С€РЅСЏСЏ СЃС‚СЂР°РЅРёС†Р°",
         "logged": {
-            "message": "Вы вошли как \"{{username}}\"."
+            "message": "Р’С‹ РІРѕС€Р»Рё РєР°Рє \"{{username}}\"."
         },
         "question": "If you have any question on JHipster:",
         "link": {
