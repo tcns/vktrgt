@@ -19,6 +19,7 @@ import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.util.Preconditions;
+import org.apache.http.client.fluent.Request;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
@@ -151,9 +152,11 @@ public class AuthFactory {
      */
     public static void browse(String url) {
         Preconditions.checkNotNull(url);
-        // Ask user to open in their browser using copy-paste
+        Request.Get(url);
         System.out.println("Please open the following address in your browser:");
         System.out.println("  " + url);
+        /*// Ask user to open in their browser using copy-paste
+
         // Attempt to open it in the browser
         try {
             if (Desktop.isDesktopSupported()) {
@@ -171,7 +174,7 @@ public class AuthFactory {
             // "Can't connect to X11 window server using ':0.0' as the value of the
             // DISPLAY variable." The exact error message may vary slightly.
             LOGGER.log(Level.WARNING, "Unable to open browser", e);
-        }
+        }*/
     }
 
     /** Returns the authorization code flow. */
