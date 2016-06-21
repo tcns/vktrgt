@@ -5,6 +5,7 @@ buildscript {
         maven { url 'http://repo.spring.io/plugins-release' }
         maven { url 'http://repo.spring.io/milestone' }
         maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'http://central.maven.org/maven2' }
     }
     dependencies {
         classpath group: 'org.sonarqube.gradle', name: 'gradle-sonarqube-plugin', version: '1.0'
@@ -82,6 +83,8 @@ configurations {
 }
 
 repositories {
+    mavenLocal()
+    mavenCentral()
     maven { url 'http://repo.spring.io/milestone' }
     maven { url 'http://repo.spring.io/snapshot' }
     maven { url 'https://repository.jboss.org/nexus/content/repositories/releases' }
@@ -161,6 +164,8 @@ dependencies {
         exclude module: 'servlet-api'
     }
     compile 'com.google.apis:google-api-services-drive:v3-rev6-1.20.0'
+    compile 'com.google.apis:google-api-services-oauth2:v1-rev115-1.22.0'
+
 
 
     testCompile group: 'com.jayway.awaitility', name: 'awaitility', version: awaility_version

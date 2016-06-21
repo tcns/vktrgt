@@ -212,4 +212,8 @@ public class GroupServiceImpl extends AbstractGroupService {
         return new ArrayList<>();
     }
 
+    @Override
+    public Future<Map<Integer, Integer>> similarGroups(UserTaskSettings settings, List<String> groups, Integer minCount) {
+        return null;
+    }
 }

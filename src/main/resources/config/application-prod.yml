@@ -23,10 +23,15 @@ spring:
             uri: ${MONGODB_URI}
             database: heroku_967hwnzb
     mail:
-        host: localhost
-        port: 25
-        username:
-        password:
+        host: smtp.sendgrid.net
+        port: 587
+        username: ${SENDGRID_USERNAME}
+        password: ${SENDGRID_PASSWORD}
+        protocol: smtp
+        from: app49838990@heroku.com
+        tls: true
+        properties.mail.smtp:
+            auth: true
     thymeleaf:
         cache: true
 
@@ -48,7 +53,7 @@ jhipster:
         cache: # Used by the CachingHttpHeadersFilter
             timeToLiveInDays: 31
     mail: # specific JHipster mail property, for standard properties see MailProperties
-        from: vktrgt@localhost
+        from: app49838990@heroku.com
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
         spark:

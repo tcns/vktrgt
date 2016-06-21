@@ -14,6 +14,8 @@ public final class Constants {
     // Spring profile used when deploying to Heroku
     public static final String SPRING_PROFILE_HEROKU = "heroku";
 
+    public static final String PROD_HOST = "https://vktrgt.herokuapp.com";
+
     public static final String APPLICATION_NAME="vktrgt";
 
     public static final String SYSTEM_ACCOUNT = "system";

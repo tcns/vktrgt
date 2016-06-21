@@ -16,11 +16,14 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.Permission;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import ru.tcns.vktrgt.config.AuthFactory;
 import ru.tcns.vktrgt.config.Constants;
 import ru.tcns.vktrgt.config.JHipsterProperties;
 
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,6 +43,10 @@ public class GoogleDriveImpl {
     private static HttpTransport HTTP_TRANSPORT;
     private static final List<String> SCOPES =
         Arrays.asList(DriveScopes.DRIVE);
+    @Inject
+    AuthFactory authFactory;
+    @Inject
+    private Environment env;
 
     public Credential authorize() throws IOException, GeneralSecurityException {
         HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -53,9 +60,17 @@ public class GoogleDriveImpl {
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(DATA_STORE_FACTORY)
                 .setAccessType("offline")
+                .setApprovalPrompt("force")
                 .build();
-        Credential credential = new AuthorizationCodeInstalledApp(
-            flow, new LocalServerReceiver.Builder().setPort(58459).build()).authorize("user");
+        String hostName = "http://localhost:8080";
+        if (Arrays.asList(env.getActiveProfiles()).contains(Constants.SPRING_PROFILE_PRODUCTION)) {
+            hostName = Constants.PROD_HOST;
+        }
+        hostName = hostName + "/Callback";
+        authFactory.setFlow(flow);
+        Credential credential = authFactory.authorize("user", hostName);
+        //Credential credential = new AuthorizationCodeInstalledApp(
+          //  flow, new LocalServerReceiver.Builder().setPort(58459).build()).authorize("user");
         System.out.println(
             "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
         return credential;
