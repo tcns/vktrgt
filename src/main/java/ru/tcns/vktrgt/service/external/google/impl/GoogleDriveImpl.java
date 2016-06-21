@@ -60,7 +60,6 @@ public class GoogleDriveImpl {
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(DATA_STORE_FACTORY)
                 .setAccessType("offline")
-                .setApprovalPrompt("force")
                 .build();
         String hostName = "http://localhost:8080";
         if (Arrays.asList(env.getActiveProfiles()).contains(Constants.SPRING_PROFILE_PRODUCTION)) {
