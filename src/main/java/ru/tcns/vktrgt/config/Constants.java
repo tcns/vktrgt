@@ -24,7 +24,7 @@ public final class Constants {
 
     public static final String GOOGLE_SECRET = "387946429490-qf7svfmvf8hvu8mo1v876p0j9395m4cp.apps.googleusercontent.com";
 
-    public static final String GOOGLE_FOLDER = "0B6fVHiSBdlZ9cFdKMEtaU0Y4NEk";
+    public static final String GOOGLE_FOLDER = "VKTRGT_FOLDER";
 
     private Constants() {
     }

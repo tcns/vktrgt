@@ -25,19 +25,8 @@ public final class VKResponseParser {
         return object.getString("access_token");
     }
 
-    public static CommonIDResponse parseCommonIDResponse(String response) throws JSONException {
-        JSONObject object = new JSONObject(response);
-        JSONArray jsonArray = object.getJSONArray("response");
-        CommonIDResponse commonIDResponse = new CommonIDResponse();
-        commonIDResponse.setCount(jsonArray.length());
-        ArrayList<Integer> items = new ArrayList<>(jsonArray.length());
-        for (int i = 0; i < jsonArray.length(); i++) {
-            items.add(jsonArray.getInt(i));
-        }
-        commonIDResponse.setItems(items);
-        return commonIDResponse;
-    }
     public static List<User> parseUsersResponse(String response) throws JSONException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        System.out.println(response);
         JSONObject object = new JSONObject(response);
         JSONArray jsonArray = object.getJSONArray("response");
         List<User> users = new ArrayList<>();
@@ -49,6 +38,7 @@ public final class VKResponseParser {
     }
 
     public static CommonIDResponse parseCommonResponseWithCount(String response) throws JSONException{
+        System.out.println(response);
         JSONObject object = new JSONObject(response);
         JSONObject jsonResponse = object.getJSONObject("response");
         CommonIDResponse commonIDResponse = new CommonIDResponse();
@@ -61,39 +51,9 @@ public final class VKResponseParser {
         commonIDResponse.setItems(items);
         return commonIDResponse;
     }
-    public static FriendsResponse parseFriendsResponse(String response) throws JSONException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        JSONObject object = new JSONObject(response);
-        JSONObject jsonResponse = object.getJSONObject("response");
-        FriendsResponse friendsResponse = new FriendsResponse();
-        friendsResponse.setCount(jsonResponse.getInt("count"));
-        JSONArray jsonArray = jsonResponse.getJSONArray("items");
-        ArrayList<User> users = new ArrayList<>();
-        ResponseParser<User> userResponseParser = new ResponseParser<>(User.class);
-        for (int i = 0; i<jsonArray.length(); i++) {
-            users.add(userResponseParser.parseObject(jsonArray.getJSONObject(i)));
-        }
-        friendsResponse.setItems(users);
-        return friendsResponse;
-    }
-
-
-    public static GroupResponse parseGroupSearchResponse(String response) throws JSONException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        JSONObject object = new JSONObject(response);
-        JSONObject jsonResponse = object.getJSONObject("response");
-        GroupResponse groupResponse = new GroupResponse();
-        groupResponse.setCount(jsonResponse.getInt("count"));
-        JSONArray jsonArray = jsonResponse.getJSONArray("items");
-        ArrayList<Group> items = new ArrayList<>(jsonArray.length());
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonGroup = jsonArray.getJSONObject(i);
-            Group group = new ResponseParser<>(Group.class).parseObject(jsonGroup);
-            items.add(group);
-        }
-        groupResponse.setItems(items);
-        return groupResponse;
-    }
 
     public static List<Group> parseGroupGetByIdResponse(String response) throws JSONException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        System.out.println(response);
         JSONObject object = new JSONObject(response);
         JSONArray jsonArray = object.optJSONArray("response");
         if (jsonArray!=null) {
@@ -115,6 +75,7 @@ public final class VKResponseParser {
 
     public static SubscriptionsResponse parseUserSubscriptions(String response) {
         JSONObject object = new JSONObject(response);
+        System.out.println(response);
         JSONObject obj = object.optJSONObject("response");
         if (obj!=null) {
             SubscriptionsResponse subscriptionsResponse = new SubscriptionsResponse();

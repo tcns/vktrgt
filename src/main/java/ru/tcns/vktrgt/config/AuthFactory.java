@@ -20,6 +20,7 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.util.Preconditions;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
@@ -48,7 +49,7 @@ import java.util.logging.Logger;
  * @author Yaniv Inbar
  */
 @Component
-@Scope(value = "singleton",  proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Scope(value = "session",  proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class AuthFactory {
 
     public void setFlow(AuthorizationCodeFlow flow) {
@@ -92,6 +93,7 @@ public class AuthFactory {
                 && (credential.getRefreshToken() != null || credential.getExpiresInSeconds() > 60)) {
                 return credential;
             }
+            code = null;
             AuthorizationCodeRequestUrl authorizationUrl =
                 flow.newAuthorizationUrl().setRedirectUri(redirectUri);
             onAuthorization(authorizationUrl);
@@ -152,7 +154,12 @@ public class AuthFactory {
      */
     public static void browse(String url) {
         Preconditions.checkNotNull(url);
-        Request.Get(url);
+        try {
+            Response response = Request.Get(url).execute();
+            System.out.println(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.out.println("Please open the following address in your browser:");
         System.out.println("  " + url);
         /*// Ask user to open in their browser using copy-paste

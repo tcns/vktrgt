@@ -1,12 +1,9 @@
 package ru.tcns.vktrgt.service.external.google.impl;
 
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.json.JsonFactory;
@@ -16,17 +13,17 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.Permission;
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.config.AuthFactory;
 import ru.tcns.vktrgt.config.Constants;
-import ru.tcns.vktrgt.config.JHipsterProperties;
+import ru.tcns.vktrgt.config.GoogleCredential;
 
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +49,7 @@ public class GoogleDriveImpl {
         HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
         InputStream in =
-            GoogleDriveImpl.class.getResourceAsStream("/client_secret.json");
+            GoogleDriveImpl.class.getResourceAsStream("/client_secret2.json");
         GoogleClientSecrets clientSecrets =
             GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
         GoogleAuthorizationCodeFlow flow =
@@ -65,11 +62,17 @@ public class GoogleDriveImpl {
         if (Arrays.asList(env.getActiveProfiles()).contains(Constants.SPRING_PROFILE_PRODUCTION)) {
             hostName = Constants.PROD_HOST;
         }
-        hostName = hostName + "/Callback";
-        authFactory.setFlow(flow);
-        Credential credential = authFactory.authorize("user", hostName);
+        GoogleCredential credential = new GoogleCredential.Builder()
+            .setTransport(HTTP_TRANSPORT)
+            .setJsonFactory(JSON_FACTORY)
+            .setServiceAccountPrivateKeyFromP12File(GoogleDriveImpl.class.getResourceAsStream("/vktrgt.p12"))
+                .setServiceAccountScopes(SCOPES)
+                .setServiceAccountId("drive-893@vktrgt-1322.iam.gserviceaccount.com")
+                .build();
+
+        //Credential credential = authFactory.authorize("user", hostName);
         //Credential credential = new AuthorizationCodeInstalledApp(
-          //  flow, new LocalServerReceiver.Builder().setPort(58459).build()).authorize("user");
+        //  flow, new LocalServerReceiver.Builder().setPort(58459).build()).authorize("user");
         System.out.println(
             "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
         return credential;
@@ -85,8 +88,17 @@ public class GoogleDriveImpl {
 
     public String getOrCreateFolder(String parent, String name) {
         try {
-            List<File> files = getDriveService().files().list().setQ("'"+parent+"'"+" in parents and name='"+name+"'").execute().getFiles();
-            if (files!=null && !files.isEmpty()) {
+            if (parent != null) {
+                parent = getOrCreateFolder(null, parent);
+            }
+            List<File> files = null;
+            if (parent!=null) {
+                files = getDriveService().files().list().setQ("'" + parent + "'" + " in parents and name='" + name + "'").execute().getFiles();
+            } else {
+                files = getDriveService().files().list().setQ("name='" + name + "'").execute().getFiles();
+            }
+
+            if (files != null && !files.isEmpty()) {
                 return files.get(0).getId();
             }
             File fileMetadata = new File();
