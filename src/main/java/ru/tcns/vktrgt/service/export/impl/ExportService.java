@@ -2,6 +2,7 @@ package ru.tcns.vktrgt.service.export.impl;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.CDL;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,12 @@ public class ExportService {
     }
     public InputStream getStreamFromObject(Object o) {
         return IOUtils.toInputStream(JsonParser.objectToJson(o), StandardCharsets.UTF_8);
+    }
+    public InputStream getStreamFromObject(String o) {
+        if (null == o) {
+            o = StringUtils.EMPTY;
+        }
+        return IOUtils.toInputStream(o, StandardCharsets.UTF_8);
     }
     public List<String> getListOfStrings(MultipartFile file, String separator) {
         List<String> stringList = new ArrayList<>();

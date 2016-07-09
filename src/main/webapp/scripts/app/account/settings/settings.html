@@ -107,8 +107,12 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-6">
-                            <button ng-hide="token" type="button" class="btn" translate="settings.form.drive.login" ng-click="authDrive()"></button>
-                            <label ng-show="token" translate="settings.form.drive.auth"></label>
+                            <button ng-hide="driveToken" type="button" class="btn" translate="settings.form.drive.login" ng-click="authDrive()"></button>
+                            <label ng-show="driveToken" translate="settings.form.drive.auth"></label>
+                        </div>
+                        <div class="col-md-6">
+                            <button ng-hide="vkToken" type="button" class="btn" translate="settings.form.vk.login" ng-click="authVk()"></button>
+                            <label ng-show="vkToken" translate="settings.form.vk.auth"></label>
                         </div>
                     </div>
                 </div>

@@ -2,11 +2,24 @@
  * Created by root on 3/14/16.
  */
 angular.module('vktrgtApp')
-    .factory('VKService', function ($rootScope, $cookies, $http, $q, CacheService) {
+    .factory('VKService', function ($rootScope, $cookies, $window, $http, $q, CacheService) {
         var PREFIX = "https://api.vk.com/method/";
         var VERSION_PARAM = "5.52";
         var VERSION = "&v="+VERSION_PARAM;
+        var TOKEN_FIELD = "vk_token";
         return {
+            authorize: function () {
+                if (!$cookies.get(TOKEN_FIELD)) {
+                    $window.open(
+                        'https://oauth.vk.com/authorize?'+
+                            'client_id=5385314&'+
+                            'redirect_uri=http://'+window.location.host+'/Callback&'+
+           //                 'scope=audio&'+
+             //               'display=popup&'+
+                            'response_type=code&'+
+                            'v='+VERSION_PARAM);
+                }
+            },
             getUsersFromGroup: function (id, from, count) {
                 var users = $http.jsonp(PREFIX + "groups.getMembers", {
                     params: {
@@ -76,6 +89,10 @@ angular.module('vktrgtApp')
                 }
                 return deferred.promise;
 
+            },
+            getToken: function () {
+                "use strict";
+                return $cookies.get(TOKEN_FIELD);
             }
 
         }

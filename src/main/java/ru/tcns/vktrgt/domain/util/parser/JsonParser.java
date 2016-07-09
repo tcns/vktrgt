@@ -9,6 +9,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JsonParser {
 
     public static String objectToJson(Object object) {
+        if (object == null) {
+            return "";
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.writeValueAsString(object);

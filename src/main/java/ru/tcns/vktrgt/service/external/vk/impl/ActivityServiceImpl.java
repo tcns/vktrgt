@@ -1,5 +1,6 @@
 package ru.tcns.vktrgt.service.external.vk.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
@@ -178,8 +179,11 @@ public class ActivityServiceImpl implements ActivityService {
         }
         if (activeAuditoryDTO.getCountByAllGroups()) {
             activity.put(0, ArrayUtils.sortByValue(activity.get(0), activeAuditoryDTO.getMinCount()));
+            userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(activity.get(0).keySet(), "\n")));
+        } else {
+            userTask.saveFinal(exportService.getStreamFromObject(activity));
         }
-        userTask.saveFinal(exportService.getStreamFromObject(activity));
+
         return new AsyncResult<>(activity) ;
     }
 

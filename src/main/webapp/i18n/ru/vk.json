@@ -48,6 +48,11 @@
                 "definition": "Описание...",
                 "title": "Информация о группе (по id)"
             },
+            "search": {
+                "title": "Поиск групп",
+                "definition": "Описнание",
+                "query": "Запрос"
+            },
             "members": {
                 "definition": "Описание...",
                 "group-id": "Id группы",

@@ -12,4 +12,5 @@ public interface VKService {
     String ACCESS_TOKEN = "&access_token=" + Common.getToken() + "&client_secret=" + Common.CLIENT_SECRET +
         VERSION;
     String RESPONSE_STRING = "response";
+    String ERROR_STRING = "error";
 }

@@ -1,5 +1,6 @@
 package ru.tcns.vktrgt.service.external.vk.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
@@ -75,7 +76,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
         }
         service.shutdown();
-        userTask.saveFinal(exportService.getStreamFromObject(response));
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response, "\n")));
         return new AsyncResult<>(response);
     }
 
@@ -110,7 +111,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
         }
         service.shutdown();
-        userTask.saveFinal(exportService.getStreamFromObject(response));
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response, "\n")));
         return new AsyncResult<>(response);
     }
 
@@ -209,7 +210,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
             userTask = userTask.saveProgress(1);
         }
         Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);
-        userTask.saveFinal(exportService.getStreamFromObject(response));
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response.keySet(), "\n")));
         return new AsyncResult<>(response);
     }
 
@@ -240,7 +241,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
                 e.printStackTrace();
             }
         }
-        userTask.saveFinal(exportService.getStreamFromObject(users));
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(users, "\n")));
         service.shutdown();
         return new AsyncResult<>(users);
     }
@@ -296,7 +297,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
             }
         }
         Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);
-        userTask.saveFinal(exportService.getStreamFromObject(response));
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response.keySet(), "\n")));
         return new AsyncResult<>(response);
     }
 }

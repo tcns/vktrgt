@@ -51,7 +51,7 @@ angular.module('vktrgtApp')
                     $scope.dto.cities[$scope.cities[i].id] = [];
                 }
             }
-            model.users = $scope.users.split("\n");
+            model.users = $scope.users ? $scope.users.split("\n") : [];
             model.taskInfo = $scope.taskInfo;
             model.sex = $scope.dto.sex;
             model.countries = $scope.dto.countries;

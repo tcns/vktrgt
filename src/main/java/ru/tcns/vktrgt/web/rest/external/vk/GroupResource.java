@@ -12,9 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.tcns.vktrgt.config.Constants;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
+import ru.tcns.vktrgt.domain.external.vk.dict.VKErrorCodes;
+import ru.tcns.vktrgt.domain.external.vk.exception.VKException;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
@@ -25,10 +28,12 @@ import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 import ru.tcns.vktrgt.web.rest.util.PaginationUtil;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,34 +78,46 @@ public class GroupResource {
         return new ResponseEntity<>(groups.getContent().stream()
             .collect(Collectors.toCollection(LinkedList::new)), headers, HttpStatus.OK);
     }
+
     @RequestMapping(value = "/groups/vk",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.GET)
     @Timed
-    public ResponseEntity<List<Group>> searchGroupsVk(@RequestParam String q,
-                                                        @RequestParam String token) throws URISyntaxException {
-        List<Group> groups = groupService.searchVk(q, token);
-        return ResponseEntity.ok(groups);
+    public ResponseEntity<List<Group>> searchGroupsVk(@RequestParam String q, HttpServletRequest request) throws URISyntaxException {
+        try {
+            List<Group> groups = groupService.searchVk(q, (String) request.getSession().getAttribute(Constants.VK_TOKEN));
+            return ResponseEntity.ok(groups);
+        } catch (VKException ex) {
+            HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("errorCode", ""+ex.getVkErrorResponse().getErrorCode());
+            httpHeaders.add("errorMessage", ex.getVkErrorResponse().getErrorMsg());
+            if (ex.getVkErrorResponse().getErrorCode() == VKErrorCodes.UNAUTHORIZED) {
+                status = HttpStatus.FORBIDDEN;
+            }
+            return ResponseEntity.status(status).headers(httpHeaders).body(null);
+        }
     }
+
     @RequestMapping(value = "/groups/info/vk",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> searchGroupsInfoVk(@RequestParam List<String> names,
-                                                      @RequestParam String taskInfo,
+                                                   @RequestParam String taskInfo,
                                                    @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
         names.addAll(exportService.getListOfStrings(file, "\n"));
         groupService.getGroupsInfo(new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo, googleDrive), names);
         return ResponseEntity.ok().build();
     }
+
     @RequestMapping(value = "/groups/search/name",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<Group>> getSearchGroupsByName(@RequestParam String name, @RequestParam Boolean restrict,
                                                              @RequestParam int page, @RequestParam int size) throws URISyntaxException {
-        Pageable pageable = new PageRequest(page,size);
+        Pageable pageable = new PageRequest(page, size);
         Page<Group> groups = groupService.searchByName(name, restrict, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(groups, "/api/groups");
         return new ResponseEntity<>(groups.getContent().stream()
@@ -121,7 +138,7 @@ public class GroupResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> intersectUsersFromGroups(@RequestParam List<String> names,
-                                                                  @RequestParam String taskInfo,
+                                                         @RequestParam String taskInfo,
                                                          @RequestParam Integer minCount,
                                                          @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
         names.addAll(exportService.getListOfStrings(file, "\n"));
@@ -129,12 +146,13 @@ public class GroupResource {
             taskInfo, googleDrive), names, minCount);
         return ResponseEntity.ok().build();
     }
+
     @RequestMapping(value = "/groups/members",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> getGroupMembers(@RequestParam String groupId,
-                                                         @RequestParam String taskInfo) throws URISyntaxException {
+                                                @RequestParam String taskInfo) throws URISyntaxException {
 
         groupService.getAllGroupUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo, googleDrive), groupId);

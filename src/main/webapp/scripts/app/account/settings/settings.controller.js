@@ -1,17 +1,23 @@
 'use strict';
 
 angular.module('vktrgtApp')
-    .controller('SettingsController', function ($scope, Principal, Auth, Language, $translate, GoogleDrive) {
+    .controller('SettingsController', function ($scope, Principal, Auth, Language, $translate, GoogleDrive, VKService) {
         $scope.success = null;
         $scope.error = null;
         Principal.identity().then(function(account) {
             $scope.settingsAccount = copyAccount(account);
         });
 
-        $scope.token = GoogleDrive.getToken();
+        $scope.driveToken = GoogleDrive.getToken();
         $scope.authDrive = function() {
             GoogleDrive.authorize().then(function(){
-                $scope.token = GoogleDrive.getToken();
+                $scope.driveToken = GoogleDrive.getToken();
+            })
+        }
+        $scope.vkToken = VKService.getToken();
+        $scope.authVk = function() {
+            VKService.authorize().then(function(){
+                $scope.vkToken = VKService.getToken();
             })
         }
         $scope.save = function () {

@@ -3,6 +3,7 @@ package ru.tcns.vktrgt.domain.util.parser;
 import com.google.common.reflect.TypeToken;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import ru.tcns.vktrgt.anno.JsonEntity;
 import ru.tcns.vktrgt.anno.JsonField;
@@ -30,7 +31,7 @@ public class ResponseParser<T> {
         JSONObject object = new JSONObject(answer);
         try {
             return parseObject(object.getJSONObject(mainObject));
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | JSONException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
             e.printStackTrace();

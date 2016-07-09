@@ -6,7 +6,7 @@ angular.module('vktrgtApp')
 
         var callService = function (file) {
             "use strict";
-            VKCloudService.intersectGroups($scope.groups.split('\n'),
+            VKCloudService.intersectGroups($scope.groups ? $scope.groups.split('\n') : [],
                 $scope.taskInfo, file, $scope.minCount).success(function (response) {
                     $scope.message = "Задача добавлена";
                 }).error(function (response) {

@@ -1,6 +1,9 @@
 angular.module('vktrgtApp')
     .factory('VKCloudService', function ($rootScope, $cookies, $http, $q) {
         return {
+            searchGroups: function (q) {
+                return $http.get('/api/groups/vk?q=' + q);
+            },
             intersectGroups: function (ids, taskInfo, file, minCount) {
                 var fd = new FormData();
                 fd.append('file', file);

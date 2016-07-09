@@ -1,5 +1,6 @@
 package ru.tcns.vktrgt.service.external.vk.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.json.JSONException;
@@ -8,9 +9,11 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
+import ru.tcns.vktrgt.domain.external.vk.exception.VKException;
 import ru.tcns.vktrgt.domain.external.vk.internal.*;
 import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.GroupResponse;
+import ru.tcns.vktrgt.domain.external.vk.response.VKErrorResponse;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.ResponseParser;
 import ru.tcns.vktrgt.domain.util.parser.VKUrlParser;
@@ -20,10 +23,7 @@ import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -46,7 +46,7 @@ public class GroupServiceImpl extends AbstractGroupService {
     VKUserService userService;
 
     @Override
-    public List<Group> searchVk(String q, String token) {
+    public List<Group> searchVk(String q, String token) throws VKException{
         List<Group> groups = new ArrayList<>();
         Content content = null;
         try {
@@ -56,6 +56,9 @@ public class GroupServiceImpl extends AbstractGroupService {
             GroupResponse groupResponse = new ResponseParser<>(GroupResponse.class).parseResponseString(ans, RESPONSE_STRING);
             if (groupResponse != null) {
                 groups.addAll(groupResponse.getItems());
+            } else {
+                VKErrorResponse vkErrorResponse = new ResponseParser<>(VKErrorResponse.class).parseResponseString(ans, ERROR_STRING);
+                throw new VKException(vkErrorResponse);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,7 +97,7 @@ public class GroupServiceImpl extends AbstractGroupService {
             }
         }
         service.shutdown();
-        userTask.saveFinal(exportService.getStreamFromObject(users));
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(users.getUsers(), "\n")));
         return new AsyncResult<>(users);
     }
 
@@ -146,7 +149,7 @@ public class GroupServiceImpl extends AbstractGroupService {
             result = utils.intersectWithCount(result, cur.getUsers());
         }
         result = ArrayUtils.sortByValue(result, 1);
-        userTask.saveFinal(exportService.getStreamFromObject(result));
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(result.keySet(), "\n")));
         return new AsyncResult<>(result);
     }
 
@@ -200,7 +203,7 @@ public class GroupServiceImpl extends AbstractGroupService {
             Content content = Request.Get(url).execute().returnContent();
             String ans = content.asString();
             CommonIDResponse response = new ResponseParser<>(CommonIDResponse.class).parseResponseString(ans, RESPONSE_STRING);
-            userTask.saveFinal(exportService.getStreamFromObject(response.getItems()));
+            userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response.getItems(), "\n")));
             return response.getItems();
         } catch (IOException ex) {
             userTask.saveFinalError(ex);
