@@ -14,7 +14,7 @@ angular.module('vktrgtApp')
                         'https://oauth.vk.com/authorize?'+
                             'client_id=5385314&'+
                             'redirect_uri=http://'+window.location.host+'/Callback&'+
-           //                 'scope=audio&'+
+                            'scope=audio&'+
              //               'display=popup&'+
                             'response_type=code&'+
                             'v='+VERSION_PARAM);

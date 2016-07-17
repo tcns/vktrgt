@@ -1,6 +1,7 @@
 package ru.tcns.vktrgt.web.rest.util;
 
 import org.springframework.http.HttpHeaders;
+import ru.tcns.vktrgt.domain.external.vk.response.VKErrorResponse;
 
 /**
  * Utility class for http header creation.
@@ -32,5 +33,11 @@ public class HeaderUtil {
         headers.add("X-vktrgtApp-error", "error." + errorKey);
         headers.add("X-vktrgtApp-params", entityName);
         return headers;
+    }
+    public static HttpHeaders createVKErrorHeader(VKErrorResponse response) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("errorCode", ""+response.getErrorCode());
+        httpHeaders.add("errorMessage", response.getErrorMsg());
+        return httpHeaders;
     }
 }

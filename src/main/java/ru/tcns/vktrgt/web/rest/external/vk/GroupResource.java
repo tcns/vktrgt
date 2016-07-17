@@ -25,6 +25,7 @@ import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
+import ru.tcns.vktrgt.web.rest.util.HeaderUtil;
 import ru.tcns.vktrgt.web.rest.util.PaginationUtil;
 
 import javax.inject.Inject;
@@ -85,15 +86,18 @@ public class GroupResource {
     public ResponseEntity<List<Group>> searchGroupsVk(@RequestParam String q, HttpServletRequest request) throws URISyntaxException {
         try {
             List<Group> groups = groupService.searchVk(q, (String) request.getSession().getAttribute(Constants.VK_TOKEN));
-            return ResponseEntity.ok(groups);
+            List<Group> groupsEnchanched = groupService.getGroupsInfo(new UserTaskSettings(userService.getUserWithAuthorities(), false,
+                "", googleDrive), groups.parallelStream().map(a->a.getId().toString()).collect(Collectors.toList())).get();
+            return ResponseEntity.ok(groupsEnchanched);
         } catch (VKException ex) {
             HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add("errorCode", ""+ex.getVkErrorResponse().getErrorCode());
-            httpHeaders.add("errorMessage", ex.getVkErrorResponse().getErrorMsg());
             if (ex.getVkErrorResponse().getErrorCode() == VKErrorCodes.UNAUTHORIZED) {
                 status = HttpStatus.FORBIDDEN;
             }
+            return ResponseEntity.status(status).headers(HeaderUtil.createVKErrorHeader(ex.getVkErrorResponse())).body(null);
+        } catch (Exception ex) {
+            HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+            HttpHeaders httpHeaders = new HttpHeaders();
             return ResponseEntity.status(status).headers(httpHeaders).body(null);
         }
     }
@@ -108,6 +112,7 @@ public class GroupResource {
         names.addAll(exportService.getListOfStrings(file, "\n"));
         groupService.getGroupsInfo(new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo, googleDrive), names);
+
         return ResponseEntity.ok().build();
     }
 

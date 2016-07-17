@@ -1,10 +1,29 @@
 angular.module('vktrgtApp')
     .factory('VKCloudService', function ($rootScope, $cookies, $http, $q) {
         return {
+            exportToFile: function (content, filename) {
+                var fd = new FormData();
+                fd.append('content', content);
+                fd.append('fileName', filename)
+                return $http.post('/api/tasks/export/content', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
+            },
             searchGroups: function (q) {
                 return $http.get('/api/groups/vk?q=' + q);
             },
-            intersectGroups: function (ids, taskInfo, file, minCount) {
+            searchAudio: function (names, audios, taskInfo, file) {
+                var fd = new FormData();
+                fd.append('file', file);
+                fd.append('names', names.join(','))
+                fd.append('audios', audios.join(','))
+                fd.append('taskInfo', taskInfo)
+                return $http.post('/api/users/audio', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
+            }, intersectGroups: function (ids, taskInfo, file, minCount) {
                 var fd = new FormData();
                 fd.append('file', file);
                 fd.append('names', ids.join(','))

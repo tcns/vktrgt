@@ -1,6 +1,7 @@
 package ru.tcns.vktrgt.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
@@ -84,6 +85,20 @@ public class TaskResource {
             InputStream stream = url.openStream();
             httpServletResponse.setHeader("Content-Disposition", "attachment; filename="+fileName+".txt");
             IOUtils.copy(stream, httpServletResponse.getOutputStream());
+            httpServletResponse.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @RequestMapping(value = "/tasks/export/content",
+        method = RequestMethod.POST)
+    @Timed
+    public void exportContentToTxt(@RequestParam String content,
+                                @RequestParam String fileName,
+                                HttpServletResponse httpServletResponse) throws URISyntaxException {
+        try {
+            httpServletResponse.setHeader("Content-Disposition", "attachment; filename="+fileName+".txt");
+            httpServletResponse.getOutputStream().write(content.getBytes(Charsets.UTF_8));
             httpServletResponse.flushBuffer();
         } catch (IOException e) {
             e.printStackTrace();

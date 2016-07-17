@@ -9,6 +9,9 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
+import ru.tcns.vktrgt.domain.external.vk.dict.VKErrorCodes;
+import ru.tcns.vktrgt.domain.external.vk.exception.VKException;
+import ru.tcns.vktrgt.domain.external.vk.internal.Audio;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.domain.external.vk.response.*;
@@ -40,6 +43,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     public static final String USERS = BEAN_NAME + "users";
     public static final String USER_URL = BEAN_NAME + "userUrl";
     public static final String USER_IDS = BEAN_NAME + "userIds";
+    public static final String AUDIO = BEAN_NAME + "audio";
 
     @Inject
     UserTaskRepository repository;
@@ -214,6 +218,53 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         return new AsyncResult<>(response);
     }
 
+
+    @Override
+    public Future<Map<String, Integer>> searchUserAudio(UserTaskSettings settings, List<String> users, List<String> audio, String token) throws VKException {
+        Map<String, Integer> result = new HashMap<>();
+        UserTask userTask = new UserTask(AUDIO, settings, repository);
+        try {
+            List<User> userList = getUserInfo(new UserTaskSettings(settings, false), users).get();
+            users = new ArrayList<>(userList.size());
+            for (User user: userList) {
+                users.add(""+user.getId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        userTask = userTask.saveInitial(users.size());
+        for (int i = 0; i < users.size(); i++) {
+            try {
+                AudioResponse cur = getUserAudio(users.get(i), token);
+                if (cur != null && cur.getItems() != null) {
+                    int count = 0;
+                    for (Audio a: cur.getItems()) {
+                        for (String audioToSearch: audio) {
+                            if (a.getTitle().length() > audioToSearch.length()) {
+                                if (a.getArtist().toLowerCase().contains(audioToSearch.toLowerCase())) {
+                                    count++;
+                                }
+                            } else {
+                                if (audioToSearch.toLowerCase().contains(a.getArtist().toLowerCase())) {
+                                    count++;
+                                }
+                            }
+                        }
+                    }
+                    result.put(users.get(i), count);
+                }
+            } catch (VKException ex) {
+                if (ex.getVkErrorResponse().getErrorCode()== VKErrorCodes.UNAUTHORIZED) {
+                    throw new VKException(ex.getVkErrorResponse());
+                }
+            }
+
+            userTask = userTask.saveProgress(1);
+        }
+        Map<String, Integer> response = ArrayUtils.sortByValue(result, 0);
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response.keySet(), "\n")));
+        return new AsyncResult<>(response);
+    }
 
     @Override
     @Async
