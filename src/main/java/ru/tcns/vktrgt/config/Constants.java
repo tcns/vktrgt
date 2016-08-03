@@ -23,8 +23,8 @@ public final class Constants {
     public static final String GOOGLE_DRIVE_TOKEN = "google.drive.token";
     public static final String VK_TOKEN = "vk.token";
 
-    public static final String VK_CLIENT_ID = "5385314";
-    public static final String VK_CLIENT_SECRET = "6u54vy2z5xAisi0lmDQ2";
+    public static final String VK_CLIENT_ID = "5574216";
+    public static final String VK_CLIENT_SECRET = "aN2llaady9Tp1SWCmI7S";
 
     public static final String GOOGLE_SECRET = "387946429490-qf7svfmvf8hvu8mo1v876p0j9395m4cp.apps.googleusercontent.com";
 

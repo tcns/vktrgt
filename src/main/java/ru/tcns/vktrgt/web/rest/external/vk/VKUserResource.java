@@ -132,7 +132,7 @@ public class VKUserResource {
     }
 
     @RequestMapping(value = "/users/audio",
-        method = RequestMethod.GET,
+        method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Void> searchUserAudioVk(@RequestParam List<String> users,

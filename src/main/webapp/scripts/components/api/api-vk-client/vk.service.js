@@ -12,13 +12,33 @@ angular.module('vktrgtApp')
                 if (!$cookies.get(TOKEN_FIELD)) {
                     $window.open(
                         'https://oauth.vk.com/authorize?'+
-                            'client_id=5385314&'+
-                            'redirect_uri=http://'+window.location.host+'/Callback&'+
+                            'client_id=5574216&'+
+                            'redirect_uri='+location.protocol+'//'+window.location.host+'/Callback&'+
                             'scope=audio&'+
              //               'display=popup&'+
-                            'response_type=code&'+
-                            'v='+VERSION_PARAM);
+                            'response_type=code'+
+                           // 'test_redirect_uri=1&'+
+                            VERSION
+                    );
                 }
+            },
+            verificate: function (redirectUri) {
+                $window.open(redirectUri);
+            },
+            workaroundVkError: function(scope, response, status, headers) {
+                if (response==null || status===403) {
+                    if (headers('Errorcode')=='17') {
+                        this.verificate(headers('Redirecturi'));
+                        scope.message = "Вы не прошли верификацию, попробуйте еще раз после верификации";
+                    } else {
+                        this.authorize();
+                        scope.message = "Вы неавторизованы, попробуйте еще раз после авторизации";
+                    }
+
+                } else {
+                    scope.message = "Произошла ошибка";
+                }
+
             },
             getUsersFromGroup: function (id, from, count) {
                 var users = $http.jsonp(PREFIX + "groups.getMembers", {

@@ -1,5 +1,6 @@
 package ru.tcns.vktrgt.domain.external.vk.response;
 
+import ru.tcns.vktrgt.anno.JsonEntity;
 import ru.tcns.vktrgt.domain.external.vk.internal.Audio;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 /**
  * Created by TIMUR on 17.07.2016.
  */
+@JsonEntity
 public class AudioResponse {
     private Integer count;
     private List<Audio> items;

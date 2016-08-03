@@ -38,6 +38,7 @@ public class HeaderUtil {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("errorCode", ""+response.getErrorCode());
         httpHeaders.add("errorMessage", response.getErrorMsg());
+        httpHeaders.add("redirectUri", response.getRedirectUri());
         return httpHeaders;
     }
 }

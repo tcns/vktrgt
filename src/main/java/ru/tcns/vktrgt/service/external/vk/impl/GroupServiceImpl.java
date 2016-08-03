@@ -148,7 +148,7 @@ public class GroupServiceImpl extends AbstractGroupService {
             }
             result = utils.intersectWithCount(result, cur.getUsers());
         }
-        result = ArrayUtils.sortByValue(result, 1);
+        result = ArrayUtils.sortByValue(result, minCount);
         userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(result.keySet(), "\n")));
         return new AsyncResult<>(result);
     }

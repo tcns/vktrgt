@@ -33,13 +33,8 @@ angular.module('vktrgtApp')
                 $scope.groups = response;
                 console.log(response);
                 $scope.message = "Задача добавлена";
-            }).error(function (response, status) {
-                if (response==null || status===403) {
-                    VKService.authorize();
-                    $scope.message = "Вы неавторизованы, попробуйте еще раз после авторизации";
-                } else {
-                    $scope.message = "Произошла ошибка";
-                }
+            }).error(function (response, status, headers) {
+               VKService.workaroundVkError($scope, response, status, headers);
             })
         };
     });

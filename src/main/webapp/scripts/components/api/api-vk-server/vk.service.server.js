@@ -16,7 +16,7 @@ angular.module('vktrgtApp')
             searchAudio: function (names, audios, taskInfo, file) {
                 var fd = new FormData();
                 fd.append('file', file);
-                fd.append('names', names.join(','))
+                fd.append('users', names.join(','))
                 fd.append('audios', audios.join(','))
                 fd.append('taskInfo', taskInfo)
                 return $http.post('/api/users/audio', fd, {

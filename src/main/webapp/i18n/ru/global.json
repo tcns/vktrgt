@@ -46,7 +46,8 @@
                 "user-analyse": "Анализ пользователей",
                 "user-filter": "Фильтр по пользователя",
                 "user-ids": "ID->URL Пользователей",
-                "user-urls": "URL->ID Пользователей"
+                "user-urls": "URL->ID Пользователей",
+                "user-audio": "Поиск по аудиозаписям"
             },
             "language": "Язык",
             "task-manager": "Менеджер задач"

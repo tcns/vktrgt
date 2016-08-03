@@ -10,6 +10,16 @@ public class VKErrorResponse {
     private Integer errorCode;
     private String errorMsg;
 
+    public String getRedirectUri() {
+        return redirectUri;
+    }
+
+    public void setRedirectUri(String redirectUri) {
+        this.redirectUri = redirectUri;
+    }
+
+    private String redirectUri;
+
     public Integer getErrorCode() {
         return errorCode;
     }

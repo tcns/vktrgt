@@ -90,11 +90,7 @@ public class GroupResource {
                 "", googleDrive), groups.parallelStream().map(a->a.getId().toString()).collect(Collectors.toList())).get();
             return ResponseEntity.ok(groupsEnchanched);
         } catch (VKException ex) {
-            HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-            if (ex.getVkErrorResponse().getErrorCode() == VKErrorCodes.UNAUTHORIZED) {
-                status = HttpStatus.FORBIDDEN;
-            }
-            return ResponseEntity.status(status).headers(HeaderUtil.createVKErrorHeader(ex.getVkErrorResponse())).body(null);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createVKErrorHeader(ex.getVkErrorResponse())).body(null);
         } catch (Exception ex) {
             HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
             HttpHeaders httpHeaders = new HttpHeaders();
