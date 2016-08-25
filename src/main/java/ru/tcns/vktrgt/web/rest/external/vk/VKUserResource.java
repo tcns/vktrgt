@@ -21,12 +21,14 @@ import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
+import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 import ru.tcns.vktrgt.web.rest.util.HeaderUtil;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +47,8 @@ public class VKUserResource {
     GoogleDriveImpl googleDrive;
     @Inject
     ExportService exportService;
+    @Inject
+    GroupService groupService;
 
     @RequestMapping(value = "/users/leaders",
         method = RequestMethod.POST,
@@ -142,6 +146,7 @@ public class VKUserResource {
                                                   HttpServletRequest request) throws URISyntaxException {
         try {
             users.addAll(exportService.getListOfStrings(file, "\n"));
+            groupService.searchVk("test", (String) request.getSession().getAttribute(Constants.VK_TOKEN));
             vkUserService.searchUserAudio(new UserTaskSettings(userService.getUserWithAuthorities(), true,
                     taskInfo, googleDrive),  users, audios,
                 (String) request.getSession().getAttribute(Constants.VK_TOKEN));

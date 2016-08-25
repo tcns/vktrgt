@@ -3,6 +3,7 @@ package ru.tcns.vktrgt.service.external.vk.intf;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.exception.VKException;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
+import ru.tcns.vktrgt.domain.external.vk.response.AudioResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.CommonIDResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.FriendsResponse;
 import ru.tcns.vktrgt.domain.external.vk.response.SubscriptionsResponse;
@@ -34,4 +35,5 @@ public interface VKUserService extends VKService {
     Future<List<Integer>> getFollowers(UserTaskSettings settings, Integer userId);
     Future<Map<String, Integer>> searchUserAudio(UserTaskSettings settings,
                                                  List<String> users, List<String> audio, String token)  throws VKException;
+    AudioResponse getUserAudio(String userId, String token) throws VKException;
 }

@@ -2,12 +2,116 @@
  * Created by root on 3/14/16.
  */
 angular.module('vktrgtApp')
-    .factory('VKService', function ($rootScope, $cookies, $window, $http, $q, CacheService) {
+    .factory('VKService', function ($rootScope, $timeout, $cookies, $window, $http, $q, CacheService) {
         var PREFIX = "https://api.vk.com/method/";
-        var VERSION_PARAM = "5.52";
+        var VERSION_PARAM = "5.53";
         var VERSION = "&v="+VERSION_PARAM;
         var TOKEN_FIELD = "vk_token";
         return {
+            getUserAudio: function(userId, scope) {
+                "use strict";
+                var deferred = $q.defer();
+                var context = this;
+                var token = this.getToken();
+                var getAudio = function(t) {
+                    $http.jsonp(PREFIX+"audio.get",{
+                        params: {
+                            owner_id: userId,
+                            count: 6000,
+                            offset: 0,
+                            access_token: t,
+                            callback: 'JSON_CALLBACK',
+                            v: VERSION_PARAM
+                        }
+                    }).then(function(r){
+                        if (r.data.error && r.data.error['error_code']===5) {
+                            context.workaroundVkError(scope, null, 403, function(){})
+                            deferred.reject();
+                        } else {
+                            scope.message="";
+                            if (r.data.response) {
+                                deferred.resolve({
+                                    user: userId,
+                                    items: r.data.response.items
+                                });
+                            } else {
+                                console.log(r.data.error.error_msg);
+                                deferred.resolve({});
+                            }
+
+                        }
+                    })
+                }
+                token.then(function(){
+                    context.getToken().then(function(t){
+                        context.sleep(1000);
+                        getAudio(t);
+                    })
+                })
+                return deferred.promise;
+            },
+            sleep: function sleep(ms) {
+            ms += new Date().getTime();
+            while (new Date() < ms){}
+            },
+        searchAudio: function (users, audio, scope) {
+                "use strict";
+                var deferred  = $q.defer();
+                var context = this;
+                var searchInner = function(i, response) {
+                    context.getUserAudio(users[i], scope).then(function(userAudio){
+                        var p = i/users.length * 100;
+                        scope.message = "Выполнено "+(p.toFixed(2)) + "%"
+                        if (userAudio.items && userAudio.user) {
+                            var count = 0;
+                            for (var k in userAudio.items) {
+                                var a = userAudio.items[k];
+                                for (var j in audio) {
+                                    var audioToSearch = audio[j].toLowerCase();
+                                    if (a.artist.length > audioToSearch.length) {
+                                        if (a.artist.toLowerCase().indexOf(audioToSearch)>-1) {
+                                            count++;
+                                        }
+                                    } else {
+                                        if (audioToSearch.indexOf(a.artist.toLowerCase())>-1) {
+                                            count++;
+                                        }
+                                    }
+                                }
+                            }
+                            response[userAudio.user] = count;
+                        }
+                        if (i < users.length - 1) {
+                            searchInner(i+1, response);
+                        } else {
+                            scope.message = "Выполнено 100%"
+                            var sorted = context.getSortedKeys(response);
+                            deferred.resolve(sorted);
+                        }
+
+                    })
+                }
+                this.getUserAudio(users[0], scope).then(function(){
+                    var response = [];
+                    searchInner(0, response);
+
+                })
+
+                return deferred.promise;
+            },
+            export: function(str, name) {
+                "use strict";
+                var element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
+                element.setAttribute('download', name+".txt");
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+
+            }, getSortedKeys: function(obj) {
+                var keys = []; for(var key in obj) keys.push(key);
+                return keys.sort(function(a,b){return obj[b]-obj[a]});
+            },
             authorize: function () {
                 if (!$cookies.get(TOKEN_FIELD)) {
                     $window.open(
@@ -110,9 +214,21 @@ angular.module('vktrgtApp')
                 return deferred.promise;
 
             },
-            getToken: function () {
+            getToken: function (force) {
                 "use strict";
-                return $cookies.get(TOKEN_FIELD);
+                var token = CacheService.get(TOKEN_FIELD);
+                var deferred = $q.defer();
+                if (token && token.length > 1 && !force) {
+                    deferred.resolve(token)
+                } else {
+                    return $http.get('/api/vk/token').then(function(o){
+                        token = o.data.token;
+                        CacheService.put(TOKEN_FIELD, token);
+                        deferred.resolve(token)
+                    });
+                }
+                return deferred.promise;
+
             }
 
         }

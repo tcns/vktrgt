@@ -34,7 +34,8 @@ public abstract class AbstractVKUserService implements VKUserService {
         return new CommonIDResponse();
     }
 
-    protected AudioResponse getUserAudio(String userId, String token) throws VKException{
+    @Override
+    public AudioResponse getUserAudio(String userId, String token) throws VKException{
         try {
             String url = AUDIO_PREFIX + "get?owner_id=" + userId + "&count=6000&access_token=" + token + VERSION;
             Content content = Request.Get(url).execute().returnContent();

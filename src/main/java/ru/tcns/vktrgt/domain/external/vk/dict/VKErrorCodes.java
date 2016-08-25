@@ -6,4 +6,5 @@ package ru.tcns.vktrgt.domain.external.vk.dict;
 public class VKErrorCodes {
     public static final int UNAUTHORIZED = 5;
     public static final int VALIDATION_REQUIRED = 17;
+    public static final int CAPTCHA_NEEDED = 14;
 }

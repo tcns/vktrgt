@@ -14,12 +14,6 @@ angular.module('vktrgtApp')
                 $scope.driveToken = GoogleDrive.getToken();
             })
         }
-        $scope.vkToken = VKService.getToken();
-        $scope.authVk = function() {
-            VKService.authorize().then(function(){
-                $scope.vkToken = VKService.getToken();
-            })
-        }
         $scope.save = function () {
             Auth.updateAccount($scope.settingsAccount).then(function() {
                 $scope.error = null;

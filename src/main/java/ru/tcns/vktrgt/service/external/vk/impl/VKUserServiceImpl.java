@@ -220,6 +220,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
 
     @Override
+    @Async
     public Future<Map<String, Integer>> searchUserAudio(UserTaskSettings settings, List<String> users, List<String> audio, String token) throws VKException {
         Map<String, Integer> result = new HashMap<>();
         UserTask userTask = new UserTask(AUDIO, settings, repository);
@@ -235,6 +236,10 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         userTask = userTask.saveInitial(users.size());
         for (int i = 0; i < users.size(); i++) {
             try {
+                Thread.currentThread().sleep(1000);
+                if (i>0 && i%50==0) {
+                    Thread.currentThread().sleep(10000);
+                }
                 AudioResponse cur = getUserAudio(users.get(i), token);
                 if (cur != null && cur.getItems() != null) {
                     int count = 0;
@@ -257,6 +262,15 @@ public class VKUserServiceImpl extends AbstractVKUserService {
                 if (ex.getVkErrorResponse().getErrorCode()== VKErrorCodes.UNAUTHORIZED) {
                     throw new VKException(ex.getVkErrorResponse());
                 }
+                if (ex.getVkErrorResponse().getErrorCode()==VKErrorCodes.CAPTCHA_NEEDED) {
+                    try {
+                        Thread.currentThread().sleep(10000L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
             userTask = userTask.saveProgress(1);
