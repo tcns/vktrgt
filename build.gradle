@@ -27,6 +27,8 @@ apply plugin: 'war'
 apply plugin: 'propdeps'
 defaultTasks 'bootRun'
 
+compileJava.options.encoding = 'UTF-8'
+
 bootRepackage {
     mainClass = 'ru.tcns.vktrgt.Application'
 }

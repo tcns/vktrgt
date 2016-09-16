@@ -69,7 +69,7 @@ public class GroupServiceImpl extends AbstractGroupService {
     @Override
     @Async
     public Future<GroupUsers> getAllGroupUsers(UserTaskSettings settings, String groupId) {
-        UserTask userTask = new UserTask(ALL_USERS, settings, repository);
+        UserTask userTask = UserTask.create(ALL_USERS, settings, repository);
         CommonIDResponse initial = getGroupUsers(groupId, 0, 1);
         if (initial == null || initial.getCount() == 0) {
             return new AsyncResult<>(new GroupUsers(0, groupId));
@@ -104,7 +104,7 @@ public class GroupServiceImpl extends AbstractGroupService {
     @Override
     public Future<List<Group>> getGroupsInfo(UserTaskSettings settings, List<String> groups) {
         List<Group> response = new ArrayList<>();
-        UserTask userTask = new UserTask(GROUP_INFO, settings, repository);
+        UserTask userTask = UserTask.create(GROUP_INFO, settings, repository);
         List<String> convertedIds = groups.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
         List<String> groupsIds = ArrayUtils.getDelimetedLists(convertedIds, 1000);
         userTask = userTask.saveInitial(groupsIds.size());
@@ -131,7 +131,7 @@ public class GroupServiceImpl extends AbstractGroupService {
     @Override
     @Async
     public Future<Map<Integer, Integer>> intersectGroups(UserTaskSettings settings, List<String> groups, Integer minCount) {
-        UserTask userTask = new UserTask(INTERSECT_GROUPS, settings, repository);
+        UserTask userTask = UserTask.create(INTERSECT_GROUPS, settings, repository);
         ArrayUtils utils = new ArrayUtils();
         List<String> convertedIds = groups.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
         userTask = userTask.saveInitial(convertedIds.size());
@@ -197,7 +197,7 @@ public class GroupServiceImpl extends AbstractGroupService {
 
     @Override
     public List<Integer> getUserGroups(UserTaskSettings settings, String userId) {
-        UserTask userTask = new UserTask(USER_GROUPS, settings, repository);
+        UserTask userTask = UserTask.create(USER_GROUPS, settings, repository);
         try {
             String url = PREFIX + "get?user_id=" + userId + ACCESS_TOKEN + VERSION;
             Content content = Request.Get(url).execute().returnContent();

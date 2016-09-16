@@ -29,13 +29,5 @@ angular.module('vktrgtApp')
                     }, "");
                     VKService.export(str, "audio-search");
             })
-            /*VKService.searchAudio($scope.users ? $scope.users.split('\n') : [],
-                $scope.audio ? $scope.audio.split('\n') : [],
-                $scope.taskInfo,
-                document.getElementById('file').files[0]).success(function (response) {
-                $scope.message = "Задача добавлена";
-            }).error(function (response, status, headers) {
-                    VKService.workaroundVkError($scope, response, status, headers);
-            })*/
         };
     });

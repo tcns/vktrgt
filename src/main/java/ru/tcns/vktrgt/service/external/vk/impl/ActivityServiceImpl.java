@@ -45,7 +45,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Async
     public Future<Map<Integer, Map<Integer, Integer>>> getActiveTopicAuditory(UserTaskSettings settings, List<String> topicUrls, Integer minCount) {
         Map<Integer, Map<Integer, Integer>> activity = new HashMap<>();
-        UserTask userTask = new UserTask(ACTIVE_TOPIC_AUDITORY, settings, repository);
+        UserTask userTask = UserTask.create(ACTIVE_TOPIC_AUDITORY, settings, repository);
         userTask = userTask.saveInitial(topicUrls.size() * 2);
         Map<Integer, List<Integer>> wallPosts = new HashMap<>();
         for (String url : topicUrls) {
@@ -78,7 +78,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Async
     public Future<Map<Integer, Map<Integer, Integer>>> getActiveAuditory(UserTaskSettings settings, ActiveAuditoryDTO activeAuditoryDTO) {
         Map<Integer, Map<Integer, Integer>> activity = new HashMap<>();
-        UserTask userTask = new UserTask(ACTIVE_AUDITORY, settings, repository);
+        UserTask userTask = UserTask.create(ACTIVE_AUDITORY, settings, repository);
         Map<Integer, List<WallPost>> wallPosts = new HashMap<>();
         userTask = userTask.saveInitial(activeAuditoryDTO.getGroups().size());
         userTask = userTask.updateStatusMessage("Сбор постов со стены");

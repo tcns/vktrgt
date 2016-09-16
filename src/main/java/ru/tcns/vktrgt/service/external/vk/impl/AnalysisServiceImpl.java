@@ -43,7 +43,7 @@ public class AnalysisServiceImpl implements AnalysisService {
     @Async
     @Override
     public Future<List<User>> filterUsers(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
-        UserTask userTask = new UserTask(FILTER_USERS, settings, repository);
+        UserTask userTask = UserTask.create(FILTER_USERS, settings, repository);
         userTask = userTask.saveInitial(1);
         List<User> users = new ArrayList<>();
         try {
@@ -100,7 +100,7 @@ public class AnalysisServiceImpl implements AnalysisService {
     @Override
     @Async
     public Future<AnalyseDTO> analyseUsers(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
-        UserTask userTask = new UserTask(ANALYSE_USERS, settings, repository);
+        UserTask userTask = UserTask.create(ANALYSE_USERS, settings, repository);
         userTask = userTask.saveInitial(1);
         List<User> users = new ArrayList<>();
         try {

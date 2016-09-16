@@ -36,4 +36,5 @@ public interface VKUserService extends VKService {
     Future<Map<String, Integer>> searchUserAudio(UserTaskSettings settings,
                                                  List<String> users, List<String> audio, String token)  throws VKException;
     AudioResponse getUserAudio(String userId, String token) throws VKException;
+    Future<List<String>> searchNearestBirthdate (UserTaskSettings settings, List<String> userIds, Integer nearestDays, List<String> types);
 }

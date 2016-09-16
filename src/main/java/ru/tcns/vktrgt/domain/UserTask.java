@@ -57,22 +57,33 @@ public class UserTask {
 
     @Transient
     @JsonIgnore
+    public UserTaskSettings getSettings(){
+        return settings;
+    };
+    @Transient
+    @JsonIgnore
     private UserTaskSettings settings;
     @Transient
     @JsonIgnore
     private UserTaskRepository repository;
-
-    public UserTask() {
-        errors = new ArrayList<>();
+    @Transient
+    public static UserTask create() {
+        UserTask userTask = UserTask.create();
+        userTask.errors = new ArrayList<>();
+        return userTask;
     }
-    public UserTask(String kind, UserTaskSettings settings, UserTaskRepository repository) {
-        this();
-        setUserId(settings.getUser().getId());
-        this.kind = kind;
-        this.taskInfo = settings.getTaskDescription();
-        this.currentProgress = 0;
-        this.settings = settings;
-        this.repository = repository;
+    @Transient
+    public static UserTask create(String kind, UserTaskSettings settings, UserTaskRepository repository) {
+        if (settings.getUserTask() != null) {
+            return settings.getUserTask();
+        }
+        UserTask userTask = create();
+        userTask.setKind(kind);
+        userTask.setTaskInfo(settings.getTaskDescription());
+        userTask.setCurrentProgress(0);
+        userTask.settings = settings;
+        userTask.repository = repository;
+        return userTask;
     }
     @Transient
     public UserTask updateStatusMessage(String status) {

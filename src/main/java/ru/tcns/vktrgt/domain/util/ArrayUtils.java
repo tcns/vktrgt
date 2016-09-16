@@ -76,6 +76,7 @@ public class ArrayUtils {
 
     }
 
+
     public static List<String> getDelimetedLists(List<String> numbers, int max) {
         StringBuilder builder = new StringBuilder();
         List<String> response = new ArrayList<>();

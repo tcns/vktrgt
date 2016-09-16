@@ -30,7 +30,7 @@ public class WallServiceImpl extends AbstractWallService {
     @Override
     @Async
     public Future<List<WallPost>> getWallPosts(UserTaskSettings settings, Integer ownerId, Integer maxCount) {
-        UserTask userTask = new UserTask(WALL_POSTS, settings, userTaskRepository);
+        UserTask userTask = UserTask.create(WALL_POSTS, settings, userTaskRepository);
         final List<WallPost> posts;
         try {
             Integer count = getWallPosts(ownerId, 0, 1).getCount();
@@ -73,7 +73,7 @@ public class WallServiceImpl extends AbstractWallService {
     @Override
     @Async
     public Future<List<Integer>> getTopicCommentsWithLikes(UserTaskSettings settings, Integer ownerId, Integer postId) {
-        UserTask userTask = new UserTask(TOPIC_COMMENTS, settings, userTaskRepository);
+        UserTask userTask = UserTask.create(TOPIC_COMMENTS, settings, userTaskRepository);
         final List<Integer> comments;
         try {
             Integer count = getTopicComments(ownerId, postId, 0, 1).getCount();
@@ -119,7 +119,7 @@ public class WallServiceImpl extends AbstractWallService {
     @Async
     public Future<List<Integer>> getComments(UserTaskSettings settings, Integer ownerId, Integer postId) {
         final List<Integer> comments;
-        UserTask userTask = new UserTask(COMMENTS, settings, userTaskRepository);
+        UserTask userTask = UserTask.create(COMMENTS, settings, userTaskRepository);
         try {
             Integer count = getComments(ownerId, postId, 0, 1).getCount();
             userTask = userTask.saveInitial(count);
@@ -156,7 +156,7 @@ public class WallServiceImpl extends AbstractWallService {
     @Async
     public Future<List<Integer>> getReposts(UserTaskSettings settings, Integer ownerId, Integer postId) {
         List<Integer> reposts = new ArrayList<>();
-        UserTask userTask = new UserTask(REPOSTS, settings, userTaskRepository);
+        UserTask userTask = UserTask.create(REPOSTS, settings, userTaskRepository);
         try {
             reposts = new ArrayList<>(1000);
             int i = 0;
@@ -185,7 +185,7 @@ public class WallServiceImpl extends AbstractWallService {
     @Async
     public Future<List<Integer>> getLikes(UserTaskSettings settings, Integer ownerId, Integer postId, String type) {
         final List<Integer> likes;
-        UserTask userTask = new UserTask(LIKES, settings, userTaskRepository);
+        UserTask userTask = UserTask.create(LIKES, settings, userTaskRepository);
         try {
             Integer count = getLikes(ownerId, type, postId, 0, 1).getCount();
             userTask = userTask.saveInitial(count);

@@ -8,7 +8,6 @@ sourceSets {
         }
     }
 }
-
 task manifestJar(dependsOn:'compileTestScala',type: Jar) {
     dependsOn configurations.testCompile
     archiveName 'gatlingBooter.jar'
@@ -25,7 +24,6 @@ task gatlingRun(dependsOn:'manifestJar', type: JavaExec) {
     group = "gatling"
 
     standardInput = System.in
-
     final def sourceSet = sourceSets.test
     File configFile = file('src/test/gatling/conf/gatling.conf')
 

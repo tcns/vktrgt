@@ -16,6 +16,13 @@ angular.module('vktrgtApp')
             $scope.page = page;
             $scope.loadAll();
         };
+        $scope.removeAll = function() {
+            "use strict";
+            for (var i in $scope.tasks) {
+                TaskService.removeTask($scope.tasks[i].id);
+            }
+            $scope.tasks = [];
+        }
         $scope.removeTask = function(id) {
             "use strict";
             $scope.tasks = _.without($scope.tasks, _.findWhere($scope.tasks, {id: id}));

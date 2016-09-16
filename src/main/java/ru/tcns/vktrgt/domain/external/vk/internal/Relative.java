@@ -11,6 +11,16 @@ public class Relative {
     private Integer id;
     private String type;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
+
     public Integer getId() {
         return id;
     }
