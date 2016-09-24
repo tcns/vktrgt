@@ -101,6 +101,20 @@ public class VKUserResource {
             taskInfo, googleDrive), userIds);
         return ResponseEntity.ok().build();
     }
+    @RequestMapping(value = "/users/birth",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Void> getNearestBirthdays(@RequestParam List<String> userIds,
+                                                    @RequestParam List<String> relativeTypes,
+                                                    @RequestParam Integer nearestDays,
+                                            @RequestParam String taskInfo,
+                                            @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        userIds.addAll(exportService.getListOfStrings(file, "\n"));
+        vkUserService.searchNearestBirthdate(new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userIds, nearestDays, relativeTypes);
+        return ResponseEntity.ok().build();
+    }
 
     @RequestMapping(value = "/users/urlid",
         method = RequestMethod.POST,

@@ -9,4 +9,5 @@ public class RelativeType {
     public static final String PARENT = "parent";
     public static final String GRANDPARENT = "grandparent";
     public static final String GRANDCHILD = "grandchild";
+    public static final String PARTNER = "partner";
 }

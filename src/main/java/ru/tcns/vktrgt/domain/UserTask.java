@@ -68,7 +68,7 @@ public class UserTask {
     private UserTaskRepository repository;
     @Transient
     public static UserTask create() {
-        UserTask userTask = UserTask.create();
+        UserTask userTask = new UserTask();
         userTask.errors = new ArrayList<>();
         return userTask;
     }
@@ -83,6 +83,7 @@ public class UserTask {
         userTask.setCurrentProgress(0);
         userTask.settings = settings;
         userTask.repository = repository;
+        userTask.setUserId(settings.getUser().getId());
         return userTask;
     }
     @Transient

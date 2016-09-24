@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
+import ru.tcns.vktrgt.domain.external.vk.dict.RelativeType;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKDicts;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKErrorCodes;
 import ru.tcns.vktrgt.domain.external.vk.exception.VKException;
@@ -290,39 +291,59 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     }
 
     @Override
-    public Future<List<String>> searchNearestBirthdate(UserTaskSettings settings, List<String> userIds, Integer nearestDays, List<String> types) {
+    @Async
+    public Future<Set<String>> searchNearestBirthdate(UserTaskSettings settings, List<String> userIds, Integer nearestDays, List<String> types) {
         int batchSize = 20;
         UserTask userTask = UserTask.create(NEAREST_DATES, settings, repository);
         List<List<String>> batches = Lists.partition(userIds, batchSize);
         userTask = userTask.saveInitial(userIds.size());
-        List<String> response = new ArrayList<>();
+        Set<String> response = new HashSet<>();
         for (List<String> batch: batches) {
             try {
                 List<User> userList = getUserInfo(new UserTaskSettings(settings, false), batch).get();
                 for (User user: userList) {
                     List<Relative> relatives = user.getRelatives();
-                    for (Relative relative: relatives) {
-                        if (relative.getId() != null && types.contains(relative.getType())) {
-                            List<User> relativeUserAnswer = getUserInfo(new UserTaskSettings(settings, false),
-                                Lists.newArrayList(""+relative.getId())).get();
-                            if (relativeUserAnswer.size() > 0) {
-                                User relativeUser = relativeUserAnswer.get(0);
-                                if (relativeUser.getBdate() != null) {
-                                    Date birthDay = org.apache.commons.lang3.time.DateUtils.
-                                        parseDate(relativeUser.getBdate(), VKDicts.BDAY_FORMATS);
-                                    if (Days.daysBetween(new DateTime(birthDay), DateTime.now()).getDays() <= nearestDays) {
-                                        response.add(""+user.getId());
-                                    }
+                    List<String> idsToFind = new ArrayList<>();
+                    if (types.contains(RelativeType.PARTNER)) {
+                        User relationPartner = user.getRelationPartner();
+                        if (relationPartner!=null && relationPartner.getId()!=null) {
+                            idsToFind.add(""+relationPartner.getId());
+                        }
+                    }
+                    if (relatives != null)   {
+                        for (Relative relative: relatives) {
+                            if (relative.getId() != null && types.contains(relative.getType())) {
+                                idsToFind.add(""+relative.getId());
+                            }
+                        }
+                    }
+                    if (idsToFind.size() > 0) {
+                        List<User> relativeUserAnswer = getUserInfo(new UserTaskSettings(settings, false),
+                            idsToFind).get();
+                        for (User relativeUser: relativeUserAnswer) {
+                            if (relativeUser.getBdate() != null) {
+                                Date birthDay = org.apache.commons.lang3.time.DateUtils.
+                                    parseDate(relativeUser.getBdate(), VKDicts.BDAY_FORMATS);
+                                DateTime dt = new DateTime(birthDay);
+                                dt.dayOfYear().get();
+                                int diff = new DateTime(birthDay).dayOfYear().get() - DateTime.now().dayOfYear().get();
+                                if (diff < 0) {
+                                    diff += 365;
+                                }
+                                if (diff <= nearestDays) {
+                                    response.add("" + user.getId());
                                 }
                             }
                         }
                     }
+
                     userTask = userTask.saveProgress(1);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response, "\n")));
         return new AsyncResult<>(response);
     }
 
