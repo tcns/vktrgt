@@ -292,7 +292,12 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
     @Override
     @Async
-    public Future<Set<String>> searchNearestBirthdate(UserTaskSettings settings, List<String> userIds, Integer nearestDays, List<String> types) {
+    public Future<Set<String>> searchNearestBirthdate(UserTaskSettings settings,
+                                                      List<String> userIds,
+                                                      Integer fromDays,
+                                                      Integer nearestDays,
+                                                      List<String> types,
+                                                      List<Integer> gender) {
         int batchSize = 20;
         UserTask userTask = UserTask.create(NEAREST_DATES, settings, repository);
         List<List<String>> batches = Lists.partition(userIds, batchSize);
@@ -330,8 +335,14 @@ public class VKUserServiceImpl extends AbstractVKUserService {
                                 if (diff < 0) {
                                     diff += 365;
                                 }
-                                if (diff <= nearestDays) {
-                                    response.add("" + user.getId());
+                                if (diff <= nearestDays && diff >= fromDays) {
+                                    if (gender != null && gender.size() > 0) {
+                                        if (gender.contains(relativeUser.getSex())) {
+                                            response.add("" + user.getId());
+                                        }
+                                    } else {
+                                        response.add("" + user.getId());
+                                    }
                                 }
                             }
                         }

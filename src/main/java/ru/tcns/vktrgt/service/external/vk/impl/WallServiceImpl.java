@@ -163,7 +163,7 @@ public class WallServiceImpl extends AbstractWallService {
             //TODO Это пиздец, можно делать запрос сначала на количество репостов
             while (true) {
                 RepostResponse repostResponse = getReposts(ownerId, postId, i, 1000);
-                if (repostResponse.getItems() == null || repostResponse.getItems().isEmpty()) {
+                if (repostResponse == null || repostResponse.getItems() == null || repostResponse.getItems().isEmpty()) {
                     break;
                 }
                 List<Integer> cur = repostResponse.getItems()

@@ -24,4 +24,10 @@ public interface WallService extends VKService {
     Future<List<Integer>> getTopicCommentsWithLikes (UserTaskSettings settings, Integer ownerId, Integer postId);
     Future<List<Integer>> getReposts (UserTaskSettings settings, Integer ownerId, Integer postId);
 
+    List<WallPost> getWallPostsSync(UserTaskSettings settings, Integer ownerId, Integer maxDays);
+    List<Integer> getLikesSync (UserTaskSettings settings, Integer ownerId, Integer postId, String type);
+    List<Integer> getCommentsSync (UserTaskSettings settings, Integer ownerId, Integer postId);
+    List<Integer> getTopicCommentsWithLikesSync (UserTaskSettings settings, Integer ownerId, Integer postId);
+    List<Integer> getRepostsSync (UserTaskSettings settings, Integer ownerId, Integer postId);
+
 }

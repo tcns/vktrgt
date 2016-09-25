@@ -37,6 +37,32 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   translate="vk.user.birth.gender" />
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <multiple-autocomplete ng-model="genders"
+                                                       object-property="value"
+                                                       suggestions-arr="genderList">
+
+                                </multiple-autocomplete>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fromDays"
+                                   translate="vk.user.birth.fromDays" />
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input ng-model="fromDays" required type="number" id="fromDays"
+                                       class="form-control col-md-7 col-xs-12" ng-min="0"/>
+                                <div ng-show="form.fromDays.$dirty && form.fromDays.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.fromDays.$error.required"
+                                       translate="vk.general.validation.required">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nearestDays"
                                    translate="vk.user.birth.nearest" />
 

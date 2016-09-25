@@ -7,7 +7,7 @@ angular.module('vktrgtApp')
         $scope.dto = {
             "groups": '',
             "maxDays": 100,
-            "countByAllGroups": false,
+            "countByAllGroups": true,
             "countLikes": true,
             "countReposts": true,
             "countComments": true,

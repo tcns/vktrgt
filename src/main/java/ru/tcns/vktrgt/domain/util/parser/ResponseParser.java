@@ -40,7 +40,6 @@ public class ResponseParser<T> {
     }
 
     public T parseObject(JSONObject object) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        System.out.println(object);
         Class<T> clazz = getClassDefinition();
         T t = build(clazz);
         Boolean jsonClass = clazz.isAnnotationPresent(JsonEntity.class);

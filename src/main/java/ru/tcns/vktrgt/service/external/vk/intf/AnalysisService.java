@@ -13,4 +13,6 @@ import java.util.concurrent.Future;
 public interface AnalysisService {
     Future<AnalyseDTO> analyseUsers(UserTaskSettings settings, List<String> users, AnalyseDTO analyseDTO);
     Future<List<User>> filterUsers(UserTaskSettings settings, List<String> users, AnalyseDTO analyseDTO);
+    AnalyseDTO analyseUsersSync(UserTaskSettings settings, List<String> users, AnalyseDTO analyseDTO);
+    List<User> filterUsersSync(UserTaskSettings settings, List<String> users, AnalyseDTO analyseDTO);
 }

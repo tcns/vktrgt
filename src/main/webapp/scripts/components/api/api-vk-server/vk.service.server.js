@@ -134,12 +134,14 @@ angular.module('vktrgtApp')
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
                 });
-            }, nearestBirthdays: function (userIds, relativeTypes, nearestDays, taskInfo, file) {
+            }, nearestBirthdays: function (userIds, relativeTypes, genders, fromDays,  nearestDays, taskInfo, file) {
                 var fd = new FormData();
                 fd.append('file', file)
                 fd.append('userIds', userIds)
                 fd.append('taskInfo', taskInfo)
                 fd.append('relativeTypes', relativeTypes)
+                fd.append('genders', genders)
+                fd.append('fromDays', fromDays)
                 fd.append('nearestDays', nearestDays)
                 return $http.post('/api/users/birth', fd, {
                     headers: {'Content-Type': undefined},

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by TIMUR on 30.04.2016.
@@ -43,8 +44,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Async
-    public Future<Map<Integer, Map<Integer, Integer>>> getActiveTopicAuditory(UserTaskSettings settings, List<String> topicUrls, Integer minCount) {
-        Map<Integer, Map<Integer, Integer>> activity = new HashMap<>();
+    public Future<Map<Integer, Integer>> getActiveTopicAuditory(UserTaskSettings settings, List<String> topicUrls, Integer minCount) {
         UserTask userTask = UserTask.create(ACTIVE_TOPIC_AUDITORY, settings, repository);
         userTask = userTask.saveInitial(topicUrls.size() * 2);
         Map<Integer, List<Integer>> wallPosts = new HashMap<>();
@@ -63,15 +63,14 @@ public class ActivityServiceImpl implements ActivityService {
             }
         }
         ArrayUtils utils = new ArrayUtils();
+        Map<Integer, Integer> groupActivity = new HashMap<>();
         for (Map.Entry<Integer, List<Integer>> e : wallPosts.entrySet()) {
             userTask = userTask.saveProgress(1);
-            Map<Integer, Integer> groupActivity = new HashMap<>();
             groupActivity = utils.intersectWithCount(groupActivity, e.getValue());
-            groupActivity = ArrayUtils.sortByValue(groupActivity, minCount);
-            activity.put(e.getKey(), groupActivity);
         }
-        userTask.saveFinal(exportService.getStreamFromObject(activity));
-        return new AsyncResult<>(activity);
+        groupActivity = ArrayUtils.sortByValue(groupActivity, minCount);
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(groupActivity.keySet(), "\n")));
+        return new AsyncResult<>(groupActivity);
     }
 
     @Override
@@ -101,7 +100,6 @@ public class ActivityServiceImpl implements ActivityService {
             List<WallPost> posts = new ArrayList<>();
             for (String id : activeAuditoryDTO.getPostIds()) {
                 try {
-                    Integer val = Integer.valueOf(id);
                     WallPost post = new WallPost();
                     post.setId(Integer.valueOf(id));
                     posts.add(post);
@@ -181,7 +179,14 @@ public class ActivityServiceImpl implements ActivityService {
             activity.put(0, ArrayUtils.sortByValue(activity.get(0), activeAuditoryDTO.getMinCount()));
             userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(activity.get(0).keySet(), "\n")));
         } else {
-            userTask.saveFinal(exportService.getStreamFromObject(activity));
+            StringBuilder sb = new StringBuilder();
+            for (Integer key: activity.keySet()) {
+                sb.append(key + ": \n");
+                for (Integer userId: activity.get(key).keySet()) {
+                    sb.append("\t" + userId + "\n");
+                }
+            }
+            userTask.saveFinal(exportService.getStreamFromObject(sb.toString()));
         }
 
         return new AsyncResult<>(activity) ;

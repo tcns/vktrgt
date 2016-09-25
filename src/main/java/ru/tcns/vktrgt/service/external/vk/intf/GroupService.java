@@ -30,11 +30,18 @@ public interface GroupService extends VKService {
     List<Group> searchByNames(List<String> names);
     List<Group> searchVk(String q, String token) throws VKException;
 
+    List<Integer> getUserGroups(UserTaskSettings settings, String userId);
+
     Future<GroupUsers> getAllGroupUsers(UserTaskSettings settings, String groupId);
     Future<Map<Integer, Integer>> intersectGroups(UserTaskSettings settings, List<String> groups, Integer minCount);
     Future<List<Group>> getGroupsInfo(UserTaskSettings settings, List<String> groups);
     void getGroupInfoById(Integer from, Integer to, Boolean saveIds, Boolean useIds);
-    List<Integer> getUserGroups(UserTaskSettings settings, String userId);
     Future<Map<Integer, Integer>> similarGroups (UserTaskSettings settings, List<String> groups, Integer minCount);
+
+    GroupUsers getAllGroupUsersSync(UserTaskSettings settings, String groupId);
+    Map<Integer, Integer> intersectGroupsSync(UserTaskSettings settings, List<String> groups, Integer minCount);
+    List<Group> getGroupsInfoSync(UserTaskSettings settings, List<String> groups);
+    void getGroupInfoByIdSync(Integer from, Integer to, Boolean saveIds, Boolean useIds);
+    Map<Integer, Integer> similarGroupsSync (UserTaskSettings settings, List<String> groups, Integer minCount);
 
 }

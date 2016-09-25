@@ -25,17 +25,38 @@ public interface VKUserService extends VKService {
     String USERS_PREFIX = URL_PREFIX + USER_METHOD_PREFIX;
     String AUDIO_PREFIX = URL_PREFIX + AUDIO_METHOD_PREFIX;
 
-    Future<List<User>> getUserInfo(UserTaskSettings settings, List<String> userIds);
-    List<User> searchUsersVK(String q, String token);
-    Future<List<String>> getUserURL(UserTaskSettings settings, List<String> userIds);
-    Future<List<String>> getUserId(UserTaskSettings settings, List<String> userUrls);
     CommonIDResponse getUserFriendIds(Integer userId);
     SubscriptionsResponse getSubscriptions(String userId);
+    List<User> searchUsersVK(String q, String token);
+    AudioResponse getUserAudio(String userId, String token) throws VKException;
+
+    Future<List<User>> getUserInfo(UserTaskSettings settings, List<String> userIds);
+    Future<List<String>> getUserURL(UserTaskSettings settings, List<String> userIds);
+    Future<List<String>> getUserId(UserTaskSettings settings, List<String> userUrls);
     Future<Map<Integer, Integer>> intersectUsers(UserTaskSettings settings, List<String> users, Integer min);
     Future<Map<Integer, Integer>> intersectSubscriptions(UserTaskSettings settings, List<String> users, Integer min);
     Future<List<Integer>> getFollowers(UserTaskSettings settings, Integer userId);
     Future<Map<String, Integer>> searchUserAudio(UserTaskSettings settings,
                                                  List<String> users, List<String> audio, String token)  throws VKException;
-    AudioResponse getUserAudio(String userId, String token) throws VKException;
-    Future<Set<String>> searchNearestBirthdate (UserTaskSettings settings, List<String> userIds, Integer nearestDays, List<String> types);
+    Future<Set<String>> searchNearestBirthdate (UserTaskSettings settings,
+                                                List<String> userIds,
+                                                Integer fromDays,
+                                                Integer nearestDays,
+                                                List<String> types,
+                                                List<Integer> gender);
+
+    List<User> getUserInfoSync(UserTaskSettings settings, List<String> userIds);
+    List<String> getUserURLSync(UserTaskSettings settings, List<String> userIds);
+    List<String> getUserIdSync(UserTaskSettings settings, List<String> userUrls);
+    Map<Integer, Integer> intersectUsersSync(UserTaskSettings settings, List<String> users, Integer min);
+    Map<Integer, Integer> intersectSubscriptionsSync(UserTaskSettings settings, List<String> users, Integer min);
+    List<Integer> getFollowersSync(UserTaskSettings settings, Integer userId);
+    Map<String, Integer> searchUserAudioSync(UserTaskSettings settings,
+                                                 List<String> users, List<String> audio, String token)  throws VKException;
+    Set<String> searchNearestBirthdateSync (UserTaskSettings settings,
+                                                List<String> userIds,
+                                                Integer fromDays,
+                                                Integer nearestDays,
+                                                List<String> types,
+                                                List<Integer> gender);
 }

@@ -24,6 +24,8 @@ spring:
             enabled: false
     thymeleaf:
         mode: XHTML
+multipart.maxFileSize: 50MB
+multipart.maxRequestSize: 50MB
 
 security:
     basic:
