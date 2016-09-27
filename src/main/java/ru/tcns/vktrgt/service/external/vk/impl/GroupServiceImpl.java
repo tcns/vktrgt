@@ -69,10 +69,59 @@ public class GroupServiceImpl extends AbstractGroupService {
     @Override
     @Async
     public Future<GroupUsers> getAllGroupUsers(UserTaskSettings settings, String groupId) {
+        return new AsyncResult<>(getAllGroupUsersSync(settings, groupId));
+    }
+
+    @Override
+    @Async
+    public Future<List<Group>> getGroupsInfo(UserTaskSettings settings, List<String> groups) {
+        return new AsyncResult<>(getGroupsInfoSync(settings, groups));
+    }
+
+    @Override
+    @Async
+    public Future<Map<Integer, Integer>> intersectGroups(UserTaskSettings settings, List<String> groups, Integer minCount) {
+        return new AsyncResult<>(intersectGroupsSync(settings, groups, minCount));
+    }
+
+    @Override
+    @Async
+    public void getGroupInfoById(Integer from, Integer to, Boolean saveIds, Boolean useIds) {
+        getGroupInfoByIdSync(from, to, saveIds, useIds);
+
+    }
+
+    @Override
+    public List<Integer> getUserGroups(UserTaskSettings settings, String userId) {
+        UserTask userTask = UserTask.create(USER_GROUPS, settings, repository);
+        try {
+            String url = PREFIX + "get?user_id=" + userId + ACCESS_TOKEN + VERSION;
+            Content content = Request.Get(url).execute().returnContent();
+            String ans = content.asString();
+            CommonIDResponse response = new ResponseParser<>(CommonIDResponse.class).parseResponseString(ans, RESPONSE_STRING);
+            userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response.getItems(), "\n")));
+            return response.getItems();
+        } catch (IOException ex) {
+            userTask.saveFinalError(ex);
+            ex.printStackTrace();
+        } catch (JSONException e) {
+            userTask.saveFinalError(e);
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Future<Map<Integer, Integer>> similarGroups(UserTaskSettings settings, List<String> groups, Integer minCount) {
+        return null;
+    }
+
+    @Override
+    public GroupUsers getAllGroupUsersSync(UserTaskSettings settings, String groupId) {
         UserTask userTask = UserTask.create(ALL_USERS, settings, repository);
         CommonIDResponse initial = getGroupUsers(groupId, 0, 1);
         if (initial == null || initial.getCount() == 0) {
-            return new AsyncResult<>(new GroupUsers(0, groupId));
+            return new GroupUsers(0, groupId);
         }
         int count = initial.getCount();
         userTask = userTask.saveInitial(count);
@@ -98,11 +147,28 @@ public class GroupServiceImpl extends AbstractGroupService {
         }
         service.shutdown();
         userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(users.getUsers(), "\n")));
-        return new AsyncResult<>(users);
+        return users;
     }
 
     @Override
-    public Future<List<Group>> getGroupsInfo(UserTaskSettings settings, List<String> groups) {
+    public Map<Integer, Integer> intersectGroupsSync(UserTaskSettings settings, List<String> groups, Integer minCount) {
+        UserTask userTask = UserTask.create(INTERSECT_GROUPS, settings, repository);
+        ArrayUtils utils = new ArrayUtils();
+        List<String> convertedIds = groups.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
+        userTask = userTask.saveInitial(convertedIds.size());
+        Map<Integer, Integer> result = new HashMap<>();
+        for (int i = 0; i < convertedIds.size(); i++) {
+            userTask = userTask.saveProgress(1);
+            GroupUsers cur = getAllGroupUsersSync(new UserTaskSettings(settings, false), convertedIds.get(i));
+            result = utils.intersectWithCount(result, cur.getUsers());
+        }
+        result = ArrayUtils.sortByValue(result, minCount);
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(result.keySet(), "\n")));
+        return result;
+    }
+
+    @Override
+    public List<Group> getGroupsInfoSync(UserTaskSettings settings, List<String> groups) {
         List<Group> response = new ArrayList<>();
         UserTask userTask = UserTask.create(GROUP_INFO, settings, repository);
         List<String> convertedIds = groups.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
@@ -125,37 +191,11 @@ public class GroupServiceImpl extends AbstractGroupService {
         }
         service.shutdown();
         userTask.saveFinal(exportService.getStreamFromObject(response));
-        return new AsyncResult<>(response);
+        return response;
     }
 
     @Override
-    @Async
-    public Future<Map<Integer, Integer>> intersectGroups(UserTaskSettings settings, List<String> groups, Integer minCount) {
-        UserTask userTask = UserTask.create(INTERSECT_GROUPS, settings, repository);
-        ArrayUtils utils = new ArrayUtils();
-        List<String> convertedIds = groups.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
-        userTask = userTask.saveInitial(convertedIds.size());
-        Map<Integer, Integer> result = new HashMap<>();
-        for (int i = 0; i < convertedIds.size(); i++) {
-            userTask = userTask.saveProgress(1);
-            GroupUsers cur = null;
-            try {
-                cur = getAllGroupUsers(new UserTaskSettings(settings, false), convertedIds.get(i)).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            result = utils.intersectWithCount(result, cur.getUsers());
-        }
-        result = ArrayUtils.sortByValue(result, minCount);
-        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(result.keySet(), "\n")));
-        return new AsyncResult<>(result);
-    }
-
-    @Override
-    @Async
-    public void getGroupInfoById(Integer from, Integer to, Boolean saveIds, Boolean useIds) {
+    public void getGroupInfoByIdSync(Integer from, Integer to, Boolean saveIds, Boolean useIds) {
         int add = 1000000;
         List<String> list;
         ExecutorService service = Executors.newFixedThreadPool(100);
@@ -192,31 +232,10 @@ public class GroupServiceImpl extends AbstractGroupService {
             }
             service.shutdown();
         }
-
     }
 
     @Override
-    public List<Integer> getUserGroups(UserTaskSettings settings, String userId) {
-        UserTask userTask = UserTask.create(USER_GROUPS, settings, repository);
-        try {
-            String url = PREFIX + "get?user_id=" + userId + ACCESS_TOKEN + VERSION;
-            Content content = Request.Get(url).execute().returnContent();
-            String ans = content.asString();
-            CommonIDResponse response = new ResponseParser<>(CommonIDResponse.class).parseResponseString(ans, RESPONSE_STRING);
-            userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response.getItems(), "\n")));
-            return response.getItems();
-        } catch (IOException ex) {
-            userTask.saveFinalError(ex);
-            ex.printStackTrace();
-        } catch (JSONException e) {
-            userTask.saveFinalError(e);
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-    @Override
-    public Future<Map<Integer, Integer>> similarGroups(UserTaskSettings settings, List<String> groups, Integer minCount) {
+    public Map<Integer, Integer> similarGroupsSync(UserTaskSettings settings, List<String> groups, Integer minCount) {
         return null;
     }
 }

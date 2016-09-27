@@ -43,73 +43,14 @@ public class AnalysisServiceImpl implements AnalysisService {
     @Async
     @Override
     public Future<List<User>> filterUsers(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
-        UserTask userTask = UserTask.create(FILTER_USERS, settings, repository);
-        userTask = userTask.saveInitial(1);
-        List<User> users = new ArrayList<>();
-        try {
-            users = getUsers(settings, userIds).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        if (analyseDTO.getAge() != null) {
-            userTask = userTask.updateStatusMessage("Фильтрация по возрасту");
-            for (IntRange range : analyseDTO.getAge().keySet()) {
-                users = users.parallelStream().filter(a ->
-                    a.getBdate() != null &&
-                        !a.getBdate().isEmpty() &&
-                        range.containsInteger(DateUtils.getAge(a.getBdate(), VKDicts.BDAY_FORMATS, 0))).collect(Collectors.toList());
-            }
-        }
-        if (analyseDTO.getCities() != null) {
-
-            userTask = userTask.updateStatusMessage("Фильтрация по городу");
-            for (Integer city : analyseDTO.getCities().keySet()) {
-                users = users.parallelStream().filter(a ->
-                    a.getCity() != null &&
-                        a.getCity().getId().equals(city)).collect(Collectors.toList());
-            }
-        }
-        if (analyseDTO.getCountries() != null) {
-
-            userTask = userTask.updateStatusMessage("Фильтрация по стране");
-            for (Integer country : analyseDTO.getCountries().keySet()) {
-                users = users.parallelStream().filter(user ->
-                    user.getCountry() != null &&
-                        user.getCountry().getId().equals(country)).collect(Collectors.toList());
-            }
-        }
-        if (analyseDTO.getSex() != null) {
-            userTask = userTask.updateStatusMessage("Фильтрация по полу");
-            for (Integer sex : analyseDTO.getSex().keySet()) {
-                users = users.parallelStream().filter(user ->
-                    user.getSex() != null &&
-                        user.getSex().equals(sex)).collect(Collectors.toList());
-            }
-        }
-        userTask.saveFinal(exportService.getStreamFromObject(users));
-        return new AsyncResult<>(users);
+        return new AsyncResult<>(filterUsersSync(settings, userIds, analyseDTO));
     }
-
-    private Future<List<User>> getUsers(UserTaskSettings settings, List<String> userIds) {
-        return vkUserService.getUserInfo(new UserTaskSettings(settings, false), userIds);
-    }
-
 
     @Override
-    @Async
-    public Future<AnalyseDTO> analyseUsers(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
+    public AnalyseDTO analyseUsersSync(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
         UserTask userTask = UserTask.create(ANALYSE_USERS, settings, repository);
         userTask = userTask.saveInitial(1);
-        List<User> users = new ArrayList<>();
-        try {
-            users = getUsers(settings, userIds).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        List<User> users = getUsers(settings, userIds);
         collectFields(analyseDTO, users);
         if (analyseDTO.getAge() != null) {
 
@@ -172,7 +113,62 @@ public class AnalysisServiceImpl implements AnalysisService {
             }
         }
         userTask.saveFinal(exportService.getStreamFromObject(analyseDTO));
-        return new AsyncResult<>(analyseDTO);
+        return analyseDTO;
+    }
+
+    @Override
+    public List<User> filterUsersSync(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
+        UserTask userTask = UserTask.create(FILTER_USERS, settings, repository);
+        userTask = userTask.saveInitial(1);
+        List<User> users = getUsers(settings, userIds);
+        if (analyseDTO.getAge() != null) {
+            userTask = userTask.updateStatusMessage("Фильтрация по возрасту");
+            for (IntRange range : analyseDTO.getAge().keySet()) {
+                users = users.parallelStream().filter(a ->
+                    a.getBdate() != null &&
+                        !a.getBdate().isEmpty() &&
+                        range.containsInteger(DateUtils.getAge(a.getBdate(), VKDicts.BDAY_FORMATS, 0))).collect(Collectors.toList());
+            }
+        }
+        if (analyseDTO.getCities() != null) {
+
+            userTask = userTask.updateStatusMessage("Фильтрация по городу");
+            for (Integer city : analyseDTO.getCities().keySet()) {
+                users = users.parallelStream().filter(a ->
+                    a.getCity() != null &&
+                        a.getCity().getId().equals(city)).collect(Collectors.toList());
+            }
+        }
+        if (analyseDTO.getCountries() != null) {
+
+            userTask = userTask.updateStatusMessage("Фильтрация по стране");
+            for (Integer country : analyseDTO.getCountries().keySet()) {
+                users = users.parallelStream().filter(user ->
+                    user.getCountry() != null &&
+                        user.getCountry().getId().equals(country)).collect(Collectors.toList());
+            }
+        }
+        if (analyseDTO.getSex() != null) {
+            userTask = userTask.updateStatusMessage("Фильтрация по полу");
+            for (Integer sex : analyseDTO.getSex().keySet()) {
+                users = users.parallelStream().filter(user ->
+                    user.getSex() != null &&
+                        user.getSex().equals(sex)).collect(Collectors.toList());
+            }
+        }
+        userTask.saveFinal(exportService.getStreamFromObject(users));
+        return users;
+    }
+
+    private List<User> getUsers(UserTaskSettings settings, List<String> userIds) {
+        return vkUserService.getUserInfoSync(new UserTaskSettings(settings, false), userIds);
+    }
+
+
+    @Override
+    @Async
+    public Future<AnalyseDTO> analyseUsers(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
+        return new AsyncResult<>(analyseUsersSync(settings, userIds, analyseDTO));
     }
 
     private void collectFields(AnalyseDTO analyseDTO, List<User> users) {

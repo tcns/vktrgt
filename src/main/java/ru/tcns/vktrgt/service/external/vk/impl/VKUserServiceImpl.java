@@ -59,106 +59,21 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     ExportService exportService;
 
     @Override
+    @Async
     public Future<List<String>> getUserURL(UserTaskSettings settings, List<String> userIds) {
-        List<String> response = new ArrayList<>();
-        UserTask userTask = UserTask.create(USER_URL, settings, repository);
-        userTask = userTask.saveInitial(userIds.size());
-        String fields = "domain";
-        List<String> users = ArrayUtils.getDelimetedLists(userIds, 1000);
-        ExecutorService service = Executors.newFixedThreadPool(100);
-        List<Future<List<User>>> tasks = new ArrayList<>();
-        for (String user : users) {
-            tasks.add(service.submit(() -> {
-                String url = USERS_PREFIX + "get?user_ids=" + user + "&fields=" + fields + VERSION;
-                Content content = Request.Get(url).execute().returnContent();
-                String ans = content.asString();
-                return VKResponseParser.parseUsersResponse(ans);
-            }));
-        }
-        for (Future<List<User>> future : tasks) {
-            try {
-                List<User> list = future.get();
-                List<String> stringList = list.parallelStream().map(a -> a.getId() + ": " + DOMAIN_PREFIX + a.getDomain())
-                    .collect(Collectors.toList());
-                userTask = userTask.saveProgress(list.size());
-                response.addAll(stringList);
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-
-        }
-        service.shutdown();
-        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response, "\n")));
-        return new AsyncResult<>(response);
+        return new AsyncResult<>(getUserURLSync(settings, userIds));
     }
 
     @Override
+    @Async
     public Future<List<String>> getUserId(UserTaskSettings settings, List<String> userUrls) {
-        List<String> response = new ArrayList<>();
-        UserTask userTask = UserTask.create(USER_IDS, settings, repository);
-        userTask = userTask.saveInitial(userUrls.size());
-        String fields = "domain";
-        List<String> urls = userUrls.parallelStream().map(a -> VKUrlParser.getName(a)).collect(Collectors.toList());
-        List<String> users = ArrayUtils.getDelimetedLists(urls, 1000);
-        ExecutorService service = Executors.newFixedThreadPool(100);
-        List<Future<List<User>>> tasks = new ArrayList<>();
-        for (String user : users) {
-            tasks.add(service.submit(() -> {
-                String url = USERS_PREFIX + "get?user_ids=" + user + "&fields=" + fields + VERSION;
-                Content content = Request.Get(url).execute().returnContent();
-                String ans = content.asString();
-                return VKResponseParser.parseUsersResponse(ans);
-            }));
-        }
-        for (Future<List<User>> future : tasks) {
-            try {
-                List<User> list = future.get();
-                List<String> stringList = list.parallelStream().map(a -> "" + a.getId())
-                    .collect(Collectors.toList());
-                userTask = userTask.saveProgress(list.size());
-                response.addAll(stringList);
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-
-        }
-        service.shutdown();
-        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response, "\n")));
-        return new AsyncResult<>(response);
+        return new AsyncResult<>(getUserIdSync(settings, userUrls));
     }
 
     @Override
     @Async
     public Future<List<User>> getUserInfo(UserTaskSettings settings, List<String> userIds) {
-        List<User> response = new ArrayList<>();
-        UserTask userTask = UserTask.create(USER_INFO, settings, repository);
-        List<String> convertedIds = userIds.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
-        userTask = userTask.saveInitial(convertedIds.size());
-        String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts";
-        List<String> users = ArrayUtils.getDelimetedLists(convertedIds, 1000);
-        ExecutorService service = Executors.newFixedThreadPool(100);
-        List<Future<List<User>>> tasks = new ArrayList<>();
-        for (String user : users) {
-            tasks.add(service.submit(() -> {
-                String url = USERS_PREFIX + "get?user_ids=" + user + "&fields=" + fields + VERSION;
-                Content content = Request.Get(url).execute().returnContent();
-                String ans = content.asString();
-                return VKResponseParser.parseUsersResponse(ans);
-            }));
-        }
-        for (Future<List<User>> future : tasks) {
-            try {
-                List<User> list = future.get();
-                userTask = userTask.saveProgress(list.size());
-                response.addAll(list);
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-
-        }
-        service.shutdown();
-        userTask.saveFinal(exportService.getStreamFromObject(response));
-        return new AsyncResult<>(response);
+        return new AsyncResult<>(getUserInfoSync(settings, userIds));
     }
 
     @Override
@@ -201,10 +116,172 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     @Override
     @Async
     public Future<Map<Integer, Integer>> intersectSubscriptions(UserTaskSettings settings, List<String> users, Integer min) {
+        return new AsyncResult<>(intersectSubscriptionsSync(settings, users, min));
+    }
+
+
+    @Override
+    @Async
+    public Future<Map<String, Integer>> searchUserAudio(UserTaskSettings settings, List<String> users, List<String> audio, String token) throws VKException {
+        return new AsyncResult<>(searchUserAudioSync(settings, users, audio, token));
+    }
+
+    @Override
+    @Async
+    public Future<Set<String>> searchNearestBirthdate(UserTaskSettings settings,
+                                                      List<String> userIds,
+                                                      Integer fromDays,
+                                                      Integer nearestDays,
+                                                      List<String> types,
+                                                      List<Integer> gender) {
+        return new AsyncResult<>(searchNearestBirthdateSync(settings, userIds, fromDays, nearestDays,
+            types, gender));
+    }
+
+    @Override
+    public List<User> getUserInfoSync(UserTaskSettings settings, List<String> userIds) {
+        List<User> response = new ArrayList<>();
+        UserTask userTask = UserTask.create(USER_INFO, settings, repository);
+        List<String> convertedIds = userIds.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
+        userTask = userTask.saveInitial(convertedIds.size());
+        String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts";
+        List<String> users = ArrayUtils.getDelimetedLists(convertedIds, 1000);
+        ExecutorService service = Executors.newFixedThreadPool(100);
+        List<Future<List<User>>> tasks = new ArrayList<>();
+        for (String user : users) {
+            tasks.add(service.submit(() -> {
+                String url = USERS_PREFIX + "get?user_ids=" + user + "&fields=" + fields + VERSION;
+                Content content = Request.Get(url).execute().returnContent();
+                String ans = content.asString();
+                return VKResponseParser.parseUsersResponse(ans);
+            }));
+        }
+        for (Future<List<User>> future : tasks) {
+            try {
+                List<User> list = future.get();
+                userTask = userTask.saveProgress(list.size());
+                response.addAll(list);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+        service.shutdown();
+        userTask.saveFinal(exportService.getStreamFromObject(response));
+        return response;
+    }
+
+    @Override
+    public List<String> getUserURLSync(UserTaskSettings settings, List<String> userIds) {
+        List<String> response = new ArrayList<>();
+        UserTask userTask = UserTask.create(USER_URL, settings, repository);
+        userTask = userTask.saveInitial(userIds.size());
+        String fields = "domain";
+        List<String> users = ArrayUtils.getDelimetedLists(userIds, 1000);
+        ExecutorService service = Executors.newFixedThreadPool(100);
+        List<Future<List<User>>> tasks = new ArrayList<>();
+        for (String user : users) {
+            tasks.add(service.submit(() -> {
+                String url = USERS_PREFIX + "get?user_ids=" + user + "&fields=" + fields + VERSION;
+                Content content = Request.Get(url).execute().returnContent();
+                String ans = content.asString();
+                return VKResponseParser.parseUsersResponse(ans);
+            }));
+        }
+        for (Future<List<User>> future : tasks) {
+            try {
+                List<User> list = future.get();
+                List<String> stringList = list.parallelStream().map(a -> a.getId() + ": " + DOMAIN_PREFIX + a.getDomain())
+                    .collect(Collectors.toList());
+                userTask = userTask.saveProgress(list.size());
+                response.addAll(stringList);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+        service.shutdown();
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response, "\n")));
+        return response;
+    }
+
+    @Override
+    public List<String> getUserIdSync(UserTaskSettings settings, List<String> userUrls) {
+        List<String> response = new ArrayList<>();
+        UserTask userTask = UserTask.create(USER_IDS, settings, repository);
+        userTask = userTask.saveInitial(userUrls.size());
+        String fields = "domain";
+        List<String> urls = userUrls.parallelStream().map(a -> VKUrlParser.getName(a)).collect(Collectors.toList());
+        List<String> users = ArrayUtils.getDelimetedLists(urls, 1000);
+        ExecutorService service = Executors.newFixedThreadPool(100);
+        List<Future<List<User>>> tasks = new ArrayList<>();
+        for (String user : users) {
+            tasks.add(service.submit(() -> {
+                String url = USERS_PREFIX + "get?user_ids=" + user + "&fields=" + fields + VERSION;
+                Content content = Request.Get(url).execute().returnContent();
+                String ans = content.asString();
+                return VKResponseParser.parseUsersResponse(ans);
+            }));
+        }
+        for (Future<List<User>> future : tasks) {
+            try {
+                List<User> list = future.get();
+                List<String> stringList = list.parallelStream().map(a -> "" + a.getId())
+                    .collect(Collectors.toList());
+                userTask = userTask.saveProgress(list.size());
+                response.addAll(stringList);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+        service.shutdown();
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response, "\n")));
+        return response;
+    }
+
+    @Override
+    public Map<Integer, Integer> intersectUsersSync(UserTaskSettings settings, List<String> users, Integer min) {
+        Map<Integer, Integer> result = new HashMap<>();
+        UserTask userTask = UserTask.create(USERS, settings, repository);
+        userTask = userTask.saveInitial(users.size());
+        try {
+            List<User> userList = getUserInfoSync(new UserTaskSettings(settings, false), users);
+            users = new ArrayList<>(userList.size());
+            for (User user: userList) {
+                users.add(""+user.getId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ArrayUtils utils = new ArrayUtils();
+        for (int i = 0; i < users.size(); i++) {
+            Integer id = null;
+            try {
+                id = Integer.parseInt(users.get(i));
+            } catch (NumberFormatException ex) {
+                continue;
+            }
+            CommonIDResponse cur = getUserFriendIds(id);
+            List<Integer> curResult = cur.getItems();
+            if (curResult != null) {
+                result = utils.intersectWithCount(result, curResult);
+                userTask = userTask.saveProgress(1);
+            } else {
+                userTask = userTask.saveError("Не удалось получить от пользователя с id " + users.get(i));
+            }
+        }
+        Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response.keySet(), "\n")));
+        return response;
+    }
+
+    @Override
+    public Map<Integer, Integer> intersectSubscriptionsSync(UserTaskSettings settings, List<String> users, Integer min) {
         Map<Integer, Integer> result = new HashMap<>();
         UserTask userTask = UserTask.create(SUBSCRIPTIONS, settings, repository);
         try {
-            List<User> userList = getUserInfo(new UserTaskSettings(settings, false), users).get();
+            List<User> userList = getUserInfoSync(new UserTaskSettings(settings, false), users);
             users = new ArrayList<>(userList.size());
             for (User user: userList) {
                 users.add(""+user.getId());
@@ -225,17 +302,45 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         }
         Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);
         userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response.keySet(), "\n")));
-        return new AsyncResult<>(response);
+        return response;
     }
 
+    @Override
+    public List<Integer> getFollowersSync(UserTaskSettings settings, Integer userId) {
+        CommonIDResponse initial = getFollowers(userId, 0, 1);
+        int count = initial.getCount();
+        UserTask userTask = UserTask.create(FOLLOWERS, settings, repository);
+        userTask = userTask.saveInitial(count);
+        List<Integer> users = new ArrayList<>(count);
+        ExecutorService service = Executors.newFixedThreadPool(100);
+        List<Future<List<Integer>>> tasks = new ArrayList<>();
+        for (int i = 0; i < count; i += 1000) {
+            final Integer cur = i;
+            tasks.add(service.submit(() -> getFollowers(userId, cur, 1000).getItems()));
+
+        }
+        for (Future<List<Integer>> task : tasks) {
+            try {
+                List<Integer> list = task.get();
+                userTask = userTask.saveProgress(list.size());
+                users.addAll(list);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(users, "\n")));
+        service.shutdown();
+        return users;
+    }
 
     @Override
-    @Async
-    public Future<Map<String, Integer>> searchUserAudio(UserTaskSettings settings, List<String> users, List<String> audio, String token) throws VKException {
+    public Map<String, Integer> searchUserAudioSync(UserTaskSettings settings, List<String> users, List<String> audio, String token) throws VKException {
         Map<String, Integer> result = new HashMap<>();
         UserTask userTask = UserTask.create(AUDIO, settings, repository);
         try {
-            List<User> userList = getUserInfo(new UserTaskSettings(settings, false), users).get();
+            List<User> userList = getUserInfoSync(new UserTaskSettings(settings, false), users);
             users = new ArrayList<>(userList.size());
             for (User user: userList) {
                 users.add(""+user.getId());
@@ -287,17 +392,11 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         }
         Map<String, Integer> response = ArrayUtils.sortByValue(result, 0);
         userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response.keySet(), "\n")));
-        return new AsyncResult<>(response);
+        return response;
     }
 
     @Override
-    @Async
-    public Future<Set<String>> searchNearestBirthdate(UserTaskSettings settings,
-                                                      List<String> userIds,
-                                                      Integer fromDays,
-                                                      Integer nearestDays,
-                                                      List<String> types,
-                                                      List<Integer> gender) {
+    public Set<String> searchNearestBirthdateSync(UserTaskSettings settings, List<String> userIds, Integer fromDays, Integer nearestDays, List<String> types, List<Integer> gender) {
         int batchSize = 20;
         UserTask userTask = UserTask.create(NEAREST_DATES, settings, repository);
         List<List<String>> batches = Lists.partition(userIds, batchSize);
@@ -305,7 +404,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         Set<String> response = new HashSet<>();
         for (List<String> batch: batches) {
             try {
-                List<User> userList = getUserInfo(new UserTaskSettings(settings, false), batch).get();
+                List<User> userList = getUserInfoSync(new UserTaskSettings(settings, false), batch);
                 for (User user: userList) {
                     List<Relative> relatives = user.getRelatives();
                     List<String> idsToFind = new ArrayList<>();
@@ -323,8 +422,8 @@ public class VKUserServiceImpl extends AbstractVKUserService {
                         }
                     }
                     if (idsToFind.size() > 0) {
-                        List<User> relativeUserAnswer = getUserInfo(new UserTaskSettings(settings, false),
-                            idsToFind).get();
+                        List<User> relativeUserAnswer = getUserInfoSync(new UserTaskSettings(settings, false),
+                            idsToFind);
                         for (User relativeUser: relativeUserAnswer) {
                             if (relativeUser.getBdate() != null) {
                                 Date birthDay = org.apache.commons.lang3.time.DateUtils.
@@ -355,38 +454,13 @@ public class VKUserServiceImpl extends AbstractVKUserService {
             }
         }
         userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response, "\n")));
-        return new AsyncResult<>(response);
+        return response;
     }
 
     @Override
     @Async
     public Future<List<Integer>> getFollowers(UserTaskSettings settings, Integer userId) {
-        CommonIDResponse initial = getFollowers(userId, 0, 1);
-        int count = initial.getCount();
-        UserTask userTask = UserTask.create(FOLLOWERS, settings, repository);
-        userTask = userTask.saveInitial(count);
-        List<Integer> users = new ArrayList<>(count);
-        ExecutorService service = Executors.newFixedThreadPool(100);
-        List<Future<List<Integer>>> tasks = new ArrayList<>();
-        for (int i = 0; i < count; i += 1000) {
-            final Integer cur = i;
-            tasks.add(service.submit(() -> getFollowers(userId, cur, 1000).getItems()));
-
-        }
-        for (Future<List<Integer>> task : tasks) {
-            try {
-                List<Integer> list = task.get();
-                userTask = userTask.saveProgress(list.size());
-                users.addAll(list);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(users, "\n")));
-        service.shutdown();
-        return new AsyncResult<>(users);
+        return new AsyncResult<>(getFollowersSync(settings, userId));
     }
 
     @Override
@@ -410,37 +484,6 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     @Override
     @Async
     public Future<Map<Integer, Integer>> intersectUsers(UserTaskSettings settings, List<String> users, Integer min) {
-        Map<Integer, Integer> result = new HashMap<>();
-        UserTask userTask = UserTask.create(USERS, settings, repository);
-        userTask = userTask.saveInitial(users.size());
-        try {
-            List<User> userList = getUserInfo(new UserTaskSettings(settings, false), users).get();
-            users = new ArrayList<>(userList.size());
-            for (User user: userList) {
-                users.add(""+user.getId());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        ArrayUtils utils = new ArrayUtils();
-        for (int i = 0; i < users.size(); i++) {
-            Integer id = null;
-            try {
-                id = Integer.parseInt(users.get(i));
-            } catch (NumberFormatException ex) {
-                continue;
-            }
-            CommonIDResponse cur = getUserFriendIds(id);
-            List<Integer> curResult = cur.getItems();
-            if (curResult != null) {
-                result = utils.intersectWithCount(result, curResult);
-                userTask = userTask.saveProgress(1);
-            } else {
-                userTask = userTask.saveError("Не удалось получить от пользователя с id " + users.get(i));
-            }
-        }
-        Map<Integer, Integer> response = ArrayUtils.sortByValue(result, min);
-        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(response.keySet(), "\n")));
-        return new AsyncResult<>(response);
+        return new AsyncResult<>(intersectUsersSync(settings, users, min));
     }
 }

@@ -45,37 +45,11 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     @Async
     public Future<Map<Integer, Integer>> getActiveTopicAuditory(UserTaskSettings settings, List<String> topicUrls, Integer minCount) {
-        UserTask userTask = UserTask.create(ACTIVE_TOPIC_AUDITORY, settings, repository);
-        userTask = userTask.saveInitial(topicUrls.size() * 2);
-        Map<Integer, List<Integer>> wallPosts = new HashMap<>();
-        for (String url : topicUrls) {
-            userTask = userTask.saveProgress(1);
-            VKUrlDto urlDto = VKUrlParser.parseUrl(url);
-            try {
-                wallPosts.put(urlDto.getElementId(),
-                    getWallService().getTopicCommentsWithLikes(
-                        new UserTaskSettings(settings, false),
-                        urlDto.getOwnerId(), urlDto.getElementId()).get());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        ArrayUtils utils = new ArrayUtils();
-        Map<Integer, Integer> groupActivity = new HashMap<>();
-        for (Map.Entry<Integer, List<Integer>> e : wallPosts.entrySet()) {
-            userTask = userTask.saveProgress(1);
-            groupActivity = utils.intersectWithCount(groupActivity, e.getValue());
-        }
-        groupActivity = ArrayUtils.sortByValue(groupActivity, minCount);
-        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(groupActivity.keySet(), "\n")));
-        return new AsyncResult<>(groupActivity);
+        return new AsyncResult<>(getActiveTopicAuditorySync(settings, topicUrls, minCount));
     }
 
     @Override
-    @Async
-    public Future<Map<Integer, Map<Integer, Integer>>> getActiveAuditory(UserTaskSettings settings, ActiveAuditoryDTO activeAuditoryDTO) {
+    public Map<Integer, Map<Integer, Integer>> getActiveAuditorySync(UserTaskSettings settings, ActiveAuditoryDTO activeAuditoryDTO) {
         Map<Integer, Map<Integer, Integer>> activity = new HashMap<>();
         UserTask userTask = UserTask.create(ACTIVE_AUDITORY, settings, repository);
         Map<Integer, List<WallPost>> wallPosts = new HashMap<>();
@@ -84,15 +58,10 @@ public class ActivityServiceImpl implements ActivityService {
         for (String i : activeAuditoryDTO.getGroups()) {
             try {
                 Integer val = Integer.valueOf(i);
-                wallPosts.put(val, getWallService().getWallPosts(
+                wallPosts.put(val, getWallService().getWallPostsSync(
                     new UserTaskSettings(settings, false),
-                    val, activeAuditoryDTO.getMaxDays()).get());
-            } catch (NumberFormatException e){}
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
+                    val, activeAuditoryDTO.getMaxDays()));
+            } catch (NumberFormatException e){e.printStackTrace();}
         }
         userTask = userTask.updateStatusMessage("Обработка постов");
         if (activeAuditoryDTO.getPostIds() != null &&
@@ -122,45 +91,24 @@ public class ActivityServiceImpl implements ActivityService {
                 if (activeAuditoryDTO.getCountComments()) {
 
                     userTask = userTask.updateStatusMessage("Сбор комментариев");
-                    List<Integer> list = new ArrayList<>();
-                    try {
-                        list = getWallService().getComments(
-                            new UserTaskSettings(settings, false), e.getKey(), post.getId()).get();
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    } catch (ExecutionException e1) {
-                        e1.printStackTrace();
-                    }
+                    List<Integer> list = getWallService().getCommentsSync(
+                        new UserTaskSettings(settings, false), e.getKey(), post.getId());
                     groupActivity = utils.intersectWithCount(groupActivity, list);
                     userTask = userTask.saveProgress(1);
                 }
                 if (activeAuditoryDTO.getCountLikes()) {
 
                     userTask = userTask.updateStatusMessage("Сбор мне нравится");
-                    List<Integer> list = new ArrayList<>();
-                    try {
-                        list = getWallService().getLikes(
-                            new UserTaskSettings(settings, false), e.getKey(), post.getId(), activeAuditoryDTO.getType()).get();
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    } catch (ExecutionException e1) {
-                        e1.printStackTrace();
-                    }
+                    List<Integer> list = getWallService().getLikesSync(
+                            new UserTaskSettings(settings, false), e.getKey(), post.getId(), activeAuditoryDTO.getType());
                     groupActivity = utils.intersectWithCount(groupActivity, list);
                     userTask = userTask.saveProgress(1);
                 }
                 if (activeAuditoryDTO.getCountReposts()) {
                     userTask = userTask.updateStatusMessage("Сбор репостов");
 
-                    List<Integer> list = null;
-                    try {
-                        list = getWallService().getReposts(
-                            new UserTaskSettings(settings, false), e.getKey(), post.getId()).get();
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    } catch (ExecutionException e1) {
-                        e1.printStackTrace();
-                    }
+                    List<Integer> list = getWallService().getRepostsSync(
+                            new UserTaskSettings(settings, false), e.getKey(), post.getId());
                     groupActivity = utils.intersectWithCount(groupActivity, list);
                     userTask = userTask.saveProgress(1);
                 }
@@ -189,7 +137,37 @@ public class ActivityServiceImpl implements ActivityService {
             userTask.saveFinal(exportService.getStreamFromObject(sb.toString()));
         }
 
-        return new AsyncResult<>(activity) ;
+        return activity;
+    }
+
+    @Override
+    public Map<Integer, Integer> getActiveTopicAuditorySync(UserTaskSettings settings, List<String> topicUrls, Integer minCount) {
+        UserTask userTask = UserTask.create(ACTIVE_TOPIC_AUDITORY, settings, repository);
+        userTask = userTask.saveInitial(topicUrls.size() * 2);
+        Map<Integer, List<Integer>> wallPosts = new HashMap<>();
+        for (String url : topicUrls) {
+            userTask = userTask.saveProgress(1);
+            VKUrlDto urlDto = VKUrlParser.parseUrl(url);
+            wallPosts.put(urlDto.getElementId(),
+                getWallService().getTopicCommentsWithLikesSync(
+                    new UserTaskSettings(settings, false),
+                    urlDto.getOwnerId(), urlDto.getElementId()));
+        }
+        ArrayUtils utils = new ArrayUtils();
+        Map<Integer, Integer> groupActivity = new HashMap<>();
+        for (Map.Entry<Integer, List<Integer>> e : wallPosts.entrySet()) {
+            userTask = userTask.saveProgress(1);
+            groupActivity = utils.intersectWithCount(groupActivity, e.getValue());
+        }
+        groupActivity = ArrayUtils.sortByValue(groupActivity, minCount);
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(groupActivity.keySet(), "\n")));
+        return groupActivity;
+    }
+
+    @Override
+    @Async
+    public Future<Map<Integer, Map<Integer, Integer>>> getActiveAuditory(UserTaskSettings settings, ActiveAuditoryDTO activeAuditoryDTO) {
+        return new AsyncResult<>(getActiveAuditorySync(settings, activeAuditoryDTO));
     }
 
     private int countSteps(ActiveAuditoryDTO activeAuditoryDTO, Map<Integer, List<WallPost>> wallPosts) {

@@ -30,17 +30,40 @@ public class WallServiceImpl extends AbstractWallService {
     @Override
     @Async
     public Future<List<WallPost>> getWallPosts(UserTaskSettings settings, Integer ownerId, Integer maxCount) {
+        return new AsyncResult<>(getWallPostsSync(settings, ownerId, maxCount));
+    }
+
+    @Override
+    @Async
+    public Future<List<Integer>> getTopicCommentsWithLikes(UserTaskSettings settings, Integer ownerId, Integer postId) {
+        return new AsyncResult<>(getTopicCommentsWithLikesSync(settings, ownerId, postId));
+    }
+
+    @Override
+    @Async
+    public Future<List<Integer>> getComments(UserTaskSettings settings, Integer ownerId, Integer postId) {
+        return new AsyncResult<>(getCommentsSync(settings, ownerId, postId));
+    }
+
+    @Override
+    @Async
+    public Future<List<Integer>> getReposts(UserTaskSettings settings, Integer ownerId, Integer postId) {
+        return new AsyncResult<>(getRepostsSync(settings, ownerId, postId));
+    }
+
+    @Override
+    public List<WallPost> getWallPostsSync(UserTaskSettings settings, Integer ownerId, Integer maxDays) {
         UserTask userTask = UserTask.create(WALL_POSTS, settings, userTaskRepository);
         final List<WallPost> posts;
         try {
             Integer count = getWallPosts(ownerId, 0, 1).getCount();
-            if (maxCount == null) {
-                maxCount = VKDicts.MAX_DAYS_COUNT_FOR_WALL_PARSING;
+            if (maxDays == null) {
+                maxDays = VKDicts.MAX_DAYS_COUNT_FOR_WALL_PARSING;
             }
             if (count == null) {
-                return new AsyncResult<>(new ArrayList<>());
+                return new ArrayList<>();
             }
-            count = Math.min(maxCount, count);
+            count = Math.min(maxDays, count);
             userTask = userTask.saveInitial(count);
             ExecutorService service = Executors.newFixedThreadPool(50);
             List<Future<List<WallPost>>> tasks = new ArrayList<>();
@@ -62,62 +85,51 @@ public class WallServiceImpl extends AbstractWallService {
             }
             service.shutdown();
             userTask.saveFinal(exportService.getStreamFromObject(posts));
-            return new AsyncResult<>(posts);
+            return posts;
         } catch (JSONException e) {
             userTask.saveFinalError(e);
             e.printStackTrace();
         }
-        return new AsyncResult<>(new ArrayList<>());
+        return new ArrayList<>();
     }
 
     @Override
-    @Async
-    public Future<List<Integer>> getTopicCommentsWithLikes(UserTaskSettings settings, Integer ownerId, Integer postId) {
-        UserTask userTask = UserTask.create(TOPIC_COMMENTS, settings, userTaskRepository);
-        final List<Integer> comments;
+    public List<Integer> getLikesSync(UserTaskSettings settings, Integer ownerId, Integer postId, String type) {
+        final List<Integer> likes;
+        UserTask userTask = UserTask.create(LIKES, settings, userTaskRepository);
         try {
-            Integer count = getTopicComments(ownerId, postId, 0, 1).getCount();
+            Integer count = getLikes(ownerId, type, postId, 0, 1).getCount();
             userTask = userTask.saveInitial(count);
-            comments = new ArrayList<>(count);
-            ExecutorService service = Executors.newFixedThreadPool(100);
+            likes = new ArrayList<>(count);
+            ExecutorService service = Executors.newFixedThreadPool(10);
             List<Future<List<Integer>>> tasks = new ArrayList<>();
-            for (int i = 0; i < count; i += 100) {
-                final int curId = i;
-                tasks.add(service.submit(() -> {
-                        List<Comment> items = getTopicComments(ownerId, postId, curId, 100).getItems();
-                        List<Integer> cur = items
-                            .parallelStream().map(a -> a.getFromId()).collect(Collectors.toList());
-                        for (Comment comment : items) {
-                            cur.addAll(getLikes(settings, postId, comment.getId(), "topic_comment").get());
-                        }
-                        return cur;
-                    }
-                ));
+            for (int i = 0; i < count; i += 1000) {
+                final int cur = i;
+                tasks.add(service.submit(() -> getLikes(ownerId, type, postId, cur, 1000).getItems()));
             }
-            for (Future<List<Integer>> task : tasks) {
+            for (Future<List<Integer>> a : tasks) {
                 try {
-                    List<Integer> resp = task.get();
-                    userTask = userTask.saveProgress(resp.size());
-                    comments.addAll(resp);
+                    List<Integer> list = a.get();
+                    userTask = userTask.saveProgress(list.size());
+                    likes.addAll(list);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
             }
+            userTask.saveFinal(exportService.getStreamFromObject(likes));
             service.shutdown();
-            userTask.saveFinal(exportService.getStreamFromObject(comments));
-            return new AsyncResult<>(comments);
+            return likes;
         } catch (JSONException e) {
             userTask.saveFinalError(e);
             e.printStackTrace();
         }
-        return new AsyncResult<>(new ArrayList<>());
+        return new ArrayList<>();
     }
 
     @Override
-    @Async
-    public Future<List<Integer>> getComments(UserTaskSettings settings, Integer ownerId, Integer postId) {
+    public List<Integer> getCommentsSync(UserTaskSettings settings, Integer ownerId, Integer postId) {
         final List<Integer> comments;
         UserTask userTask = UserTask.create(COMMENTS, settings, userTaskRepository);
         try {
@@ -144,17 +156,60 @@ public class WallServiceImpl extends AbstractWallService {
             }
             service.shutdown();
             userTask.saveFinal(exportService.getStreamFromObject(comments));
-            return new AsyncResult<>(comments);
+            return comments;
         } catch (JSONException e) {
             userTask.saveFinalError(e);
             e.printStackTrace();
         }
-        return new AsyncResult<>(new ArrayList<>());
+        return new ArrayList<>();
     }
 
     @Override
-    @Async
-    public Future<List<Integer>> getReposts(UserTaskSettings settings, Integer ownerId, Integer postId) {
+    public List<Integer> getTopicCommentsWithLikesSync(UserTaskSettings settings, Integer ownerId, Integer postId) {
+        UserTask userTask = UserTask.create(TOPIC_COMMENTS, settings, userTaskRepository);
+        final List<Integer> comments;
+        try {
+            Integer count = getTopicComments(ownerId, postId, 0, 1).getCount();
+            userTask = userTask.saveInitial(count);
+            comments = new ArrayList<>(count);
+            ExecutorService service = Executors.newFixedThreadPool(100);
+            List<Future<List<Integer>>> tasks = new ArrayList<>();
+            for (int i = 0; i < count; i += 100) {
+                final int curId = i;
+                tasks.add(service.submit(() -> {
+                        List<Comment> items = getTopicComments(ownerId, postId, curId, 100).getItems();
+                        List<Integer> cur = items
+                            .parallelStream().map(a -> a.getFromId()).collect(Collectors.toList());
+                        for (Comment comment : items) {
+                            cur.addAll(getLikesSync(settings, postId, comment.getId(), "topic_comment"));
+                        }
+                        return cur;
+                    }
+                ));
+            }
+            for (Future<List<Integer>> task : tasks) {
+                try {
+                    List<Integer> resp = task.get();
+                    userTask = userTask.saveProgress(resp.size());
+                    comments.addAll(resp);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+            service.shutdown();
+            userTask.saveFinal(exportService.getStreamFromObject(comments));
+            return comments;
+        } catch (JSONException e) {
+            userTask.saveFinalError(e);
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Integer> getRepostsSync(UserTaskSettings settings, Integer ownerId, Integer postId) {
         List<Integer> reposts = new ArrayList<>();
         UserTask userTask = UserTask.create(REPOSTS, settings, userTaskRepository);
         try {
@@ -173,47 +228,17 @@ public class WallServiceImpl extends AbstractWallService {
                 userTask = userTask.saveProgress(i);
             }
             userTask.saveFinal(exportService.getStreamFromObject(reposts));
-            return new AsyncResult<>(reposts);
+            return reposts;
         } catch (JSONException e) {
             userTask.saveFinalError(e);
             e.printStackTrace();
         }
-        return new AsyncResult<>(reposts);
+        return reposts;
     }
 
     @Override
     @Async
     public Future<List<Integer>> getLikes(UserTaskSettings settings, Integer ownerId, Integer postId, String type) {
-        final List<Integer> likes;
-        UserTask userTask = UserTask.create(LIKES, settings, userTaskRepository);
-        try {
-            Integer count = getLikes(ownerId, type, postId, 0, 1).getCount();
-            userTask = userTask.saveInitial(count);
-            likes = new ArrayList<>(count);
-            ExecutorService service = Executors.newFixedThreadPool(10);
-            List<Future<List<Integer>>> tasks = new ArrayList<>();
-            for (int i = 0; i < count; i += 1000) {
-                final int cur = i;
-                tasks.add(service.submit(() -> getLikes(ownerId, type, postId, cur, 1000).getItems()));
-            }
-            for (Future<List<Integer>> a : tasks) {
-                try {
-                    List<Integer> list = a.get();
-                    userTask = userTask.saveProgress(list.size());
-                    likes.addAll(list);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-            userTask.saveFinal(exportService.getStreamFromObject(likes));
-            service.shutdown();
-            return new AsyncResult<>(likes);
-        } catch (JSONException e) {
-            userTask.saveFinalError(e);
-            e.printStackTrace();
-        }
-        return new AsyncResult<>(new ArrayList<>());
+        return new AsyncResult<>(getLikesSync(settings, ownerId, postId, type));
     }
 }
