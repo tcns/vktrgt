@@ -23,12 +23,7 @@ import java.util.Date;
  * Created by TIMUR on 03.05.2016.
  */
 public abstract class AbstractWallService implements WallService {
-    public static String BEAN_NAME = "WallServiceImpl";
-    public static String TOPIC_COMMENTS = BEAN_NAME + "TopicComments";
-    public static String COMMENTS = BEAN_NAME + "Comments";
-    public static String WALL_POSTS = BEAN_NAME + "WallPosts";
-    public static String REPOSTS = BEAN_NAME + "Reposts";
-    public static String LIKES = BEAN_NAME + "Likes";
+
 
     @Inject
     protected UserTaskRepository userTaskRepository;

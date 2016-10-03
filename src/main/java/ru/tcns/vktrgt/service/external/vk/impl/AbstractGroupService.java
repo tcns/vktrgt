@@ -28,6 +28,7 @@ import java.util.List;
  * Created by TIMUR on 03.05.2016.
  */
 public abstract class AbstractGroupService implements GroupService {
+
     protected final Logger log = LoggerFactory.getLogger(GroupServiceImpl.class);
     @Inject
     protected GroupRepository groupRepository;

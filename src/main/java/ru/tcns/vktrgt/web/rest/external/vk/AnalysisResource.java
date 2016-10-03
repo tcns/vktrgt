@@ -10,13 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
+import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.domain.util.IntRangeDeserializer;
+import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
+import ru.tcns.vktrgt.service.external.vk.impl.AnalysisServiceImpl;
 import ru.tcns.vktrgt.service.external.vk.intf.AnalysisService;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 
@@ -40,6 +43,8 @@ public class AnalysisResource {
     GoogleDriveImpl googleDrive;
     @Inject
     ExportService exportService;
+    @Inject
+    UserTaskRepository userTaskRepository;
 
     @RequestMapping(value = "/analyse",
         method = RequestMethod.POST,
@@ -53,8 +58,9 @@ public class AnalysisResource {
         AnalyseDTO analyseDTO = mapper.readValue(request.getParameter("dto"), AnalyseDTO.class);
         MultipartFile file = request.getFile("file");
         analyseDTO.getUsers().addAll(exportService.getListOfStrings(file, "\n"));
-        analysisService.analyseUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            analyseDTO.getTaskInfo(), googleDrive), analyseDTO.getUsers(), analyseDTO);
+        UserTask userTask = UserTask.create(AnalysisService.ANALYSE_USERS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            analyseDTO.getTaskInfo(), googleDrive), userTaskRepository);
+        analysisService.analyseUsers(userTask, analyseDTO.getUsers(), analyseDTO);
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/filter",
@@ -69,8 +75,9 @@ public class AnalysisResource {
         AnalyseDTO analyseDTO = mapper.readValue(request.getParameter("dto"), AnalyseDTO.class);
         MultipartFile file = request.getFile("file");
         analyseDTO.getUsers().addAll(exportService.getListOfStrings(file, "\n"));
-        analysisService.filterUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            analyseDTO.getTaskInfo(), googleDrive), analyseDTO.getUsers(), analyseDTO);
+        UserTask userTask = UserTask.create(AnalysisService.FILTER_USERS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            analyseDTO.getTaskInfo(), googleDrive), userTaskRepository);
+        analysisService.filterUsers(userTask, analyseDTO.getUsers(), analyseDTO);
         return ResponseEntity.ok().build();
     }
 }

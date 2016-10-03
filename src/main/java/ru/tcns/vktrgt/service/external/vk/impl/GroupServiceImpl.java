@@ -33,11 +33,7 @@ import java.util.stream.Collectors;
 @Service
 public class GroupServiceImpl extends AbstractGroupService {
 
-    public static final String BEAN_NAME = "GroupServiceImpl";
-    public static final String ALL_USERS = BEAN_NAME + "AllUsers";
-    public static final String INTERSECT_GROUPS = BEAN_NAME + "IntersectGroups";
-    public static final String USER_GROUPS = BEAN_NAME + "UserGroups";
-    public static final String GROUP_INFO = BEAN_NAME + "GroupInfo";
+
     @Inject
     UserTaskRepository repository;
     @Inject
@@ -68,20 +64,20 @@ public class GroupServiceImpl extends AbstractGroupService {
 
     @Override
     @Async
-    public Future<GroupUsers> getAllGroupUsers(UserTaskSettings settings, String groupId) {
-        return new AsyncResult<>(getAllGroupUsersSync(settings, groupId));
+    public Future<GroupUsers> getAllGroupUsers(UserTask userTask, String groupId) {
+        return new AsyncResult<>(getAllGroupUsersSync(userTask, groupId));
     }
 
     @Override
     @Async
-    public Future<List<Group>> getGroupsInfo(UserTaskSettings settings, List<String> groups) {
-        return new AsyncResult<>(getGroupsInfoSync(settings, groups));
+    public Future<List<Group>> getGroupsInfo(UserTask userTask, List<String> groups) {
+        return new AsyncResult<>(getGroupsInfoSync(userTask, groups));
     }
 
     @Override
     @Async
-    public Future<Map<Integer, Integer>> intersectGroups(UserTaskSettings settings, List<String> groups, Integer minCount) {
-        return new AsyncResult<>(intersectGroupsSync(settings, groups, minCount));
+    public Future<Map<Integer, Integer>> intersectGroups(UserTask userTask, List<String> groups, Integer minCount) {
+        return new AsyncResult<>(intersectGroupsSync(userTask, groups, minCount));
     }
 
     @Override
@@ -92,8 +88,8 @@ public class GroupServiceImpl extends AbstractGroupService {
     }
 
     @Override
-    public List<Integer> getUserGroups(UserTaskSettings settings, String userId) {
-        UserTask userTask = UserTask.create(USER_GROUPS, settings, repository);
+    public List<Integer> getUserGroups(UserTask userTask, String userId) {
+        userTask = userTask.startWork();
         try {
             String url = PREFIX + "get?user_id=" + userId + ACCESS_TOKEN + VERSION;
             Content content = Request.Get(url).execute().returnContent();
@@ -112,13 +108,13 @@ public class GroupServiceImpl extends AbstractGroupService {
     }
 
     @Override
-    public Future<Map<Integer, Integer>> similarGroups(UserTaskSettings settings, List<String> groups, Integer minCount) {
+    public Future<Map<Integer, Integer>> similarGroups(UserTask userTask, List<String> groups, Integer minCount) {
         return null;
     }
 
     @Override
-    public GroupUsers getAllGroupUsersSync(UserTaskSettings settings, String groupId) {
-        UserTask userTask = UserTask.create(ALL_USERS, settings, repository);
+    public GroupUsers getAllGroupUsersSync(UserTask userTask, String groupId) {
+        userTask = userTask.startWork();
         CommonIDResponse initial = getGroupUsers(groupId, 0, 1);
         if (initial == null || initial.getCount() == 0) {
             return new GroupUsers(0, groupId);
@@ -151,15 +147,15 @@ public class GroupServiceImpl extends AbstractGroupService {
     }
 
     @Override
-    public Map<Integer, Integer> intersectGroupsSync(UserTaskSettings settings, List<String> groups, Integer minCount) {
-        UserTask userTask = UserTask.create(INTERSECT_GROUPS, settings, repository);
+    public Map<Integer, Integer> intersectGroupsSync(UserTask userTask, List<String> groups, Integer minCount) {
+        userTask = userTask.startWork();
         ArrayUtils utils = new ArrayUtils();
         List<String> convertedIds = groups.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
         userTask = userTask.saveInitial(convertedIds.size());
         Map<Integer, Integer> result = new HashMap<>();
         for (int i = 0; i < convertedIds.size(); i++) {
             userTask = userTask.saveProgress(1);
-            GroupUsers cur = getAllGroupUsersSync(new UserTaskSettings(settings, false), convertedIds.get(i));
+            GroupUsers cur = getAllGroupUsersSync(userTask.copyNoCreate(), convertedIds.get(i));
             result = utils.intersectWithCount(result, cur.getUsers());
         }
         result = ArrayUtils.sortByValue(result, minCount);
@@ -168,9 +164,9 @@ public class GroupServiceImpl extends AbstractGroupService {
     }
 
     @Override
-    public List<Group> getGroupsInfoSync(UserTaskSettings settings, List<String> groups) {
+    public List<Group> getGroupsInfoSync(UserTask userTask, List<String> groups) {
         List<Group> response = new ArrayList<>();
-        UserTask userTask = UserTask.create(GROUP_INFO, settings, repository);
+        userTask = userTask.startWork();
         List<String> convertedIds = groups.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
         List<String> groupsIds = ArrayUtils.getDelimetedLists(convertedIds, 1000);
         userTask = userTask.saveInitial(groupsIds.size());
@@ -235,7 +231,7 @@ public class GroupServiceImpl extends AbstractGroupService {
     }
 
     @Override
-    public Map<Integer, Integer> similarGroupsSync(UserTaskSettings settings, List<String> groups, Integer minCount) {
+    public Map<Integer, Integer> similarGroupsSync(UserTask userTask, List<String> groups, Integer minCount) {
         return null;
     }
 }

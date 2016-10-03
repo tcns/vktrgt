@@ -69,6 +69,7 @@ public class UserTask {
     @Transient
     public static UserTask create() {
         UserTask userTask = new UserTask();
+        userTask.setCurrentStatus(UserTaskStatuses.PREPARED);
         userTask.errors = new ArrayList<>();
         return userTask;
     }
@@ -85,6 +86,19 @@ public class UserTask {
         userTask.repository = repository;
         userTask.setUserId(settings.getUser().getId());
         return userTask;
+    }
+    @Transient
+    public UserTask copyNoCreate () {
+        UserTask task = create(this.kind, new UserTaskSettings(this.settings, false), this.repository);
+        return task;
+    }
+    @Transient
+    public UserTask startWork () {
+        if (settings.isCreateTask()) {
+            setCurrentStatus(UserTaskStatuses.START_TASK);
+            repository.save(this);
+        }
+        return this;
     }
     @Transient
     public UserTask updateStatusMessage(String status) {

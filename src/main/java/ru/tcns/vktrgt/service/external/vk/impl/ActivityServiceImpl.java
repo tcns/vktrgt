@@ -5,7 +5,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.UserTask;
-import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKUrlDto;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
@@ -21,9 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by TIMUR on 30.04.2016.
@@ -31,35 +28,30 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class ActivityServiceImpl implements ActivityService {
 
-    public static String BEAN_NAME = "ActivityServiceImpl";
-    public static String ACTIVE_TOPIC_AUDITORY = BEAN_NAME + "TopicAuditory";
-    public static String ACTIVE_AUDITORY = BEAN_NAME + "Auditory";
+
 
     @Inject
     private WallService wallService;
-    @Inject
-    private UserTaskRepository repository;
     @Inject
     private ExportService exportService;
 
     @Override
     @Async
-    public Future<Map<Integer, Integer>> getActiveTopicAuditory(UserTaskSettings settings, List<String> topicUrls, Integer minCount) {
+    public Future<Map<Integer, Integer>> getActiveTopicAuditory(UserTask settings, List<String> topicUrls, Integer minCount) {
         return new AsyncResult<>(getActiveTopicAuditorySync(settings, topicUrls, minCount));
     }
 
     @Override
-    public Map<Integer, Map<Integer, Integer>> getActiveAuditorySync(UserTaskSettings settings, ActiveAuditoryDTO activeAuditoryDTO) {
+    public Map<Integer, Map<Integer, Integer>> getActiveAuditorySync(UserTask userTask, ActiveAuditoryDTO activeAuditoryDTO) {
         Map<Integer, Map<Integer, Integer>> activity = new HashMap<>();
-        UserTask userTask = UserTask.create(ACTIVE_AUDITORY, settings, repository);
+        userTask = userTask.startWork();
         Map<Integer, List<WallPost>> wallPosts = new HashMap<>();
         userTask = userTask.saveInitial(activeAuditoryDTO.getGroups().size());
         userTask = userTask.updateStatusMessage("Сбор постов со стены");
         for (String i : activeAuditoryDTO.getGroups()) {
             try {
                 Integer val = Integer.valueOf(i);
-                wallPosts.put(val, getWallService().getWallPostsSync(
-                    new UserTaskSettings(settings, false),
+                wallPosts.put(val, getWallService().getWallPostsSync(userTask.copyNoCreate(),
                     val, activeAuditoryDTO.getMaxDays()));
             } catch (NumberFormatException e){e.printStackTrace();}
         }
@@ -91,24 +83,21 @@ public class ActivityServiceImpl implements ActivityService {
                 if (activeAuditoryDTO.getCountComments()) {
 
                     userTask = userTask.updateStatusMessage("Сбор комментариев");
-                    List<Integer> list = getWallService().getCommentsSync(
-                        new UserTaskSettings(settings, false), e.getKey(), post.getId());
+                    List<Integer> list = getWallService().getCommentsSync(userTask.copyNoCreate(), e.getKey(), post.getId());
                     groupActivity = utils.intersectWithCount(groupActivity, list);
                     userTask = userTask.saveProgress(1);
                 }
                 if (activeAuditoryDTO.getCountLikes()) {
 
                     userTask = userTask.updateStatusMessage("Сбор мне нравится");
-                    List<Integer> list = getWallService().getLikesSync(
-                            new UserTaskSettings(settings, false), e.getKey(), post.getId(), activeAuditoryDTO.getType());
+                    List<Integer> list = getWallService().getLikesSync(userTask.copyNoCreate(), e.getKey(), post.getId(), activeAuditoryDTO.getType());
                     groupActivity = utils.intersectWithCount(groupActivity, list);
                     userTask = userTask.saveProgress(1);
                 }
                 if (activeAuditoryDTO.getCountReposts()) {
                     userTask = userTask.updateStatusMessage("Сбор репостов");
 
-                    List<Integer> list = getWallService().getRepostsSync(
-                            new UserTaskSettings(settings, false), e.getKey(), post.getId());
+                    List<Integer> list = getWallService().getRepostsSync(userTask.copyNoCreate(), e.getKey(), post.getId());
                     groupActivity = utils.intersectWithCount(groupActivity, list);
                     userTask = userTask.saveProgress(1);
                 }
@@ -141,16 +130,15 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public Map<Integer, Integer> getActiveTopicAuditorySync(UserTaskSettings settings, List<String> topicUrls, Integer minCount) {
-        UserTask userTask = UserTask.create(ACTIVE_TOPIC_AUDITORY, settings, repository);
+    public Map<Integer, Integer> getActiveTopicAuditorySync(UserTask userTask, List<String> topicUrls, Integer minCount) {
+        userTask = userTask.startWork();
         userTask = userTask.saveInitial(topicUrls.size() * 2);
         Map<Integer, List<Integer>> wallPosts = new HashMap<>();
         for (String url : topicUrls) {
             userTask = userTask.saveProgress(1);
             VKUrlDto urlDto = VKUrlParser.parseUrl(url);
             wallPosts.put(urlDto.getElementId(),
-                getWallService().getTopicCommentsWithLikesSync(
-                    new UserTaskSettings(settings, false),
+                getWallService().getTopicCommentsWithLikesSync(userTask.copyNoCreate(),
                     urlDto.getOwnerId(), urlDto.getElementId()));
         }
         ArrayUtils utils = new ArrayUtils();
@@ -166,7 +154,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Async
-    public Future<Map<Integer, Map<Integer, Integer>>> getActiveAuditory(UserTaskSettings settings, ActiveAuditoryDTO activeAuditoryDTO) {
+    public Future<Map<Integer, Map<Integer, Integer>>> getActiveAuditory(UserTask settings, ActiveAuditoryDTO activeAuditoryDTO) {
         return new AsyncResult<>(getActiveAuditorySync(settings, activeAuditoryDTO));
     }
 

@@ -29,12 +29,8 @@ import java.util.stream.Collectors;
 @Service
 public class AnalysisServiceImpl implements AnalysisService {
 
-    public final static String BEAN_NAME = "AnalysisServiceImpl";
-    public final static String FILTER_USERS = BEAN_NAME + "filterUsers";
-    public final static String ANALYSE_USERS = BEAN_NAME + "analyseUsers";
 
-    @Inject
-    private UserTaskRepository repository;
+
     @Inject
     private VKUserService vkUserService;
     @Inject
@@ -42,15 +38,15 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     @Async
     @Override
-    public Future<List<User>> filterUsers(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
-        return new AsyncResult<>(filterUsersSync(settings, userIds, analyseDTO));
+    public Future<List<User>> filterUsers(UserTask userTask, List<String> userIds, AnalyseDTO analyseDTO) {
+        return new AsyncResult<>(filterUsersSync(userTask, userIds, analyseDTO));
     }
 
     @Override
-    public AnalyseDTO analyseUsersSync(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
-        UserTask userTask = UserTask.create(ANALYSE_USERS, settings, repository);
+    public AnalyseDTO analyseUsersSync(UserTask userTask, List<String> userIds, AnalyseDTO analyseDTO) {
+        userTask = userTask.startWork();
         userTask = userTask.saveInitial(1);
-        List<User> users = getUsers(settings, userIds);
+        List<User> users = getUsers(userTask.copyNoCreate(), userIds);
         collectFields(analyseDTO, users);
         if (analyseDTO.getAge() != null) {
 
@@ -117,10 +113,10 @@ public class AnalysisServiceImpl implements AnalysisService {
     }
 
     @Override
-    public List<User> filterUsersSync(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
-        UserTask userTask = UserTask.create(FILTER_USERS, settings, repository);
+    public List<User> filterUsersSync(UserTask userTask, List<String> userIds, AnalyseDTO analyseDTO) {
+        userTask = userTask.startWork();
         userTask = userTask.saveInitial(1);
-        List<User> users = getUsers(settings, userIds);
+        List<User> users = getUsers(userTask.copyNoCreate(), userIds);
         if (analyseDTO.getAge() != null) {
             userTask = userTask.updateStatusMessage("Фильтрация по возрасту");
             for (IntRange range : analyseDTO.getAge().keySet()) {
@@ -160,15 +156,15 @@ public class AnalysisServiceImpl implements AnalysisService {
         return users;
     }
 
-    private List<User> getUsers(UserTaskSettings settings, List<String> userIds) {
-        return vkUserService.getUserInfoSync(new UserTaskSettings(settings, false), userIds);
+    private List<User> getUsers(UserTask userTask, List<String> userIds) {
+        return vkUserService.getUserInfoSync(userTask, userIds);
     }
 
 
     @Override
     @Async
-    public Future<AnalyseDTO> analyseUsers(UserTaskSettings settings, List<String> userIds, AnalyseDTO analyseDTO) {
-        return new AsyncResult<>(analyseUsersSync(settings, userIds, analyseDTO));
+    public Future<AnalyseDTO> analyseUsers(UserTask userTask, List<String> userIds, AnalyseDTO analyseDTO) {
+        return new AsyncResult<>(analyseUsersSync(userTask, userIds, analyseDTO));
     }
 
     private void collectFields(AnalyseDTO analyseDTO, List<User> users) {

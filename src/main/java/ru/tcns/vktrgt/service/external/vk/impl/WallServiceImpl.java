@@ -29,31 +29,31 @@ public class WallServiceImpl extends AbstractWallService {
 
     @Override
     @Async
-    public Future<List<WallPost>> getWallPosts(UserTaskSettings settings, Integer ownerId, Integer maxCount) {
-        return new AsyncResult<>(getWallPostsSync(settings, ownerId, maxCount));
+    public Future<List<WallPost>> getWallPosts(UserTask userTask, Integer ownerId, Integer maxCount) {
+        return new AsyncResult<>(getWallPostsSync(userTask, ownerId, maxCount));
     }
 
     @Override
     @Async
-    public Future<List<Integer>> getTopicCommentsWithLikes(UserTaskSettings settings, Integer ownerId, Integer postId) {
-        return new AsyncResult<>(getTopicCommentsWithLikesSync(settings, ownerId, postId));
+    public Future<List<Integer>> getTopicCommentsWithLikes(UserTask userTask, Integer ownerId, Integer postId) {
+        return new AsyncResult<>(getTopicCommentsWithLikesSync(userTask, ownerId, postId));
     }
 
     @Override
     @Async
-    public Future<List<Integer>> getComments(UserTaskSettings settings, Integer ownerId, Integer postId) {
-        return new AsyncResult<>(getCommentsSync(settings, ownerId, postId));
+    public Future<List<Integer>> getComments(UserTask userTask, Integer ownerId, Integer postId) {
+        return new AsyncResult<>(getCommentsSync(userTask, ownerId, postId));
     }
 
     @Override
     @Async
-    public Future<List<Integer>> getReposts(UserTaskSettings settings, Integer ownerId, Integer postId) {
-        return new AsyncResult<>(getRepostsSync(settings, ownerId, postId));
+    public Future<List<Integer>> getReposts(UserTask userTask, Integer ownerId, Integer postId) {
+        return new AsyncResult<>(getRepostsSync(userTask, ownerId, postId));
     }
 
     @Override
-    public List<WallPost> getWallPostsSync(UserTaskSettings settings, Integer ownerId, Integer maxDays) {
-        UserTask userTask = UserTask.create(WALL_POSTS, settings, userTaskRepository);
+    public List<WallPost> getWallPostsSync(UserTask userTask, Integer ownerId, Integer maxDays) {
+        userTask = userTask.startWork();
         final List<WallPost> posts;
         try {
             Integer count = getWallPosts(ownerId, 0, 1).getCount();
@@ -94,9 +94,9 @@ public class WallServiceImpl extends AbstractWallService {
     }
 
     @Override
-    public List<Integer> getLikesSync(UserTaskSettings settings, Integer ownerId, Integer postId, String type) {
+    public List<Integer> getLikesSync(UserTask userTask, Integer ownerId, Integer postId, String type) {
         final List<Integer> likes;
-        UserTask userTask = UserTask.create(LIKES, settings, userTaskRepository);
+        userTask = userTask.startWork();
         try {
             Integer count = getLikes(ownerId, type, postId, 0, 1).getCount();
             userTask = userTask.saveInitial(count);
@@ -129,9 +129,9 @@ public class WallServiceImpl extends AbstractWallService {
     }
 
     @Override
-    public List<Integer> getCommentsSync(UserTaskSettings settings, Integer ownerId, Integer postId) {
+    public List<Integer> getCommentsSync(UserTask userTask, Integer ownerId, Integer postId) {
         final List<Integer> comments;
-        UserTask userTask = UserTask.create(COMMENTS, settings, userTaskRepository);
+        userTask = userTask.startWork();
         try {
             Integer count = getComments(ownerId, postId, 0, 1).getCount();
             userTask = userTask.saveInitial(count);
@@ -165,8 +165,8 @@ public class WallServiceImpl extends AbstractWallService {
     }
 
     @Override
-    public List<Integer> getTopicCommentsWithLikesSync(UserTaskSettings settings, Integer ownerId, Integer postId) {
-        UserTask userTask = UserTask.create(TOPIC_COMMENTS, settings, userTaskRepository);
+    public List<Integer> getTopicCommentsWithLikesSync(UserTask userTask, Integer ownerId, Integer postId) {
+        userTask = userTask.startWork();
         final List<Integer> comments;
         try {
             Integer count = getTopicComments(ownerId, postId, 0, 1).getCount();
@@ -174,6 +174,7 @@ public class WallServiceImpl extends AbstractWallService {
             comments = new ArrayList<>(count);
             ExecutorService service = Executors.newFixedThreadPool(100);
             List<Future<List<Integer>>> tasks = new ArrayList<>();
+            final UserTask userTaskFinal = userTask.copyNoCreate();
             for (int i = 0; i < count; i += 100) {
                 final int curId = i;
                 tasks.add(service.submit(() -> {
@@ -181,7 +182,7 @@ public class WallServiceImpl extends AbstractWallService {
                         List<Integer> cur = items
                             .parallelStream().map(a -> a.getFromId()).collect(Collectors.toList());
                         for (Comment comment : items) {
-                            cur.addAll(getLikesSync(settings, postId, comment.getId(), "topic_comment"));
+                            cur.addAll(getLikesSync(userTaskFinal, postId, comment.getId(), "topic_comment"));
                         }
                         return cur;
                     }
@@ -209,9 +210,9 @@ public class WallServiceImpl extends AbstractWallService {
     }
 
     @Override
-    public List<Integer> getRepostsSync(UserTaskSettings settings, Integer ownerId, Integer postId) {
+    public List<Integer> getRepostsSync(UserTask userTask, Integer ownerId, Integer postId) {
         List<Integer> reposts = new ArrayList<>();
-        UserTask userTask = UserTask.create(REPOSTS, settings, userTaskRepository);
+        userTask = userTask.create();
         try {
             reposts = new ArrayList<>(1000);
             int i = 0;
@@ -238,7 +239,7 @@ public class WallServiceImpl extends AbstractWallService {
 
     @Override
     @Async
-    public Future<List<Integer>> getLikes(UserTaskSettings settings, Integer ownerId, Integer postId, String type) {
-        return new AsyncResult<>(getLikesSync(settings, ownerId, postId, type));
+    public Future<List<Integer>> getLikes(UserTask userTask, Integer ownerId, Integer postId, String type) {
+        return new AsyncResult<>(getLikesSync(userTask, ownerId, postId, type));
     }
 }

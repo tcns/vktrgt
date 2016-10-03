@@ -2,6 +2,7 @@ package ru.tcns.vktrgt.service.external.vk.intf;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.exception.VKException;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
@@ -16,6 +17,12 @@ import java.util.concurrent.Future;
  * Created by Тимур on 13.04.2016.
  */
 public interface GroupService extends VKService {
+    public static final String BEAN_NAME = "GroupServiceImpl";
+    public static final String ALL_USERS = BEAN_NAME + "AllUsers";
+    public static final String INTERSECT_GROUPS = BEAN_NAME + "IntersectGroups";
+    public static final String USER_GROUPS = BEAN_NAME + "UserGroups";
+    public static final String GROUP_INFO = BEAN_NAME + "GroupInfo";
+    public static final String SEARCH_GROUP = BEAN_NAME + "GroupSearch";
     String METHOD_PREFIX = "groups.";
     String PREFIX = URL_PREFIX + METHOD_PREFIX;
 
@@ -30,18 +37,18 @@ public interface GroupService extends VKService {
     List<Group> searchByNames(List<String> names);
     List<Group> searchVk(String q, String token) throws VKException;
 
-    List<Integer> getUserGroups(UserTaskSettings settings, String userId);
+    List<Integer> getUserGroups(UserTask task, String userId);
 
-    Future<GroupUsers> getAllGroupUsers(UserTaskSettings settings, String groupId);
-    Future<Map<Integer, Integer>> intersectGroups(UserTaskSettings settings, List<String> groups, Integer minCount);
-    Future<List<Group>> getGroupsInfo(UserTaskSettings settings, List<String> groups);
+    Future<GroupUsers> getAllGroupUsers(UserTask task, String groupId);
+    Future<Map<Integer, Integer>> intersectGroups(UserTask task, List<String> groups, Integer minCount);
+    Future<List<Group>> getGroupsInfo(UserTask task, List<String> groups);
     void getGroupInfoById(Integer from, Integer to, Boolean saveIds, Boolean useIds);
-    Future<Map<Integer, Integer>> similarGroups (UserTaskSettings settings, List<String> groups, Integer minCount);
+    Future<Map<Integer, Integer>> similarGroups (UserTask task, List<String> groups, Integer minCount);
 
-    GroupUsers getAllGroupUsersSync(UserTaskSettings settings, String groupId);
-    Map<Integer, Integer> intersectGroupsSync(UserTaskSettings settings, List<String> groups, Integer minCount);
-    List<Group> getGroupsInfoSync(UserTaskSettings settings, List<String> groups);
+    GroupUsers getAllGroupUsersSync(UserTask task, String groupId);
+    Map<Integer, Integer> intersectGroupsSync(UserTask task, List<String> groups, Integer minCount);
+    List<Group> getGroupsInfoSync(UserTask task, List<String> groups);
     void getGroupInfoByIdSync(Integer from, Integer to, Boolean saveIds, Boolean useIds);
-    Map<Integer, Integer> similarGroupsSync (UserTaskSettings settings, List<String> groups, Integer minCount);
+    Map<Integer, Integer> similarGroupsSync (UserTask task, List<String> groups, Integer minCount);
 
 }

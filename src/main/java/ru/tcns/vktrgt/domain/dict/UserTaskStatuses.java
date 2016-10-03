@@ -7,4 +7,6 @@ public class UserTaskStatuses {
     public static final Integer SUCCESS = 1;
     public static final Integer ERROR = 2;
     public static final Integer COMPLETED_WITH_ERRORS = 3;
+    public static final Integer START_TASK = 4;
+    public static final Integer PREPARED = 5;
 }

@@ -40,19 +40,19 @@ public class UserTaskSettings implements Cloneable {
         return googleDrive;
     }
     public UserTaskSettings(User user, boolean createTask, String taskDescription, GoogleDriveImpl googleDrive) {
-        this.createTask = createTask;
+        this.setCreateTask(createTask);
         this.user = user;
         this.taskDescription = taskDescription;
         this.googleDrive = googleDrive;
     }
     public UserTaskSettings(UserTaskSettings settings, Boolean createTask) {
-        this.createTask = createTask;
+        this.setCreateTask(createTask);
         this.user = settings.getUser();
         this.taskDescription = settings.getTaskDescription();
         this.googleDrive = settings.getGoogleDriveService();
     }
     public UserTaskSettings(UserTask task) {
-        this.createTask = false;
+        this.setCreateTask(false);
         this.userTask = task;
         this.user = task.getSettings().getUser();
         this.taskDescription = task.getSettings().getTaskDescription();
@@ -61,7 +61,11 @@ public class UserTaskSettings implements Cloneable {
 
     @Override
     public UserTaskSettings clone() throws CloneNotSupportedException {
-        UserTaskSettings settings = new UserTaskSettings(user, createTask, taskDescription, googleDrive);
+        UserTaskSettings settings = new UserTaskSettings(user, isCreateTask(), taskDescription, googleDrive);
         return settings;
+    }
+
+    public void setCreateTask(boolean createTask) {
+        this.createTask = createTask;
     }
 }

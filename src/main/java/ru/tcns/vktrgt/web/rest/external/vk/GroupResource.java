@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.tcns.vktrgt.config.Constants;
+import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
@@ -20,6 +21,7 @@ import ru.tcns.vktrgt.domain.external.vk.dict.VKErrorCodes;
 import ru.tcns.vktrgt.domain.external.vk.exception.VKException;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
+import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
 import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
@@ -55,6 +57,8 @@ public class GroupResource {
     GoogleDriveImpl googleDrive;
     @Inject
     ExportService exportService;
+    @Inject
+    UserTaskRepository userTaskRepository;
 
     @RequestMapping(value = "/groups",
         method = RequestMethod.POST,
@@ -85,9 +89,10 @@ public class GroupResource {
     @Timed
     public ResponseEntity<List<Group>> searchGroupsVk(@RequestParam String q, HttpServletRequest request) throws URISyntaxException {
         try {
+            UserTask userTask = UserTask.create(GroupService.SEARCH_GROUP, new UserTaskSettings(userService.getUserWithAuthorities(), false,
+                "", googleDrive), userTaskRepository);
             List<Group> groups = groupService.searchVk(q, (String) request.getSession().getAttribute(Constants.VK_TOKEN));
-            List<Group> groupsEnchanched = groupService.getGroupsInfo(new UserTaskSettings(userService.getUserWithAuthorities(), false,
-                "", googleDrive), groups.parallelStream().map(a->a.getId().toString()).collect(Collectors.toList())).get();
+            List<Group> groupsEnchanched = groupService.getGroupsInfo(userTask, groups.parallelStream().map(a->a.getId().toString()).collect(Collectors.toList())).get();
             return ResponseEntity.ok(groupsEnchanched);
         } catch (VKException ex) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(HeaderUtil.createVKErrorHeader(ex.getVkErrorResponse())).body(null);
@@ -105,9 +110,10 @@ public class GroupResource {
     public ResponseEntity<Void> searchGroupsInfoVk(@RequestParam List<String> names,
                                                    @RequestParam String taskInfo,
                                                    @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        UserTask userTask = UserTask.create(GroupService.GROUP_INFO, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
         names.addAll(exportService.getListOfStrings(file, "\n"));
-        groupService.getGroupsInfo(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo, googleDrive), names);
+        groupService.getGroupsInfo(userTask, names);
 
         return ResponseEntity.ok().build();
     }
@@ -142,9 +148,10 @@ public class GroupResource {
                                                          @RequestParam String taskInfo,
                                                          @RequestParam Integer minCount,
                                                          @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        UserTask userTask = UserTask.create(GroupService.INTERSECT_GROUPS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
         names.addAll(exportService.getListOfStrings(file, "\n"));
-        groupService.intersectGroups(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo, googleDrive), names, minCount);
+        groupService.intersectGroups(userTask, names, minCount);
         return ResponseEntity.ok().build();
     }
 
@@ -155,8 +162,9 @@ public class GroupResource {
     public ResponseEntity<Void> getGroupMembers(@RequestParam String groupId,
                                                 @RequestParam String taskInfo) throws URISyntaxException {
 
-        groupService.getAllGroupUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo, googleDrive), groupId);
+        UserTask userTask = UserTask.create(GroupService.ALL_USERS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
+        groupService.getAllGroupUsers(userTask, groupId);
         return ResponseEntity.ok().build();
     }
 

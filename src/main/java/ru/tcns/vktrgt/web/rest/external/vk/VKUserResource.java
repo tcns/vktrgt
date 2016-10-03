@@ -13,14 +13,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.tcns.vktrgt.config.Constants;
+import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKErrorCodes;
 import ru.tcns.vktrgt.domain.external.vk.exception.VKException;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
+import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
+import ru.tcns.vktrgt.service.external.vk.intf.ActivityService;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 import ru.tcns.vktrgt.web.rest.util.HeaderUtil;
@@ -49,6 +52,8 @@ public class VKUserResource {
     ExportService exportService;
     @Inject
     GroupService groupService;
+    @Inject
+    UserTaskRepository userTaskRepository;
 
     @RequestMapping(value = "/users/leaders",
         method = RequestMethod.POST,
@@ -57,9 +62,10 @@ public class VKUserResource {
     public ResponseEntity<Void> intersectUsersFromFriends(@RequestParam List<String> users,
                                                           @RequestParam Integer min, @RequestParam String taskInfo,
                                                           @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        UserTask userTask = UserTask.create(VKUserService.USERS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
         users.addAll(exportService.getListOfStrings(file, "\n"));
-        vkUserService.intersectUsers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo, googleDrive), users, min);
+        vkUserService.intersectUsers(userTask, users, min);
         return ResponseEntity.ok().build();
     }
 
@@ -71,9 +77,10 @@ public class VKUserResource {
                                                          @RequestParam Integer min,
                                                          @RequestParam String taskInfo,
                                                          @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        UserTask userTask = UserTask.create(VKUserService.SUBSCRIPTIONS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
         users.addAll(exportService.getListOfStrings(file, "\n"));
-        vkUserService.intersectSubscriptions(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo, googleDrive), users, min);
+        vkUserService.intersectSubscriptions(userTask, users, min);
         return ResponseEntity.ok().build();
     }
 
@@ -84,9 +91,10 @@ public class VKUserResource {
     public ResponseEntity<Void> getUsersInfo(@RequestParam List<String> userIds,
                                                    @RequestParam String taskInfo,
                                              @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        UserTask userTask = UserTask.create(VKUserService.USER_INFO, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
         userIds.addAll(exportService.getListOfStrings(file, "\n"));
-        vkUserService.getUserInfo(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo, googleDrive), userIds);
+        vkUserService.getUserInfo(userTask, userIds);
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/users/url",
@@ -96,9 +104,10 @@ public class VKUserResource {
     public ResponseEntity<Void> getUsersUrl(@RequestParam List<String> userIds,
                                              @RequestParam String taskInfo,
                                             @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        UserTask userTask = UserTask.create(VKUserService.USER_URL, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
         userIds.addAll(exportService.getListOfStrings(file, "\n"));
-        vkUserService.getUserURL(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo, googleDrive), userIds);
+        vkUserService.getUserURL(userTask, userIds);
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/users/birth",
@@ -112,9 +121,10 @@ public class VKUserResource {
                                                     @RequestParam Integer nearestDays,
                                             @RequestParam String taskInfo,
                                             @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        UserTask userTask = UserTask.create(VKUserService.NEAREST_DATES, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
         userIds.addAll(exportService.getListOfStrings(file, "\n"));
-        vkUserService.searchNearestBirthdate(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo, googleDrive), userIds, fromDays, nearestDays, relativeTypes, genders);
+        vkUserService.searchNearestBirthdate(userTask, userIds, fromDays, nearestDays, relativeTypes, genders);
         return ResponseEntity.ok().build();
     }
 
@@ -125,9 +135,10 @@ public class VKUserResource {
     public ResponseEntity<Void> getUsersId(@RequestParam List<String> userUrl,
                                             @RequestParam String taskInfo,
                                             @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
+        UserTask userTask = UserTask.create(VKUserService.USER_IDS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
         userUrl.addAll(exportService.getListOfStrings(file, "\n"));
-        vkUserService.getUserId(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo, googleDrive), userUrl);
+        vkUserService.getUserId(userTask, userUrl);
         return ResponseEntity.ok().build();
     }
 
@@ -137,8 +148,9 @@ public class VKUserResource {
     @Timed
     public ResponseEntity<Void> getUserFollowers(@RequestParam Integer userId,
                                                  @RequestParam String taskInfo) throws URISyntaxException {
-       vkUserService.getFollowers(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-           taskInfo, googleDrive), userId);
+        UserTask userTask = UserTask.create(VKUserService.FOLLOWERS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
+        vkUserService.getFollowers(userTask, userId);
         return ResponseEntity.ok().build();
     }
     @RequestMapping(value = "/users/vk",
@@ -161,10 +173,11 @@ public class VKUserResource {
                                                   @RequestParam(required = false) MultipartFile file,
                                                   HttpServletRequest request) throws URISyntaxException {
         try {
+            UserTask userTask = UserTask.create(VKUserService.AUDIO, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+                taskInfo, googleDrive), userTaskRepository);
             users.addAll(exportService.getListOfStrings(file, "\n"));
             groupService.searchVk("test", (String) request.getSession().getAttribute(Constants.VK_TOKEN));
-            vkUserService.searchUserAudio(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-                    taskInfo, googleDrive),  users, audios,
+            vkUserService.searchUserAudio(userTask,  users, audios,
                 (String) request.getSession().getAttribute(Constants.VK_TOKEN));
         }  catch (VKException ex) {
             HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;

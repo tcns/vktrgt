@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
+import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
+import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.service.external.google.impl.GoogleDriveImpl;
@@ -41,6 +43,8 @@ public class ActivityResource {
     GoogleDriveImpl googleDrive;
     @Inject
     ExportService exportService;
+    @Inject
+    UserTaskRepository userTaskRepository;
 
     @RequestMapping(value = "/activity",
         method = RequestMethod.POST,
@@ -51,8 +55,9 @@ public class ActivityResource {
         ActiveAuditoryDTO activeAuditoryDTO = mapper.readValue(request.getParameter("dto"), ActiveAuditoryDTO.class);
         MultipartFile file = request.getFile("file");
         activeAuditoryDTO.getGroups().addAll(exportService.getListOfStrings(file, "\n"));
-        activityService.getActiveAuditory(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            activeAuditoryDTO.getTaskInfo(), googleDrive), activeAuditoryDTO);
+        UserTask userTask = UserTask.create(ActivityService.ACTIVE_AUDITORY, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            activeAuditoryDTO.getTaskInfo(), googleDrive), userTaskRepository);
+        activityService.getActiveAuditory(userTask, activeAuditoryDTO);
         return ResponseEntity.ok().build();
     }
 
@@ -65,8 +70,9 @@ public class ActivityResource {
                                                        @RequestParam String taskInfo,
                                                        @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
         topicUrls.addAll(exportService.getListOfStrings(file, "\n"));
-        activityService.getActiveTopicAuditory(new UserTaskSettings(userService.getUserWithAuthorities(), true,
-            taskInfo, googleDrive), topicUrls, minCount);
+        UserTask userTask = UserTask.create(ActivityService.ACTIVE_TOPIC_AUDITORY, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
+        activityService.getActiveTopicAuditory(userTask, topicUrls, minCount);
         return ResponseEntity.ok().build();
     }
 }

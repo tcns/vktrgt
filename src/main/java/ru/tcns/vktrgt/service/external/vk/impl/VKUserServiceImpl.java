@@ -43,15 +43,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class VKUserServiceImpl extends AbstractVKUserService {
-    public static final String BEAN_NAME = "VKUserServiceImpl";
-    public static final String USER_INFO = BEAN_NAME + "userInfo";
-    public static final String FOLLOWERS = BEAN_NAME + "followers";
-    public static final String SUBSCRIPTIONS = BEAN_NAME + "subscriptions";
-    public static final String USERS = BEAN_NAME + "users";
-    public static final String USER_URL = BEAN_NAME + "userUrl";
-    public static final String USER_IDS = BEAN_NAME + "userIds";
-    public static final String AUDIO = BEAN_NAME + "audio";
-    public static final String NEAREST_DATES = BEAN_NAME + "dates";
 
     @Inject
     UserTaskRepository repository;
@@ -60,20 +51,20 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
     @Override
     @Async
-    public Future<List<String>> getUserURL(UserTaskSettings settings, List<String> userIds) {
-        return new AsyncResult<>(getUserURLSync(settings, userIds));
+    public Future<List<String>> getUserURL(UserTask userTask, List<String> userIds) {
+        return new AsyncResult<>(getUserURLSync(userTask, userIds));
     }
 
     @Override
     @Async
-    public Future<List<String>> getUserId(UserTaskSettings settings, List<String> userUrls) {
-        return new AsyncResult<>(getUserIdSync(settings, userUrls));
+    public Future<List<String>> getUserId(UserTask userTask, List<String> userUrls) {
+        return new AsyncResult<>(getUserIdSync(userTask, userUrls));
     }
 
     @Override
     @Async
-    public Future<List<User>> getUserInfo(UserTaskSettings settings, List<String> userIds) {
-        return new AsyncResult<>(getUserInfoSync(settings, userIds));
+    public Future<List<User>> getUserInfo(UserTask userTask, List<String> userIds) {
+        return new AsyncResult<>(getUserInfoSync(userTask, userIds));
     }
 
     @Override
@@ -115,33 +106,33 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
     @Override
     @Async
-    public Future<Map<Integer, Integer>> intersectSubscriptions(UserTaskSettings settings, List<String> users, Integer min) {
-        return new AsyncResult<>(intersectSubscriptionsSync(settings, users, min));
+    public Future<Map<Integer, Integer>> intersectSubscriptions(UserTask userTask, List<String> users, Integer min) {
+        return new AsyncResult<>(intersectSubscriptionsSync(userTask, users, min));
     }
 
 
     @Override
     @Async
-    public Future<Map<String, Integer>> searchUserAudio(UserTaskSettings settings, List<String> users, List<String> audio, String token) throws VKException {
-        return new AsyncResult<>(searchUserAudioSync(settings, users, audio, token));
+    public Future<Map<String, Integer>> searchUserAudio(UserTask userTask, List<String> users, List<String> audio, String token) throws VKException {
+        return new AsyncResult<>(searchUserAudioSync(userTask, users, audio, token));
     }
 
     @Override
     @Async
-    public Future<Set<String>> searchNearestBirthdate(UserTaskSettings settings,
+    public Future<Set<String>> searchNearestBirthdate(UserTask userTask,
                                                       List<String> userIds,
                                                       Integer fromDays,
                                                       Integer nearestDays,
                                                       List<String> types,
                                                       List<Integer> gender) {
-        return new AsyncResult<>(searchNearestBirthdateSync(settings, userIds, fromDays, nearestDays,
+        return new AsyncResult<>(searchNearestBirthdateSync(userTask, userIds, fromDays, nearestDays,
             types, gender));
     }
 
     @Override
-    public List<User> getUserInfoSync(UserTaskSettings settings, List<String> userIds) {
+    public List<User> getUserInfoSync(UserTask userTask, List<String> userIds) {
         List<User> response = new ArrayList<>();
-        UserTask userTask = UserTask.create(USER_INFO, settings, repository);
+        userTask = userTask.startWork();
         List<String> convertedIds = userIds.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
         userTask = userTask.saveInitial(convertedIds.size());
         String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts";
@@ -172,9 +163,9 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     }
 
     @Override
-    public List<String> getUserURLSync(UserTaskSettings settings, List<String> userIds) {
+    public List<String> getUserURLSync(UserTask userTask, List<String> userIds) {
         List<String> response = new ArrayList<>();
-        UserTask userTask = UserTask.create(USER_URL, settings, repository);
+        userTask = userTask.startWork();
         userTask = userTask.saveInitial(userIds.size());
         String fields = "domain";
         List<String> users = ArrayUtils.getDelimetedLists(userIds, 1000);
@@ -206,9 +197,9 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     }
 
     @Override
-    public List<String> getUserIdSync(UserTaskSettings settings, List<String> userUrls) {
+    public List<String> getUserIdSync(UserTask userTask, List<String> userUrls) {
         List<String> response = new ArrayList<>();
-        UserTask userTask = UserTask.create(USER_IDS, settings, repository);
+        userTask = userTask.startWork();
         userTask = userTask.saveInitial(userUrls.size());
         String fields = "domain";
         List<String> urls = userUrls.parallelStream().map(a -> VKUrlParser.getName(a)).collect(Collectors.toList());
@@ -241,12 +232,12 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     }
 
     @Override
-    public Map<Integer, Integer> intersectUsersSync(UserTaskSettings settings, List<String> users, Integer min) {
+    public Map<Integer, Integer> intersectUsersSync(UserTask userTask, List<String> users, Integer min) {
         Map<Integer, Integer> result = new HashMap<>();
-        UserTask userTask = UserTask.create(USERS, settings, repository);
+        userTask = userTask.startWork();
         userTask = userTask.saveInitial(users.size());
         try {
-            List<User> userList = getUserInfoSync(new UserTaskSettings(settings, false), users);
+            List<User> userList = getUserInfoSync(userTask.copyNoCreate(), users);
             users = new ArrayList<>(userList.size());
             for (User user: userList) {
                 users.add(""+user.getId());
@@ -277,11 +268,11 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     }
 
     @Override
-    public Map<Integer, Integer> intersectSubscriptionsSync(UserTaskSettings settings, List<String> users, Integer min) {
+    public Map<Integer, Integer> intersectSubscriptionsSync(UserTask userTask, List<String> users, Integer min) {
         Map<Integer, Integer> result = new HashMap<>();
-        UserTask userTask = UserTask.create(SUBSCRIPTIONS, settings, repository);
+        userTask = userTask.startWork();
         try {
-            List<User> userList = getUserInfoSync(new UserTaskSettings(settings, false), users);
+            List<User> userList = getUserInfoSync(userTask.copyNoCreate(), users);
             users = new ArrayList<>(userList.size());
             for (User user: userList) {
                 users.add(""+user.getId());
@@ -306,10 +297,10 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     }
 
     @Override
-    public List<Integer> getFollowersSync(UserTaskSettings settings, Integer userId) {
+    public List<Integer> getFollowersSync(UserTask userTask, Integer userId) {
         CommonIDResponse initial = getFollowers(userId, 0, 1);
         int count = initial.getCount();
-        UserTask userTask = UserTask.create(FOLLOWERS, settings, repository);
+        userTask = userTask.startWork();
         userTask = userTask.saveInitial(count);
         List<Integer> users = new ArrayList<>(count);
         ExecutorService service = Executors.newFixedThreadPool(100);
@@ -336,11 +327,11 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     }
 
     @Override
-    public Map<String, Integer> searchUserAudioSync(UserTaskSettings settings, List<String> users, List<String> audio, String token) throws VKException {
+    public Map<String, Integer> searchUserAudioSync(UserTask userTask, List<String> users, List<String> audio, String token) throws VKException {
         Map<String, Integer> result = new HashMap<>();
-        UserTask userTask = UserTask.create(AUDIO, settings, repository);
+        userTask = userTask.startWork();
         try {
-            List<User> userList = getUserInfoSync(new UserTaskSettings(settings, false), users);
+            List<User> userList = getUserInfoSync(userTask.copyNoCreate(), users);
             users = new ArrayList<>(userList.size());
             for (User user: userList) {
                 users.add(""+user.getId());
@@ -396,15 +387,15 @@ public class VKUserServiceImpl extends AbstractVKUserService {
     }
 
     @Override
-    public Set<String> searchNearestBirthdateSync(UserTaskSettings settings, List<String> userIds, Integer fromDays, Integer nearestDays, List<String> types, List<Integer> gender) {
+    public Set<String> searchNearestBirthdateSync(UserTask userTask, List<String> userIds, Integer fromDays, Integer nearestDays, List<String> types, List<Integer> gender) {
         int batchSize = 20;
-        UserTask userTask = UserTask.create(NEAREST_DATES, settings, repository);
+        userTask = userTask.startWork();
         List<List<String>> batches = Lists.partition(userIds, batchSize);
         userTask = userTask.saveInitial(userIds.size());
         Set<String> response = new HashSet<>();
         for (List<String> batch: batches) {
             try {
-                List<User> userList = getUserInfoSync(new UserTaskSettings(settings, false), batch);
+                List<User> userList = getUserInfoSync(userTask.copyNoCreate(), batch);
                 for (User user: userList) {
                     List<Relative> relatives = user.getRelatives();
                     List<String> idsToFind = new ArrayList<>();
@@ -422,8 +413,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
                         }
                     }
                     if (idsToFind.size() > 0) {
-                        List<User> relativeUserAnswer = getUserInfoSync(new UserTaskSettings(settings, false),
-                            idsToFind);
+                        List<User> relativeUserAnswer = getUserInfoSync(userTask.copyNoCreate(), idsToFind);
                         for (User relativeUser: relativeUserAnswer) {
                             if (relativeUser.getBdate() != null) {
                                 Date birthDay = org.apache.commons.lang3.time.DateUtils.
@@ -459,8 +449,8 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
     @Override
     @Async
-    public Future<List<Integer>> getFollowers(UserTaskSettings settings, Integer userId) {
-        return new AsyncResult<>(getFollowersSync(settings, userId));
+    public Future<List<Integer>> getFollowers(UserTask userTask, Integer userId) {
+        return new AsyncResult<>(getFollowersSync(userTask, userId));
     }
 
     @Override
@@ -483,7 +473,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
 
     @Override
     @Async
-    public Future<Map<Integer, Integer>> intersectUsers(UserTaskSettings settings, List<String> users, Integer min) {
-        return new AsyncResult<>(intersectUsersSync(settings, users, min));
+    public Future<Map<Integer, Integer>> intersectUsers(UserTask userTask, List<String> users, Integer min) {
+        return new AsyncResult<>(intersectUsersSync(userTask, users, min));
     }
 }
