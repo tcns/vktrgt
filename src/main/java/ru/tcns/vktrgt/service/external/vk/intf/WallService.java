@@ -20,10 +20,6 @@ public interface WallService extends VKService {
     String TOPIC_PREFIX = URL_PREFIX + TOPIC_METHOD_PREFIX;
     public static String BEAN_NAME = "WallServiceImpl";
     public static String TOPIC_COMMENTS = BEAN_NAME + "TopicComments";
-    public static String COMMENTS = BEAN_NAME + "Comments";
-    public static String WALL_POSTS = BEAN_NAME + "WallPosts";
-    public static String REPOSTS = BEAN_NAME + "Reposts";
-    public static String LIKES = BEAN_NAME + "Likes";
 
     Future<List<WallPost>> getWallPosts(UserTask task, Integer ownerId, Integer maxDays);
     Future<List<Integer>> getLikes (UserTask task, Integer ownerId, Integer postId, String type);

@@ -5,12 +5,12 @@ angular.module('vktrgtApp')
         return {
             getCurrent: function () {
                 var deferred = $q.defer();
-                var language = $translate.storage().get('NG_TRANSLATE_LANG_KEY');
+                /*var language = $translate.storage().get('NG_TRANSLATE_LANG_KEY');
 
                 if (angular.isUndefined(language)) {
                     language = 'ru';
-                }
-
+                }*/
+                var language = 'ru'
                 deferred.resolve(language);
                 return deferred.promise;
             },

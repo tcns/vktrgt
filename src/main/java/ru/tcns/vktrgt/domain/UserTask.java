@@ -82,6 +82,7 @@ public class UserTask {
         userTask.setKind(kind);
         userTask.setTaskInfo(settings.getTaskDescription());
         userTask.setCurrentProgress(0);
+        userTask.setCurrentStatusDesc("Задача поставлена в очередь");
         userTask.settings = settings;
         userTask.repository = repository;
         userTask.setUserId(settings.getUser().getId());
@@ -95,6 +96,7 @@ public class UserTask {
     @Transient
     public UserTask startWork () {
         if (settings.isCreateTask()) {
+            setCurrentStatusDesc("Задача выполняется");
             setCurrentStatus(UserTaskStatuses.START_TASK);
             repository.save(this);
         }

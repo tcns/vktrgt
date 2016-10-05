@@ -33,7 +33,7 @@ angular.module('vktrgtApp')
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
                 });
-            }, intersectUsers: function (ids, taskInfo, min, file) {
+            }, opinionLeaders: function (ids, taskInfo, min, file) {
                 var fd = new FormData();
                 fd.append('file', file);
                 fd.append('users', ids.join(','))

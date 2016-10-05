@@ -13,9 +13,8 @@ import java.util.concurrent.Future;
  * Created by TIMUR on 30.04.2016.
  */
 public interface ActivityService extends VKService {
-    public static String BEAN_NAME = "ActivityServiceImpl";
-    public static String ACTIVE_TOPIC_AUDITORY = BEAN_NAME + "TopicAuditory";
-    public static String ACTIVE_AUDITORY = BEAN_NAME + "Auditory";
+    String ACTIVE_TOPIC_AUDITORY = "topic-activity";
+    String ACTIVE_AUDITORY = "group-activity";
     Future<Map<Integer, Map<Integer, Integer>>> getActiveAuditory(UserTask task, ActiveAuditoryDTO activeAuditoryDTO);
     Future<Map<Integer, Integer>> getActiveTopicAuditory(UserTask task, List<String> topicUrls, Integer minCount);
 

@@ -17,12 +17,10 @@ import java.util.concurrent.Future;
  * Created by Тимур on 13.04.2016.
  */
 public interface GroupService extends VKService {
-    public static final String BEAN_NAME = "GroupServiceImpl";
-    public static final String ALL_USERS = BEAN_NAME + "AllUsers";
-    public static final String INTERSECT_GROUPS = BEAN_NAME + "IntersectGroups";
-    public static final String USER_GROUPS = BEAN_NAME + "UserGroups";
-    public static final String GROUP_INFO = BEAN_NAME + "GroupInfo";
-    public static final String SEARCH_GROUP = BEAN_NAME + "GroupSearch";
+    public static final String GROUP_MEMBERS = "group-members";
+    public static final String INTERSECT_GROUPS = "group-intersect";
+    public static final String GROUP_INFO = "group-info";
+    public static final String SEARCH_GROUP = "GroupSearch";
     String METHOD_PREFIX = "groups.";
     String PREFIX = URL_PREFIX + METHOD_PREFIX;
 

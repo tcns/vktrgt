@@ -162,7 +162,7 @@ public class GroupResource {
     public ResponseEntity<Void> getGroupMembers(@RequestParam String groupId,
                                                 @RequestParam String taskInfo) throws URISyntaxException {
 
-        UserTask userTask = UserTask.create(GroupService.ALL_USERS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+        UserTask userTask = UserTask.create(GroupService.GROUP_MEMBERS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo, googleDrive), userTaskRepository);
         groupService.getAllGroupUsers(userTask, groupId);
         return ResponseEntity.ok().build();

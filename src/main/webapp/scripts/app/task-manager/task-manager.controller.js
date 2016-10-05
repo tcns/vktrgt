@@ -2,7 +2,7 @@
  * Created by Тимур on 08.05.2016.
  */
 angular.module('vktrgtApp')
-    .controller('TaskManagerController', function ($scope, TaskService, ParseLinks) {
+    .controller('TaskManagerController', function ($scope, TaskService, ParseLinks, $interval, $translate) {
         $scope.tasks = [];
         $scope.page = 1;
         $scope.loadAll = function () {
@@ -10,12 +10,20 @@ angular.module('vktrgtApp')
                 $scope.links = ParseLinks.parse(headers('link'));
                 $scope.totalItems = headers('X-Total-Count');
                 $scope.tasks = result;
+                for (var i in $scope.tasks) {
+                    var task = $scope.tasks[i];
+                    $translate('global.menu.vk.'+ task.kind).then(function(text){
+                        task.kind = text;
+                    })
+
+                }
             });
         };
         $scope.loadPage = function (page) {
             $scope.page = page;
             $scope.loadAll();
         };
+
         $scope.removeAll = function() {
             "use strict";
             for (var i in $scope.tasks) {
@@ -31,6 +39,13 @@ angular.module('vktrgtApp')
             //}
         }
         $scope.loadAll();
+        var intervalPromise = $interval(function () {
+            $scope.loadPage($scope.page)
+        }, 1000);
+        $scope.$on('$destroy',function(){
+            if(intervalPromise)
+                $interval.cancel(intervalPromise);
+        });
         $scope.submit = function () {
             $scope.newDto = angular.copy($scope.dto);
             if ($scope.dto.groups) {

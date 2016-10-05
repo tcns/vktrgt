@@ -212,7 +212,7 @@ public class WallServiceImpl extends AbstractWallService {
     @Override
     public List<Integer> getRepostsSync(UserTask userTask, Integer ownerId, Integer postId) {
         List<Integer> reposts = new ArrayList<>();
-        userTask = userTask.create();
+        userTask = userTask.startWork();
         try {
             reposts = new ArrayList<>(1000);
             int i = 0;

@@ -26,15 +26,14 @@ public interface VKUserService extends VKService {
     String USERS_PREFIX = URL_PREFIX + USER_METHOD_PREFIX;
     String AUDIO_PREFIX = URL_PREFIX + AUDIO_METHOD_PREFIX;
 
-    public static final String BEAN_NAME = "VKUserServiceImpl";
-    public static final String USER_INFO = BEAN_NAME + "userInfo";
-    public static final String FOLLOWERS = BEAN_NAME + "followers";
-    public static final String SUBSCRIPTIONS = BEAN_NAME + "subscriptions";
-    public static final String USERS = BEAN_NAME + "users";
-    public static final String USER_URL = BEAN_NAME + "userUrl";
-    public static final String USER_IDS = BEAN_NAME + "userIds";
-    public static final String AUDIO = BEAN_NAME + "audio";
-    public static final String NEAREST_DATES = BEAN_NAME + "dates";
+    public static final String USER_INFO = "userInfo";
+    public static final String FOLLOWERS = "followers";
+    public static final String SUBSCRIPTIONS = "user-intersect";
+    public static final String LEADERS = "user-leaders";
+    public static final String USER_URL = "user-ids";
+    public static final String USER_IDS = "user-urls";
+    public static final String AUDIO = "user-audio";
+    public static final String NEAREST_DATES = "user-birth";
 
     CommonIDResponse getUserFriendIds(Integer userId);
     SubscriptionsResponse getSubscriptions(String userId);

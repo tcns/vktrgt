@@ -62,7 +62,7 @@ public class VKUserResource {
     public ResponseEntity<Void> intersectUsersFromFriends(@RequestParam List<String> users,
                                                           @RequestParam Integer min, @RequestParam String taskInfo,
                                                           @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
-        UserTask userTask = UserTask.create(VKUserService.USERS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+        UserTask userTask = UserTask.create(VKUserService.LEADERS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo, googleDrive), userTaskRepository);
         users.addAll(exportService.getListOfStrings(file, "\n"));
         vkUserService.intersectUsers(userTask, users, min);
