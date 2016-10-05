@@ -69,7 +69,7 @@ public class Group {
     @Field
     private List<Contact> contacts;
 
-    private String links;
+    private List<Link> links;
 
     private Integer fixedPost;
 
@@ -252,11 +252,11 @@ public class Group {
         this.contacts = contacts;
     }
 
-    public String getLinks() {
+    public List<Link> getLinks() {
         return links;
     }
 
-    public void setLinks(String links) {
+    public void setLinks(List<Link> links) {
         this.links = links;
     }
 
