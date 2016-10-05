@@ -7,12 +7,14 @@ import org.springframework.stereotype.Service;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKUrlDto;
+import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.VKUrlParser;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.service.external.vk.intf.ActivityService;
+import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 import ru.tcns.vktrgt.service.external.vk.intf.WallService;
 
 import javax.inject.Inject;
@@ -34,6 +36,8 @@ public class ActivityServiceImpl implements ActivityService {
     private WallService wallService;
     @Inject
     private ExportService exportService;
+    @Inject
+    private GroupService groupService;
 
     @Override
     @Async
@@ -48,9 +52,10 @@ public class ActivityServiceImpl implements ActivityService {
         Map<Integer, List<WallPost>> wallPosts = new HashMap<>();
         userTask = userTask.saveInitial(activeAuditoryDTO.getGroups().size());
         userTask = userTask.updateStatusMessage("Сбор постов со стены");
-        for (String i : activeAuditoryDTO.getGroups()) {
+        List<Group> groupsWithInfo = groupService.getGroupsInfoSync(userTask.copyNoCreate(), activeAuditoryDTO.getGroups());
+        for (Group i : groupsWithInfo) {
             try {
-                Integer val = Integer.valueOf(i);
+                Integer val = -i.getId();
                 wallPosts.put(val, getWallService().getWallPostsSync(userTask.copyNoCreate(),
                     val, activeAuditoryDTO.getMaxDays()));
             } catch (NumberFormatException e){e.printStackTrace();}

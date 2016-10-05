@@ -69,7 +69,7 @@ public abstract class AbstractGroupService implements GroupService {
         groupRepository.delete(id);
     }
     protected List<Group> getGroupInfoById(String ids) {
-        String fields = "city,country,place,description,wiki_page,members_count,counters,start_date,finish_date," +
+        String fields = "city,country,place,description,wiki_page,members_count,start_date,finish_date," +
             "public_date_label,activity,status,contacts,links,fixed_post,verified,site,main_album_id,main_section,market";
 
         List<Group> groups = new ArrayList<>();
