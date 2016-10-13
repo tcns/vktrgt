@@ -10,6 +10,7 @@ import ru.tcns.vktrgt.domain.external.vk.internal.GroupUsers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -37,12 +38,13 @@ public interface GroupService extends VKService {
 
     List<Integer> getUserGroups(UserTask task, String userId);
 
-    Future<GroupUsers> getAllGroupUsers(UserTask task, String groupId);
+    Future<Set<Integer>> getGroupsUsers(UserTask task, List<String> groupId);
     Future<Map<Integer, Integer>> intersectGroups(UserTask task, List<String> groups, Integer minCount);
     Future<List<Group>> getGroupsInfo(UserTask task, List<String> groups);
     void getGroupInfoById(Integer from, Integer to, Boolean saveIds, Boolean useIds);
     Future<Map<Integer, Integer>> similarGroups (UserTask task, List<String> groups, Integer minCount);
 
+    Set<Integer> getGroupsUsersSync(UserTask task, List<String> groupId);
     GroupUsers getAllGroupUsersSync(UserTask task, String groupId);
     Map<Integer, Integer> intersectGroupsSync(UserTask task, List<String> groups, Integer minCount);
     List<Group> getGroupsInfoSync(UserTask task, List<String> groups);

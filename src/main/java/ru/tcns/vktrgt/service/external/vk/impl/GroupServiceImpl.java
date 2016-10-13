@@ -64,8 +64,8 @@ public class GroupServiceImpl extends AbstractGroupService {
 
     @Override
     @Async
-    public Future<GroupUsers> getAllGroupUsers(UserTask userTask, String groupId) {
-        return new AsyncResult<>(getAllGroupUsersSync(userTask, groupId));
+    public Future<Set<Integer>> getGroupsUsers(UserTask userTask, List<String> groupId) {
+        return new AsyncResult<>(getGroupsUsersSync(userTask, groupId));
     }
 
     @Override
@@ -110,6 +110,20 @@ public class GroupServiceImpl extends AbstractGroupService {
     @Override
     public Future<Map<Integer, Integer>> similarGroups(UserTask userTask, List<String> groups, Integer minCount) {
         return null;
+    }
+
+    @Override
+    public Set<Integer> getGroupsUsersSync(UserTask task, List<String> groups) {
+        task = task.startWork();
+        Set<Integer> users = new HashSet<>();
+        List<String> convertedIds = groups.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
+        task = task.saveInitial(convertedIds.size());
+        for (int i = 0; i < groups.size(); i++) {
+            task = task.saveProgress(1);
+            users.addAll(getAllGroupUsersSync(task.copyNoCreate(), convertedIds.get(i)).getUsers());
+        }
+        task.saveFinal(exportService.getStreamFromObject(StringUtils.join(users, "\n")));
+        return users;
     }
 
     @Override

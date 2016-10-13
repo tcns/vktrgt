@@ -159,12 +159,14 @@ public class GroupResource {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Void> getGroupMembers(@RequestParam String groupId,
-                                                @RequestParam String taskInfo) throws URISyntaxException {
+    public ResponseEntity<Void> getGroupMembers(@RequestParam List<String> groupIds,
+                                                @RequestParam String taskInfo,
+                                                @RequestParam(required = false) MultipartFile file) throws URISyntaxException {
 
         UserTask userTask = UserTask.create(GroupService.GROUP_MEMBERS, new UserTaskSettings(userService.getUserWithAuthorities(), true,
             taskInfo, googleDrive), userTaskRepository);
-        groupService.getAllGroupUsers(userTask, groupId);
+        groupIds.addAll(exportService.getListOfStrings(file, "\n"));
+        groupService.getGroupsUsers(userTask, groupIds);
         return ResponseEntity.ok().build();
     }
 

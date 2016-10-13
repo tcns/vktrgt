@@ -60,7 +60,7 @@
                             </label>
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input ng-model="dto.maxDays" type="number" min="1" max="200" name="maxDays" id="max-days" required="required"
+                                <input ng-model="dto.maxDays" type="number" min="1" max="2000" name="maxDays" id="max-days" required="required"
                                           class="form-control col-md-7 col-xs-12"/>
                                 <div ng-show="form.maxDays.$dirty && form.maxDays.$invalid">
                                     <p class="help-block"
@@ -68,7 +68,7 @@
                                     </p>
                                     <p class="help-block"
                                        ng-show="form.maxDays.$error.min || form.maxDays.$error.max" translate="vk.general.validation.range"
-                                        translate-values="{min: '1', max: '200'}">
+                                        translate-values="{min: '1', max: '2000'}">
                                     </p>
                                 </div>
                             </div>

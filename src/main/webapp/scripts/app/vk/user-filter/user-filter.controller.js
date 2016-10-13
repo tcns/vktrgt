@@ -18,13 +18,16 @@ angular.module('vktrgtApp')
         }
         $scope.countryList = [];
         $scope.cityList = [];
-
+        $scope.apiUrl = VKService.getCitiesApiUrl();
         VKService.getCountries().then(function(data){
             $scope.countryList = data;
         });
-        VKService.getCities().then(function(data){
-            $scope.cityList = data;
-        });
+        //$scope.getCitiesFunc = VKService.getCities;
+        $scope.getCitiesFunc = function(q){
+            VKService.getCities(q).then(function(data){
+                $scope.cityList = data;
+            });
+        }
 
 
         $scope.submit = function () {

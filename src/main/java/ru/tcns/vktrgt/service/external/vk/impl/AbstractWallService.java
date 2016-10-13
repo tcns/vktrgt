@@ -38,7 +38,9 @@ public abstract class AbstractWallService implements WallService {
             String ans = content.asString();
             WallPostsResponse response = new ResponseParser<>(WallPostsResponse.class).parseResponseString
                 (ans, RESPONSE_STRING);
-            return response;
+            if (response!=null) {
+                return response;
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (JSONException e) {
@@ -55,7 +57,9 @@ public abstract class AbstractWallService implements WallService {
             String ans = content.asString();
             LikesResponse response = new ResponseParser<>(LikesResponse.class).parseResponseString
                 (ans, RESPONSE_STRING);
-            return response;
+            if (response != null) {
+                return response;
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (JSONException e) {
@@ -72,7 +76,9 @@ public abstract class AbstractWallService implements WallService {
             String ans = content.asString();
             CommentsResponse response = new ResponseParser<>(CommentsResponse.class).parseResponseString
                 (ans, RESPONSE_STRING);
-            return response;
+            if (response != null) {
+                return response;
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (JSONException e) {
@@ -89,7 +95,9 @@ public abstract class AbstractWallService implements WallService {
             String ans = content.asString();
             RepostResponse response = new ResponseParser<>(RepostResponse.class).parseResponseString
                 (ans, RESPONSE_STRING);
-            return response;
+            if (response!=null) {
+                return response;
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (JSONException e) {
@@ -106,7 +114,9 @@ public abstract class AbstractWallService implements WallService {
             String ans = content.asString();
             CommentsResponse response = new ResponseParser<>(CommentsResponse.class).parseResponseString
                 (ans, RESPONSE_STRING);
-            return response;
+            if (response!=null) {
+                return response;
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (JSONException e) {

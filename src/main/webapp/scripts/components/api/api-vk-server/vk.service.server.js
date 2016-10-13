@@ -80,17 +80,15 @@ angular.module('vktrgtApp')
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
                 });
-            }, groupMembers: function (groupId, taskInfo) {
-                return $http.post('/api/groups/members',
-                    {
-                        'groupId': groupId,
-                        'taskInfo': taskInfo
-                    }, {
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                        transformRequest: function (data) {
-                            return $.param(data);
-                        }
-                    });
+            }, groupMembers: function (groupIds, taskInfo, file) {
+                var fd = new FormData();
+                fd.append('file', file);
+                fd.append('taskInfo', taskInfo)
+                fd.append('groupIds', groupIds)
+                return $http.post('/api/groups/members', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
             }, analyseUsers: function (model, file) {
                 var fd = new FormData();
                 fd.append('file', file)

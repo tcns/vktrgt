@@ -3,7 +3,6 @@ package ru.tcns.vktrgt.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.api.services.drive.model.File;
 import com.google.common.net.MediaType;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -14,7 +13,6 @@ import ru.tcns.vktrgt.domain.util.parser.JsonParser;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
 
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +41,7 @@ public class UserTask {
 
     private String currentStatusDesc;
     private Integer currentProgress;
+    private Integer percent = 0;
     private Integer maxProgress;
 
     public List<String> getErrors() {
@@ -184,6 +183,7 @@ public class UserTask {
     @Transient
     public void addProgress(Integer val) {
         currentProgress += val;
+        setPercent(currentProgress * 100 / maxProgress);
     }
 
     public String getId() {
@@ -249,6 +249,14 @@ public class UserTask {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public Integer getPercent() {
+        return percent;
+    }
+
+    public void setPercent(Integer percent) {
+        this.percent = percent;
     }
 }
 

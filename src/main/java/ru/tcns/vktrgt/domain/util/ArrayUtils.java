@@ -57,6 +57,12 @@ public class ArrayUtils {
 
         return result;
     }
+    public static <K, V extends Collection> Map<K, Integer>
+    getCounts(Map<K, V> map) {
+        Map<K, Integer> result = new LinkedHashMap<>();
+        map.entrySet().parallelStream().forEach(a->result.put(a.getKey(), a.getValue().size()));
+        return result;
+    }
 
 
     public static List<String> getDelimetedLists(int from, int to, int max) {

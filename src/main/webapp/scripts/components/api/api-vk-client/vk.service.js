@@ -198,20 +198,30 @@ angular.module('vktrgtApp')
                 }
                 return deferred.promise;
 
-            }, getCities: function () {
-                var cache = CacheService.get('Cities');
+            }, getCities: function (q) {
+                var cache = null// CacheService.get('Cities');
                 var deferred = $q.defer();
                 if(cache){
                     deferred.resolve(cache);
                 } else {
-                    $http.jsonp(PREFIX + "database.getCities?country_id=1&need_all=0&callback=JSON_CALLBACK&count=100"+VERSION, {
+                    $http.jsonp(PREFIX + "database.getCities?country_id=1&need_all=1&callback=JSON_CALLBACK&q="+q+VERSION, {
                         cache: true
                     }).then(function(o){
                         CacheService.put('Cities', o.data.response.items)
+                        for (var i in o.data.response.items) {
+                            if (o.data.response.items[i].area) {
+                                o.data.response.items[i].title = o.data.response.items[i].title
+                                    + " " + o.data.response.items[i].area
+                            }
+                        }
+
                         deferred.resolve(o.data.response.items);
                     })
                 }
                 return deferred.promise;
+
+            }, getCitiesApiUrl: function () {
+                return PREFIX + "database.getCities?country_id=1&need_all=1&callback=JSON_CALLBACK&count=100"+VERSION;
 
             },
             getToken: function (force) {

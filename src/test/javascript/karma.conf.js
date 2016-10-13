@@ -85,7 +85,8 @@ module.exports = function (config) {
             'main/webapp/bower_components/pdfmake/build/pdfmake.js',
             'main/webapp/bower_components/pdfmake/build/vfs_fonts.js',
             'main/webapp/bower_components/jszip/dist/jszip.js',
-            'main/webapp/bower_components/angular-multiple-select/build/multiple-select.min.js',
+            'main/webapp/bower_components/gsap/src/uncompressed/TweenMax.js',
+            'main/webapp/bower_components/bootstrap-switch/dist/js/bootstrap-switch.js',
             'main/webapp/bower_components/angular-mocks/angular-mocks.js',
             // endbower
             'main/webapp/scripts/app/app.js',

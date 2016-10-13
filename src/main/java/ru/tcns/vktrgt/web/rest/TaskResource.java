@@ -17,6 +17,7 @@ import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.security.SecurityUtils;
 import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
+import ru.tcns.vktrgt.service.external.vk.intf.AnalysisService;
 import ru.tcns.vktrgt.web.rest.util.HeaderUtil;
 import ru.tcns.vktrgt.web.rest.util.PaginationUtil;
 
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -83,7 +85,14 @@ public class TaskResource {
         try {
             URL url = new URL(task.getPayload());
             InputStream stream = url.openStream();
-            httpServletResponse.setHeader("Content-Disposition", "attachment; filename="+fileName+".txt");
+            String ext = ".txt";
+            if (task.getKind().equals(AnalysisService.FILTER_USERS)) {
+                ext = ".csv";
+            }
+            byte[] fileNameBytes = fileName.getBytes("utf-8");
+            String dispositionFileName = "";
+            for (byte b: fileNameBytes) dispositionFileName += (char)(b & 0xff);
+            httpServletResponse.setHeader("Content-Disposition", "attachment; filename="+dispositionFileName+ext);
             IOUtils.copy(stream, httpServletResponse.getOutputStream());
             httpServletResponse.flushBuffer();
         } catch (IOException e) {

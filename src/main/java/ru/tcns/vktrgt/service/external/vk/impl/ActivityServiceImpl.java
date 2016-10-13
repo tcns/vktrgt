@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import ru.tcns.vktrgt.domain.external.vk.internal.User;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKUrlDto;
@@ -11,10 +12,10 @@ import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.WallPost;
 import ru.tcns.vktrgt.domain.util.ArrayUtils;
 import ru.tcns.vktrgt.domain.util.parser.VKUrlParser;
-import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.service.export.impl.ExportService;
 import ru.tcns.vktrgt.service.external.vk.intf.ActivityService;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
+import ru.tcns.vktrgt.service.external.vk.intf.VKUserService;
 import ru.tcns.vktrgt.service.external.vk.intf.WallService;
 
 import javax.inject.Inject;
@@ -38,6 +39,8 @@ public class ActivityServiceImpl implements ActivityService {
     private ExportService exportService;
     @Inject
     private GroupService groupService;
+    @Inject
+    private VKUserService userService;
 
     @Override
     @Async
@@ -53,9 +56,17 @@ public class ActivityServiceImpl implements ActivityService {
         userTask = userTask.saveInitial(activeAuditoryDTO.getGroups().size());
         userTask = userTask.updateStatusMessage("Сбор постов со стены");
         List<Group> groupsWithInfo = groupService.getGroupsInfoSync(userTask.copyNoCreate(), activeAuditoryDTO.getGroups());
+        List<User> usersWithInfo = userService.getUserInfoSync(userTask.copyNoCreate(), activeAuditoryDTO.getGroups());
         for (Group i : groupsWithInfo) {
             try {
                 Integer val = -i.getId();
+                wallPosts.put(val, getWallService().getWallPostsSync(userTask.copyNoCreate(),
+                    val, activeAuditoryDTO.getMaxDays()));
+            } catch (NumberFormatException e){e.printStackTrace();}
+        }
+        for (User i : usersWithInfo) {
+            try {
+                Integer val = i.getId();
                 wallPosts.put(val, getWallService().getWallPostsSync(userTask.copyNoCreate(),
                     val, activeAuditoryDTO.getMaxDays()));
             } catch (NumberFormatException e){e.printStackTrace();}

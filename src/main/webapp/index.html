@@ -10,26 +10,26 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css assets/styles/vendor.css -->
     <!-- bower:css -->
-    <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
-    <link rel="stylesheet" href="bower_components/nprogress/nprogress.css" />
-    <link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css" />
-    <link rel="stylesheet" href="bower_components/morris.js/morris.css" />
-    <link rel="stylesheet" href="bower_components/google-code-prettify/bin/prettify.min.css" />
-    <link rel="stylesheet" href="bower_components/jquery.tagsinput/src/jquery.tagsinput.css" />
-    <link rel="stylesheet" href="bower_components/ion.rangeSlider/css/ion.rangeSlider.css" />
-    <link rel="stylesheet" href="bower_components/ion.rangeSlider/css/ion.rangeSlider.skinFlat.css" />
-    <link rel="stylesheet" href="bower_components/normalize-css/normalize.css" />
-    <link rel="stylesheet" href="bower_components/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css" />
-    <link rel="stylesheet" href="bower_components/cropper/dist/cropper.css" />
-    <link rel="stylesheet" href="bower_components/dropzone/dist/min/dropzone.min.css" />
-    <link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css" />
-    <link rel="stylesheet" href="bower_components/starrr/dist/starrr.css" />
-    <link rel="stylesheet" href="bower_components/datatables.net-bs/css/dataTables.bootstrap.css" />
-    <link rel="stylesheet" href="bower_components/datatables.net-buttons-bs/css/buttons.bootstrap.css" />
-    <link rel="stylesheet" href="bower_components/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.css" />
-    <link rel="stylesheet" href="bower_components/datatables.net-responsive-bs/css/responsive.bootstrap.css" />
-    <link rel="stylesheet" href="bower_components/datatables.net-scroller-bs/css/scroller.bootstrap.css" />
-    <link rel="stylesheet" href="bower_components/angular-multiple-select/build/multiple-select.min.css" />
+    <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css"/>
+    <link rel="stylesheet" href="bower_components/nprogress/nprogress.css"/>
+    <link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css"/>
+    <link rel="stylesheet" href="bower_components/morris.js/morris.css"/>
+    <link rel="stylesheet" href="bower_components/google-code-prettify/bin/prettify.min.css"/>
+    <link rel="stylesheet" href="bower_components/jquery.tagsinput/src/jquery.tagsinput.css"/>
+    <link rel="stylesheet" href="bower_components/ion.rangeSlider/css/ion.rangeSlider.css"/>
+    <link rel="stylesheet" href="bower_components/ion.rangeSlider/css/ion.rangeSlider.skinFlat.css"/>
+    <link rel="stylesheet" href="bower_components/normalize-css/normalize.css"/>
+    <link rel="stylesheet" href="bower_components/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css"/>
+    <link rel="stylesheet" href="bower_components/cropper/dist/cropper.css"/>
+    <link rel="stylesheet" href="bower_components/dropzone/dist/min/dropzone.min.css"/>
+    <link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css"/>
+    <link rel="stylesheet" href="bower_components/starrr/dist/starrr.css"/>
+    <link rel="stylesheet" href="bower_components/datatables.net-bs/css/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" href="bower_components/datatables.net-buttons-bs/css/buttons.bootstrap.css"/>
+    <link rel="stylesheet" href="bower_components/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.css"/>
+    <link rel="stylesheet" href="bower_components/datatables.net-responsive-bs/css/responsive.bootstrap.css"/>
+    <link rel="stylesheet" href="bower_components/datatables.net-scroller-bs/css/scroller.bootstrap.css"/>
+    <link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css"/>
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css assets/styles/custom.css -->
@@ -46,25 +46,152 @@
     <!-- Custom Theme Style -->
     <link href="assets/styles/custom.css" rel="stylesheet">
     <!-- endbuild -->
+    <link rel="stylesheet" href="assets/styles/font-icons/entypo/css/entypo.css">
+    <link rel="stylesheet" href="assets/styles/neon-core.css">
+    <link rel="stylesheet" href="assets/styles/neon-forms.css">
 
+    <!--[if lt IE 9]>
+    <script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="assets/styles/multiply-select.css" rel="stylesheet">
 </head>
-<body ng-app="vktrgtApp" class="nav-md">
+<body ng-app="vktrgtApp" class="page-body">
 <!--[if lt IE 9]>
-<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
-    your browser</a> to improve your experience.</p>
+<p class="browserupgrade">Вы используете <strong>устаревший</strong> браузер. Пожалуйста <a
+    href="http://browsehappy.com/">обновите
+    свой браузер</a> чтобы воспользоваться в полной мере функционалом сервиса</p>
 <![endif]-->
 <div ng-show="{{ENV === 'dev'}}" class="development" ng-cloak=""></div>
 
-<div class="container body">
-    <div class="main_container">
-        <div ui-view="navbar" ng-cloak=""></div>
-        <div class="right_col" role="main" ui-view="content"></div>
-        <footer>
-            <p translate="footer"></p>
-            <div class="clearfix"></div>
-        </footer>
+<div class="page-container">
+    <div class="sidebar-menu">
+        <div class="sidebar-menu-inner">
+            <header class="logo-env">
+
+                <!-- logo -->
+                <div class="logo">
+                    <a href="/">
+                        <img src="assets/images/logo@2x.png" alt=""/>
+                    </a>
+                </div>
+
+                <!-- logo collapse icon -->
+                <div class="sidebar-collapse">
+                    <a href="" class="sidebar-collapse-icon with-animation">
+                        <!-- add class "with-animation" if you want sidebar to have animation during expanding/collapsing transition -->
+                        <i class="entypo-menu"></i>
+                    </a>
+                </div>
+
+
+                <!-- open/close menu icon (do not remove if you want to enable menu on mobile devices) -->
+                <div class="sidebar-mobile-menu visible-xs">
+                    <a href="#" class="with-animation"><!-- add class "with-animation" to support animation -->
+                        <i class="entypo-menu"></i>
+                    </a>
+                </div>
+
+            </header>
+
+            <ul id="main-menu" class="main-menu">
+                <li>
+                    <a ui-sref="task-manager">
+                        <i class="entypo-gauge"></i>
+                        <span class="title" translate="global.menu.task-manager">Task Manager</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="group-intersect">
+                        <i class="entypo-shuffle"></i>
+                        <span class="title" translate="global.menu.vk.group-intersect">Group intersection</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="group-activity">
+                        <i class="glyphicon glyphicon-comment"></i>
+                        <span class="title" translate="global.menu.vk.group-activity">Wall Activity</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="topic-activity">
+                        <i class="entypo-chat"></i>
+                        <span class="title" translate="global.menu.vk.topic-activity">Topic Activity</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="group-members">
+                        <i class="entypo-users"></i>
+                        <span class="title" translate="global.menu.vk.group-members">Group Members</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="group-search">
+                        <i class="entypo-search"></i>
+                        <span class="title" translate="global.menu.vk.group-search">Group Search</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-leaders">
+                        <i class="entypo-star"></i>
+                        <span class="title" translate="global.menu.vk.user-leaders">Opinion Leaders</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-intersect">
+                        <i class="entypo-shuffle"></i>
+                        <span class="title" translate="global.menu.vk.user-intersect">Max Group</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-analyse">
+                        <i class="entypo-users"></i>
+                        <span class="title" translate="global.menu.vk.user-analyse">User Analyse</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-birth">
+                        <i class="entypo-calendar"></i>
+                        <span class="title" translate="global.menu.vk.user-birth">User Birth</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-audio"><i class="glyphicon glyphicon-music"></i>
+                        <span class="title" translate="global.menu.vk.user-audio">User Audio</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-filter"><i class="glyphicon glyphicon-filter"></i>
+                        <span class="title" translate="global.menu.vk.user-filter">User filter</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-ids"><i class="entypo-switch"></i>
+                        <span class="title" translate="global.menu.vk.user-ids">ID->URL</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-urls"><i class="entypo-switch"></i>
+                        <span class="title" translate="global.menu.vk.user-urls">URL->ID</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="row">
+            <div ui-view="navbar" ng-cloak=""></div>
+        </div>
+        <hr />
+        <div role="main" ui-view="content"></div>
     </div>
 </div>
+</body>
 
 <!-- Google Analytics: uncomment and change UA-XXXXX-X to be your site's ID.
 <script>
@@ -91,7 +218,8 @@
 <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 <script src="bower_components/angular-translate/angular-translate.js"></script>
 <script src="bower_components/messageformat/messageformat.js"></script>
-<script src="bower_components/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.js"></script>
+<script
+    src="bower_components/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.js"></script>
 <script src="bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js"></script>
 <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
@@ -149,7 +277,8 @@
 <script src="bower_components/pdfmake/build/pdfmake.js"></script>
 <script src="bower_components/pdfmake/build/vfs_fonts.js"></script>
 <script src="bower_components/jszip/dist/jszip.js"></script>
-<script src="bower_components/angular-multiple-select/build/multiple-select.min.js"></script>
+<script src="bower_components/gsap/src/uncompressed/TweenMax.js"></script>
+<script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
@@ -186,8 +315,8 @@
 <script src="scripts/components/interceptor/notification.interceptor.js"></script>
 <script src="scripts/components/language/language.controller.js"></script>
 <script src="scripts/components/language/language.service.js"></script>
+<script src="scripts/components/multiply-autocomplete/multiply-select.js"></script>
 <script src="scripts/components/navbar/navbar.controller.js"></script>
-<script src="scripts/components/navbar/navbar.directive.js"></script>
 <script src="scripts/components/task-manager/task.service.js"></script>
 <script src="scripts/components/tracker/tracker.service.js"></script>
 <script src="scripts/components/user/user.service.js"></script>
@@ -275,7 +404,10 @@
 <!-- /include -->
 <script src="bower_components/messageformat/locale/ru.js"></script>
 <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
-<script src="assets/js/custom.js"></script>
+<script src="assets/js/joinable.js"></script>
+<script src="assets/js/resizeable.js"></script>
+<script src="assets/js/neon-api.js"></script>
+<script src="assets/js/neon-custom.js"></script>
 <!-- endbuild -->
 
 </body>

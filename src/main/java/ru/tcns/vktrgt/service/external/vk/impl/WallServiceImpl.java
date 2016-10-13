@@ -99,6 +99,9 @@ public class WallServiceImpl extends AbstractWallService {
         userTask = userTask.startWork();
         try {
             Integer count = getLikes(ownerId, type, postId, 0, 1).getCount();
+            if (count == null) {
+                return new ArrayList<>();
+            }
             userTask = userTask.saveInitial(count);
             likes = new ArrayList<>(count);
             ExecutorService service = Executors.newFixedThreadPool(10);
@@ -134,6 +137,9 @@ public class WallServiceImpl extends AbstractWallService {
         userTask = userTask.startWork();
         try {
             Integer count = getComments(ownerId, postId, 0, 1).getCount();
+            if (count == null ){
+                return new ArrayList<>();
+            }
             userTask = userTask.saveInitial(count);
             comments = new ArrayList<>(count);
             ExecutorService service = Executors.newFixedThreadPool(100);
@@ -170,6 +176,9 @@ public class WallServiceImpl extends AbstractWallService {
         final List<Integer> comments;
         try {
             Integer count = getTopicComments(ownerId, postId, 0, 1).getCount();
+            if (count == null) {
+                return new ArrayList<>();
+            }
             userTask = userTask.saveInitial(count);
             comments = new ArrayList<>(count);
             ExecutorService service = Executors.newFixedThreadPool(100);

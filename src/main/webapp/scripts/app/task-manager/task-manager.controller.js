@@ -2,21 +2,25 @@
  * Created by Тимур on 08.05.2016.
  */
 angular.module('vktrgtApp')
-    .controller('TaskManagerController', function ($scope, TaskService, ParseLinks, $interval, $translate) {
+    .controller('TaskManagerController', function ($scope, TaskService, ParseLinks, $interval, $translate, $q) {
         $scope.tasks = [];
         $scope.page = 1;
+        $scope.predicate = 'id';
+        $scope.reverse=true;
         $scope.loadAll = function () {
-            TaskService.getTasks($scope.page - 1, 20).success(function (result, status, headers) {
+            TaskService.getTasks({page: $scope.page - 1, size: 20, sort: [$scope.predicate + ',' + ($scope.reverse ? 'asc' : 'desc'), 'id']}).success(function (result, status, headers) {
                 $scope.links = ParseLinks.parse(headers('link'));
                 $scope.totalItems = headers('X-Total-Count');
                 $scope.tasks = result;
+                var procTasks = [];
                 for (var i in $scope.tasks) {
-                    var task = $scope.tasks[i];
-                    $translate('global.menu.vk.'+ task.kind).then(function(text){
-                        task.kind = text;
-                    })
-
+                    procTasks.push($translate('global.menu.vk.'+ $scope.tasks[i].kind))
                 }
+                $q.all(procTasks).then(function (res) {
+                    for (var i in $scope.tasks) {
+                        $scope.tasks[i].kindTranslated = res[i];
+                    }
+                })
             });
         };
         $scope.loadPage = function (page) {
@@ -41,7 +45,7 @@ angular.module('vktrgtApp')
         $scope.loadAll();
         var intervalPromise = $interval(function () {
             $scope.loadPage($scope.page)
-        }, 1000);
+        }, 5000);
         $scope.$on('$destroy',function(){
             if(intervalPromise)
                 $interval.cancel(intervalPromise);

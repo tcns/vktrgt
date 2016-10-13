@@ -28,22 +28,20 @@
                             <tr jh-sort="predicate" ascending="reverse" callback="loadAll()">
                                 <th jh-sort-by="kind"><span translate="task-manager.table.kind">Kind</span> <span class="glyphicon glyphicon-sort"></span></th>
                                 <th jh-sort-by="taskInfo"><span translate="task-manager.table.task-info">Task Info</span> <span class="glyphicon glyphicon-sort"></span></th>
-                                <!--th jh-sort-by="currentStatus"><span translate="task-manager.table.current-status">Current Status</span> <span class="glyphicon glyphicon-sort"></span></th-->
                                 <th jh-sort-by="currentStatusDesc"><span translate="task-manager.table.current-status-desc">Current Status Description</span> <span class="glyphicon glyphicon-sort"></span></th>
-                                <th jh-sort-by="currentProgress"><span translate="task-manager.table.current-progress">Current Status Description</span> <span class="glyphicon glyphicon-sort"></span></th>
+                                <th jh-sort-by="percent"><span translate="task-manager.table.current-progress">Current Status Description</span> <span class="glyphicon glyphicon-sort"></span></th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr ng-repeat="task in tasks track by task.id">
-                                <td>{{task.kind}}</td>
+                                <td>{{task.kindTranslated}}</td>
                                 <td>{{task.taskInfo}}</td>
-                                <!--td>{{task.currentStatus}}</td-->
                                 <td>{{task.currentStatusDesc}}</td>
                                 <td>
                                     <div class="progress">
                                         <uib-progressbar min="0" max="task.maxProgress" value="task.currentProgress" class="progress-striped active" type="success">
-                                            <span>{{task.currentProgress * 100 / task.maxProgress  | number:0}}%</span>
+                                            <span>{{task.percent}}%</span>
                                         </uib-progressbar>
                                     </div>
                                     </td>

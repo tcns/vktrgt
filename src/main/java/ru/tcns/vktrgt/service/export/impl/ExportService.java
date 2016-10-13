@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.CDL;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +34,13 @@ public class ExportService {
             o = StringUtils.EMPTY;
         }
         return IOUtils.toInputStream(o, StandardCharsets.UTF_8);
+    }
+    public String getCSV(String jsonArray) {
+        JSONArray array = new JSONArray(jsonArray);
+
+
+        String csv = CDL.toString(array);
+        return csv;
     }
     public List<String> getListOfStrings(MultipartFile file, String separator) {
         List<String> stringList = new ArrayList<>();

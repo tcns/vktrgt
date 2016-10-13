@@ -1,254 +1,147 @@
-<div class="col-md-3 left_col">
-    <div class="left_col scroll-view">
-        <div class="navbar nav_title" style="border: 0;">
-            <a class="site_title" href="#/"><span translate="global.title">jhipster</span> <span
-                class="navbar-version">v{{VERSION}}</span></a>
-        </div>
+<div class="col-md-6 col-sm-8 clearfix" ng-switch="isAuthenticated()">
 
-        <div class="clearfix"></div>
+    <ul class="user-info pull-left pull-none-xsm">
 
-        <br/>
+        <li class="profile-info dropdown">
 
-        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu" ng-switch="isAuthenticated()">
-            <div class="menu_section" ng-switch-when="true" has-authority="ROLE_ADMIN">
-                <h3 translate="global.menu.admin.main">Администрирование</h3>
-                <ul class="nav side-menu">
-                    <li ng-class="{active: $state.includes('admin')}">
-                        <a dropdown-link>
-                        <span>
-                            <i class="glyphicon glyphicon-tower"></i>
-                            <span translate="global.menu.admin.main">Administration</span>
-                            <span class="fa fa-chevron-down"></span>
-                        </span>
-                        </a>
-                        <ul class="nav child_menu">
-                            <li ui-sref-active="active"><a ui-sref="user-management" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.admin.user-management">User management</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="tracker" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-eye-open"></span>
-                                &nbsp;<span translate="global.menu.admin.tracker">User tracker</span></a></li>
-                            <li ui-sref-active="active"><a ui-sref="metrics" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-dashboard"></span>
-                                &#xA0;<span translate="global.menu.admin.metrics">Metrics</span></a></li>
-                            <li ui-sref-active="active"><a ui-sref="health" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-heart"></span>
-                                &#xA0;<span translate="global.menu.admin.health">Health</span></a></li>
-                            <li ui-sref-active="active"><a ui-sref="configuration" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-list-alt"></span>
-                                &#xA0;<span translate="global.menu.admin.configuration">Configuration</span></a></li>
-                            <li ui-sref-active="active"><a ui-sref="audits" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-bell"></span>
-                                &#xA0;<span translate="global.menu.admin.audits">Audits</span></a></li>
-                            <li ui-sref-active="active"><a ui-sref="logs" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-tasks"></span>
-                                &#xA0;<span translate="global.menu.admin.logs">Logs</span></a></li>
-                            <li ng-hide="inProduction" ui-sref-active="active"><a ui-sref="docs" data-toggle="collapse"
-                                                                                  data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-book"></span>
-                                &#xA0;<span translate="global.menu.admin.apidocs">API</span></a></li>
-                            <!-- jhipster-needle-add-element-to-admin-menu - JHipster will add entities to the admin menu here -->
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div class="menu_section">
-                <h3 translate="global.menu.vk.main">VK</h3>
-                <ul class="nav side-menu">
-                    <li ui-sref-active="active"><a ui-sref="task-manager" data-toggle="collapse"
-                                                   data-target=".navbar-collapse.in"><span
-                        class="glyphicon glyphicon-user"></span>
-                        &#xA0;<span translate="global.menu.task-manager">Task Manager</span></a>
-                    </li>
-                    <li ng-class="{active: $state.includes('vk')}">
-                        <a dropdown-link>
-                        <span>
-                            <i class="glyphicon glyphicon-tower"></i>
-                            <span translate="global.menu.vk.main">Administration</span>
-                            <span class="fa fa-chevron-down"></span>
-                        </span>
-                        </a>
-                        <ul class="nav child_menu">
-                            <li ui-sref-active="active"><a ui-sref="group-intersect" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.group-intersect">Group intersection</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="group-info" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.group-info">Group Info</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="group-activity" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.group-activity">Wall Activity</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="topic-activity" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.topic-activity">Topic Activity</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="group-members" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.group-members">Group Members</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="group-search" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.group-search">Group Search</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="user-leaders" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.user-leaders">Opinion Leaders</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="user-intersect" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.user-intersect">Max Group</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="user-analyse" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.user-analyse">User Analyse</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="user-birth" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.user-birth">User Birth</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="user-audio" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.user-audio">User Audio</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="user-filter" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.user-filter">User filter</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="user-ids" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.user-ids">ID->URL</span></a>
-                            </li>
-                            <li ui-sref-active="active"><a ui-sref="user-urls" data-toggle="collapse"
-                                                           data-target=".navbar-collapse.in"><span
-                                class="glyphicon glyphicon-user"></span>
-                                &#xA0;<span translate="global.menu.vk.user-urls">URL->ID</span></a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="top_nav">
-    <div class="nav_menu">
-        <nav class="" role="navigation">
-            <div class="nav toggle">
-                <a id="menu_toggle" menu-toggle><i class="fa fa-bars"></i></a>
-            </div>
-            <ul class="nav navbar-nav navbar-right" ng-switch="isAuthenticated()">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                <span translate="global.menu.account.main"></span>
+            </a>
+            <ul class="dropdown-menu">
 
-                <!--li ui-sref-active="active" class="dropdown pointer" ng-controller="LanguageController">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="">
-                        <span>
-                            <span class="glyphicon glyphicon-flag"></span>
-                            <span class="hidden-sm" translate="global.menu.language">Language</span>
-                            <b class="caret"></b>
-                        </span>
+                <li class="caret"></li>
+                <li ng-switch-when="true">
+                    <a ui-sref="settings">
+                        <i class="entypo-user"></i>
+                        <span translate="global.menu.account.settings"></span>
                     </a>
-                    <ul class="dropdown-menu">
-                        <li active-menu="{{language}}" ng-repeat="language in languages">
-                            <a href="" ng-click="changeLanguage(language)" data-toggle="collapse"
-                               data-target=".navbar-collapse.in">{{language | findLanguageFromKey}}</a>
+                </li>
+                <li ng-switch-when="true"><a ui-sref="password" data-toggle="collapse"
+                                             data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-lock"></span>
+                    <span translate="global.menu.account.password">Password</span></a></li>
+                <li ng-switch-when="true"><a ui-sref="sessions" data-toggle="collapse"
+                                             data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-cloud"></span>
+                    <span translate="global.menu.account.sessions">Sessions</span></a></li>
+                <li ng-switch-when="false"><a ui-sref="login" data-toggle="collapse"
+                                              data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-log-in"></span>
+                    <span translate="global.menu.account.login">Sign in</span></a></li>
+                <li ng-switch-when="false"><a ui-sref="register" data-toggle="collapse"
+                                              data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-plus-sign"></span>
+                    <span translate="global.menu.account.register">Register</span></a></li>
+
+            </ul>
+        </li>
+
+    </ul>
+
+    <ul class="user-info pull-left pull-none-xsm" ng-switch-when="true" has-authority="ROLE_ADMIN">
+
+        <li class="profile-info dropdown">
+
+            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                <span translate="global.menu.admin.main"></span>
+            </a>
+            <ul class="dropdown-menu">
+
+                <li class="caret"></li>
+                <li><a ui-sref="user-management" data-toggle="collapse"
+                       data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-user"></span>
+                    <span translate="global.menu.admin.user-management">User management</span></a>
+                </li>
+                <li><a ui-sref="tracker" data-toggle="collapse"
+                       data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-eye-open"></span>
+                    &nbsp;<span translate="global.menu.admin.tracker">User tracker</span></a></li>
+                <li><a ui-sref="metrics" data-toggle="collapse"
+                       data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-dashboard"></span>
+                    <span translate="global.menu.admin.metrics">Metrics</span></a></li>
+                <li><a ui-sref="health" data-toggle="collapse"
+                       data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-heart"></span>
+                    <span translate="global.menu.admin.health">Health</span></a></li>
+                <li><a ui-sref="configuration" data-toggle="collapse"
+                       data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-list-alt"></span>
+                    <span translate="global.menu.admin.configuration">Configuration</span></a></li>
+                <li><a ui-sref="audits" data-toggle="collapse"
+                       data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-bell"></span>
+                    <span translate="global.menu.admin.audits">Audits</span></a></li>
+                <li><a ui-sref="logs" data-toggle="collapse"
+                       data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-tasks"></span>
+                    <span translate="global.menu.admin.logs">Logs</span></a></li>
+                <li ng-hide="inProduction"><a ui-sref="docs" data-toggle="collapse"
+                                              data-target=".navbar-collapse.in"><span
+                    class="glyphicon glyphicon-book"></span>
+                    <span translate="global.menu.admin.apidocs">API</span></a></li>
+
+            </ul>
+        </li>
+
+        <li class="notifications dropdown">
+
+            <a ng-click="loadAll()" href="" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                <i class="entypo-list"></i>
+            </a>
+
+            <ul class="dropdown-menu">
+                <li class="top">
+                    <p>Выполняется {{tasks.length}} заданий</p>
+
+                </li>
+
+                <li>
+                    <ul class="dropdown-menu-list scroller">
+                        <li ng-repeat="task in tasks track by task.id">
+                            <a href="">
+                                <span class="task">
+                                    <span class="desc">{{task.taskInfo}}</span>
+                                    <span class="percent">{{task.percent}}%</span>
+                                </span>
+
+                              <span class="progress">
+                                    <span ng-style="{'width': task.percent+'%'}" class="progress-bar progress-bar-success">
+                                        <span class="sr-only">{{task.percent}}% Complete</span>
+                                    </span>
+                              </span>
+                            </a>
                         </li>
-                    </ul>
-                </li-->
-                <li class="dropdown pointer" ng-class="{'current-page': $state.includes('account')}">
-                    <a class="user-profile dropdown-toggle" data-toggle="dropdown" href="" id="account-menu">
-                        <span>
-                            <span class="glyphicon glyphicon-user"></span>
-                            <span class="hidden-sm" translate="global.menu.account.main">
-                                Account
-                            </span>
-                            <b class="caret"></b>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-usermenu pull-right">
-                        <li ui-sref-active="active" ng-switch-when="true"><a ui-sref="settings" data-toggle="collapse"
-                                                                             data-target=".navbar-collapse.in"><span
-                            class="glyphicon glyphicon-wrench"></span>
-                            &#xA0;<span translate="global.menu.account.settings">Settings</span></a></li>
-                        <li ui-sref-active="active" ng-switch-when="true"><a ui-sref="password" data-toggle="collapse"
-                                                                             data-target=".navbar-collapse.in"><span
-                            class="glyphicon glyphicon-lock"></span>
-                            &#xA0;<span translate="global.menu.account.password">Password</span></a></li>
-                        <li ui-sref-active="active" ng-switch-when="true"><a ui-sref="sessions" data-toggle="collapse"
-                                                                             data-target=".navbar-collapse.in"><span
-                            class="glyphicon glyphicon-cloud"></span>
-                            &#xA0;<span translate="global.menu.account.sessions">Sessions</span></a></li>
-                        <li ui-sref-active="active" ng-switch-when="true"><a href="" ng-click="logout()" id="logout"
-                                                                             data-toggle="collapse"
-                                                                             data-target=".navbar-collapse.in"><span
-                            class="glyphicon glyphicon-log-out"></span>
-                            &#xA0;<span translate="global.menu.account.logout">Sign out</span></a></li>
-                        <li ui-sref-active="active" ng-switch-when="false"><a ui-sref="login" data-toggle="collapse"
-                                                                              data-target=".navbar-collapse.in"><span
-                            class="glyphicon glyphicon-log-in"></span>
-                            &#xA0;<span translate="global.menu.account.login">Sign in</span></a></li>
-                        <li ui-sref-active="active" ng-switch-when="false"><a ui-sref="register" data-toggle="collapse"
-                                                                              data-target=".navbar-collapse.in"><span
-                            class="glyphicon glyphicon-plus-sign"></span>
-                            &#xA0;<span translate="global.menu.account.register">Register</span></a></li>
                     </ul>
                 </li>
 
-                <!--li role="presentation" class="dropdown">
-                    <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown"
-                       aria-expanded="false">
-                        <i class="fa fa-envelope-o"></i>
-                        <span class="badge bg-green">1</span>
-                    </a>
-                    <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                        <li>
-                            <a>
-                        <span class="image">
-                                      </span>
-                        <span>
-                                          <span>John Smith</span>
-                        <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                                      </span>
-                            </a>
-                        </li>
-                        <li>
-                            <div class="text-center">
-                                <a href="inbox.html">
-                                    <strong>See All Alerts</strong>
-                                    <i class="fa fa-angle-right"></i>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </li-->
-
-
+                <li class="external">
+                    <a ui-sref="task-manager">Отобразить все задания</a>
+                </li>
             </ul>
-        </nav>
-    </div>
+
+        </li>
+
+    </ul>
+
+
+</div>
+<div class="col-md-6 col-sm-4 clearfix hidden-xs" ng-show="isAuthenticated()">
+
+    <ul class="list-inline links-list pull-right">
+
+
+        <li class="sep"></li>
+
+        <li>
+            <a href="" ng-click="logout()" id="logout"
+               data-toggle="collapse"
+               data-target=".navbar-collapse.in">
+                <span translate="global.menu.account.logout">Sign out</span>
+                <i class="entypo-logout right"></i>
+            </a>
+        </li>
+    </ul>
+
 </div>
