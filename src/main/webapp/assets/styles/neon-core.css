@@ -1,40 +1,3 @@
-@import 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&subset=cyrillic-ext';
-
-label, .form-control {
-  font-weight: normal;
-  font-size: 16px;
-}
-
-label {
-  color: #000;
-}
-
-.form-control {
-    height: 40px;
-}
-
-.btn {
-  padding: 8px 12px;
-  font-size: 16px;
-}
-
-.btn-main{
-  background-color: #5b97f8;
-  border-radius: 25px;
-  padding: 10px 40px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  border: none;
-  color: #fff;
-  outline: none;
-  font-size: 16px;
-  font-weight: 200;
-}
-
-.btn-main:hover{
-  background-color: #518be8;
-}
-
 .form-control:focus {
   border-color: #cbd0d9;
   outline: 0;
@@ -186,7 +149,7 @@ select[multiple].input-lg {
   color: #666;
   background: rgba(255, 255, 255, 0.8);
   border: solid 2px rgba(230, 230, 230, 0.8);
-  font-family: 'Open Sans', sans-serif;
+  font-family: sans-serif;
   font-size: 12px;
   text-align: center;
 }
@@ -796,7 +759,7 @@ lesshat-selector {
   position: relative;
   content: '\e87a';
   display: inline-block;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Entypo";
   color: rgba(115, 120, 129, 0.7);
   padding: 10px 15px;
   padding: 0;
@@ -5449,8 +5412,8 @@ body {
 .page-container .sidebar-menu {
   display: table-cell;
   vertical-align: top;
-  background: #22262E;
-  width: 340px;
+  background: #303641;
+  width: 280px;
   position: relative;
   z-index: 100;
   -webkit-box-sizing: border-box;
@@ -5513,6 +5476,7 @@ body {
 .page-container .sidebar-menu .logo-env > div.sidebar-collapse a,
 .page-container .sidebar-menu .logo-env > div.sidebar-mobile-menu a {
   display: inline-block;
+  border: 1px solid #454a54;
   text-align: center;
   padding: 0;
   line-height: 1;
@@ -5543,8 +5507,8 @@ body {
 .page-container .sidebar-menu #main-menu li {
   position: relative;
   margin: 0;
-  font-size: 15px;
-/*  border-bottom: 1px solid #141518;*/
+  font-size: 12px;
+  border-bottom: 1px solid rgba(69, 74, 84, 0.7);
 }
 .page-container .sidebar-menu #main-menu li#search {
   background: #262b34;
@@ -5608,10 +5572,7 @@ body {
   position: relative;
   display: block;
   padding: 10px 20px;
-  font-size: 14px;
-  text-transform: uppercase;
-  line-height: 1.6;
-  color: #75797c;
+  color: #aaabae;
   z-index: 2;
   -webkit-transition: color 250ms ease-in-out, background-color 250ms ease-in-out;
   -moz-transition: color 250ms ease-in-out, background-color 250ms ease-in-out;
@@ -5651,7 +5612,7 @@ body {
   content: '\e877';
   content: '\e879';
   display: inline-block;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Entypo";
   color: #454a54;
   color: #FFF;
   float: right;
@@ -6467,7 +6428,7 @@ float: left;
   content: '\e877';
   content: '\e879';
   display: inline-block;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Entypo";
   color: #aaabae;
   color: #FFF;
   float: right;
@@ -7369,7 +7330,6 @@ float: left;
 }
 .user-info > li.profile-info {
   margin-right: 10px;
-  padding-top: 10px;
 }
 .profile-info.dropdown > a {
   color: #2b303a;
@@ -7729,7 +7689,7 @@ float: left;
   color: #e9423f;
 }
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Helvetica Neue", Helvetica, "Noto Sans", sans-serif;
 }
 body.overflow-x-disabled {
   overflow-x: hidden;
@@ -9052,7 +9012,7 @@ table.dataTable thead th.sorting_desc:after {
   top: 50% !important;
   right: 8px;
   display: block;
-  font-family: 'Open Sans', sans-serif;
+  font-family: Entypo;
   -webkit-transform: translateY(-50%);
   -moz-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
@@ -9121,7 +9081,7 @@ div.dataTables_paginate a.previous:before {
   -ms-transform: translateY(-50%);
   -o-transform: translateY(-50%);
   transform: translateY(-50%);
-  font-family: 'Open Sans', sans-serif;
+  font-family: Entypo;
 }
 div.dataTables_paginate a.next:after,
 div.dataTables_paginate a.last:after {
@@ -9134,7 +9094,7 @@ div.dataTables_paginate a.last:after {
   -ms-transform: translateY(-50%);
   -o-transform: translateY(-50%);
   transform: translateY(-50%);
-  font-family: 'Open Sans', sans-serif;
+  font-family: Entypo;
 }
 div.dataTables_paginate a.first:before {
   content: "\e880";
@@ -9168,7 +9128,7 @@ div.dataTables_paginate li.previous a:before {
   top: 6px;
   left: 10px;
   display: block;
-  font-family: 'Open Sans', sans-serif;
+  font-family: Entypo;
 }
 div.dataTables_paginate li.next a:after,
 div.dataTables_paginate li.last a:after {
@@ -9176,7 +9136,7 @@ div.dataTables_paginate li.last a:after {
   top: 6px;
   right: 10px;
   display: block;
-  font-family: 'Open Sans', sans-serif;
+  font-family: Entypo;
 }
 div.dataTables_paginate li.first a:before {
   content: "\f100";
@@ -9708,7 +9668,7 @@ table {
 }
 #chat .chat-conversation .chat-textarea:after {
   content: '\e83c';
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Entypo";
   color: #bec0c2;
   right: 35px;
   top: 25px;
