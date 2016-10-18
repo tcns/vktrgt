@@ -68,15 +68,10 @@ angular.module('vktrgtApp')
                                 var a = userAudio.items[k];
                                 for (var j in audio) {
                                     var audioToSearch = audio[j].toLowerCase();
-                                    if (a.artist.length > audioToSearch.length) {
-                                        if (a.artist.toLowerCase().indexOf(audioToSearch)>-1) {
-                                            count++;
-                                        }
-                                    } else {
-                                        if (audioToSearch.indexOf(a.artist.toLowerCase())>-1) {
-                                            count++;
-                                        }
+                                    if (a.artist.toLowerCase().indexOf(audioToSearch)>-1) {
+                                        count++;
                                     }
+
                                 }
                             }
                             response[userAudio.user] = count;

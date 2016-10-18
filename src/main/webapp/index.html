@@ -1,446 +1,409 @@
 <!doctype html>
 <html class="no-js">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>target machine</title>
-	<meta name="description" content="">
-	<meta name="google" value="notranslate">
-	<meta name="viewport" content="width=device-width">
-	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-	<!-- build:css assets/styles/vendor.css -->
-	<!-- bower:css -->
-	<link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
-	<link rel="stylesheet" href="bower_components/nprogress/nprogress.css" />
-	<link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css" />
-	<link rel="stylesheet" href="bower_components/morris.js/morris.css" />
-	<link rel="stylesheet" href="bower_components/google-code-prettify/bin/prettify.min.css" />
-	<link rel="stylesheet" href="bower_components/jquery.tagsinput/src/jquery.tagsinput.css" />
-	<link rel="stylesheet" href="bower_components/ion.rangeSlider/css/ion.rangeSlider.css" />
-	<link rel="stylesheet" href="bower_components/ion.rangeSlider/css/ion.rangeSlider.skinFlat.css" />
-	<link rel="stylesheet" href="bower_components/normalize-css/normalize.css" />
-	<link rel="stylesheet" href="bower_components/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css" />
-	<link rel="stylesheet" href="bower_components/cropper/dist/cropper.css" />
-	<link rel="stylesheet" href="bower_components/dropzone/dist/min/dropzone.min.css" />
-	<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css" />
-	<link rel="stylesheet" href="bower_components/starrr/dist/starrr.css" />
-	<link rel="stylesheet" href="bower_components/datatables.net-bs/css/dataTables.bootstrap.css" />
-	<link rel="stylesheet" href="bower_components/datatables.net-buttons-bs/css/buttons.bootstrap.css" />
-	<link rel="stylesheet" href="bower_components/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.css" />
-	<link rel="stylesheet" href="bower_components/datatables.net-responsive-bs/css/responsive.bootstrap.css" />
-	<link rel="stylesheet" href="bower_components/datatables.net-scroller-bs/css/scroller.bootstrap.css" />
-	<link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" />
-	<!-- endbower -->
-	<!-- endbuild -->
-	<!-- build:css assets/styles/custom.css -->
-	<!-- Bootstrap -->
-	<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-	<!-- Font Awesome -->
-	<link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-	<!-- iCheck -->
-	<link href="bower_components/iCheck/skins/flat/green.css" rel="stylesheet">
-	<!-- bootstrap-progressbar -->
-	<link href="bower_components/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
-	<!-- endbuild -->
-	<link rel="stylesheet" href="assets/styles/font-icons/entypo/css/entypo.css">
-	<link rel="stylesheet" href="assets/styles/neon-core.css">
-	<link rel="stylesheet" href="assets/styles/main.css">
-	<!--     <link rel="stylesheet" href="assets/styles/neon-forms.css"> -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="google" value="notranslate">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css assets/styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
+    <link rel="stylesheet" href="bower_components/nprogress/nprogress.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="bower_components/morris.js/morris.css" />
+    <link rel="stylesheet" href="bower_components/google-code-prettify/bin/prettify.min.css" />
+    <link rel="stylesheet" href="bower_components/jquery.tagsinput/src/jquery.tagsinput.css" />
+    <link rel="stylesheet" href="bower_components/ion.rangeSlider/css/ion.rangeSlider.css" />
+    <link rel="stylesheet" href="bower_components/ion.rangeSlider/css/ion.rangeSlider.skinFlat.css" />
+    <link rel="stylesheet" href="bower_components/normalize-css/normalize.css" />
+    <link rel="stylesheet" href="bower_components/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css" />
+    <link rel="stylesheet" href="bower_components/cropper/dist/cropper.css" />
+    <link rel="stylesheet" href="bower_components/dropzone/dist/min/dropzone.min.css" />
+    <link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css" />
+    <link rel="stylesheet" href="bower_components/starrr/dist/starrr.css" />
+    <link rel="stylesheet" href="bower_components/datatables.net-bs/css/dataTables.bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/datatables.net-buttons-bs/css/buttons.bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/datatables.net-responsive-bs/css/responsive.bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/datatables.net-scroller-bs/css/scroller.bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css assets/styles/custom.css -->
+    <!-- Bootstrap -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="bower_components/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="bower_components/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- jVectorMap -->
+    <link href="assets/styles/jquery-jvectormap-2.0.3.css" rel="stylesheet"/>
+    <!-- Custom Theme Style -->
+    <link href="assets/styles/custom.css" rel="stylesheet">
+    <!-- endbuild -->
+    <link rel="stylesheet" href="assets/styles/font-icons/entypo/css/entypo.css">
+    <link rel="stylesheet" href="assets/styles/neon-core.css">
+    <link rel="stylesheet" href="assets/styles/neon-forms.css">
 
-		<!--[if lt IE 9]>
-		<script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <!--[if lt IE 9]>
+    <script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
-		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-		<!--[if lt IE 9]>
-		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-		<![endif]-->
-		<!--     <link href="assets/styles/multiply-select.css" rel="stylesheet"> -->
-	</head>
-	<body ng-app="vktrgtApp" class="page-body">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="assets/styles/multiply-select.css" rel="stylesheet">
+</head>
+<body ng-app="vktrgtApp" class="page-body">
 <!--[if lt IE 9]>
 <p class="browserupgrade">Вы используете <strong>устаревший</strong> браузер. Пожалуйста <a
-		href="http://browsehappy.com/">обновите
-		свой браузер</a> чтобы воспользоваться в полной мере функционалом сервиса</p>
-		<![endif]-->
-		<div ng-show="{{ENV === 'dev'}}" class="development" ng-cloak=""></div>
+    href="http://browsehappy.com/">обновите
+    свой браузер</a> чтобы воспользоваться в полной мере функционалом сервиса</p>
+<![endif]-->
+<div ng-show="{{ENV === 'dev'}}" class="development" ng-cloak=""></div>
 
-		<div class="page-container">
-			<div class="sidebar-menu">
-				<div class="sidebar-menu-inner">
-					<header class="logo-env">
+<div class="page-container">
+    <div class="sidebar-menu">
+        <div class="sidebar-menu-inner">
+            <header class="logo-env">
 
-						<!-- logo -->
-						<div class="logo">
-							<a href="/">
-								<img src="assets/images/logo.png" alt=""/>
-							</a>
-						</div>
+                <!-- logo -->
+                <div class="logo">
+                    <a href="/">
+                        <img src="assets/images/logo@2x.png" alt=""/>
+                    </a>
+                </div>
 
-						<!-- logo collapse icon -->
-						<div class="sidebar-collapse">
-							<a href="" class="sidebar-collapse-icon with-animation">
-								<!-- add class "with-animation" if you want sidebar to have animation during expanding/collapsing transition -->
-								<span>
-									<i class="entypo-menu"></i>
-								</span>
-							</a>
-						</div>
+                <!-- logo collapse icon -->
+                <div class="sidebar-collapse">
+                    <a href="" class="sidebar-collapse-icon with-animation">
+                        <!-- add class "with-animation" if you want sidebar to have animation during expanding/collapsing transition -->
+                        <i class="entypo-menu"></i>
+                    </a>
+                </div>
 
 
-						<!-- open/close menu icon (do not remove if you want to enable menu on mobile devices) -->
-						<div class="sidebar-mobile-menu visible-xs">
-							<a href="#" class="with-animation"><!-- add class "with-animation" to support animation -->
-								<div class="iconwrap">
-									<i class="entypo-menu"></i>
-								</div>
-							</a>
-						</div>
+                <!-- open/close menu icon (do not remove if you want to enable menu on mobile devices) -->
+                <div class="sidebar-mobile-menu visible-xs">
+                    <a href="#" class="with-animation"><!-- add class "with-animation" to support animation -->
+                        <i class="entypo-menu"></i>
+                    </a>
+                </div>
 
-					</header>
+            </header>
 
-					<ul id="main-menu" class="main-menu">
-						<li>
-							<a ui-sref="task-manager">
-								<div class="iconwrap">
-									<i class="entypo-gauge"></i>
-								</div>
-								<span class="title" translate="global.menu.task-manager">Task Manager</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="group-intersect">
-								<div class="iconwrap">
-									<i class="entypo-shuffle"></i>
-								</div>
-								<span class="title" translate="global.menu.vk.group-intersect">Group intersection</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="group-activity">
-								<div class="iconwrap">
-									<i class="glyphicon glyphicon-comment"></i>
-								</div>
-								<span class="title" translate="global.menu.vk.group-activity">Wall Activity</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="topic-activity">
-								<div class="iconwrap">
-									<i class="entypo-chat"></i>
-								</div>
-								<span class="title" translate="global.menu.vk.topic-activity">Topic Activity</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="group-members">
-								<div class="iconwrap">
-									<i class="entypo-users"></i>
-								</div>
-								<span class="title" translate="global.menu.vk.group-members">Group Members</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="group-search">
-								<div class="iconwrap">
-									<i class="entypo-search"></i>
-								</div>
-								<span class="title" translate="global.menu.vk.group-search">Group Search</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="user-leaders">
-								<div class="iconwrap">
-									<i class="entypo-star"></i>
-								</div>
-								<span class="title" translate="global.menu.vk.user-leaders">Opinion Leaders</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="user-intersect">
-								<div class="iconwrap">
-									<i class="entypo-shuffle"></i>
-								</div>
-								<span class="title" translate="global.menu.vk.user-intersect">Max Group</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="user-analyse">
-								<div class="iconwrap">
-									<i class="entypo-users"></i>
-								</div>
-								<span class="title" translate="global.menu.vk.user-analyse">User Analyse</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="user-birth">
-								<div class="iconwrap">
-									<i class="entypo-calendar"></i>
-								</div>
-								<span class="title" translate="global.menu.vk.user-birth">User Birth</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="user-audio">
-								<div class="iconwrap">
-									<i class="glyphicon glyphicon-music"></i>
-								</div>
-								<span class="title" translate="global.menu.vk.user-audio">User Audio</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="user-filter">
-								<div class="iconwrap">
-									<i class="glyphicon glyphicon-filter"></i>
-								</div>
-								<span class="title" translate="global.menu.vk.user-filter">User filter</span>
-							</a>
-						</li>
-						<li>
-							<a ui-sref="user-ids">
-								<div class="iconwrap">
-									<i class="entypo-switch"></i>
-									</div>
-										<span class="title" translate="global.menu.vk.user-ids">ID->URL</span>
-									</a>
-								</li>
-								<li>
-									<a ui-sref="user-urls">
-									<div class="iconwrap">
-									<i class="entypo-switch"></i>
-									</div>
-										<span class="title" translate="global.menu.vk.user-urls">URL->ID</span>
-									</a>
-								</li>
-							</ul>
-						</div>
-					</div>
+            <ul id="main-menu" class="main-menu">
+                <li>
+                    <a ui-sref="task-manager">
+                        <i class="entypo-gauge"></i>
+                        <span class="title" translate="global.menu.task-manager">Task Manager</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="group-intersect">
+                        <i class="entypo-shuffle"></i>
+                        <span class="title" translate="global.menu.vk.group-intersect">Group intersection</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="group-activity">
+                        <i class="glyphicon glyphicon-comment"></i>
+                        <span class="title" translate="global.menu.vk.group-activity">Wall Activity</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="topic-activity">
+                        <i class="entypo-chat"></i>
+                        <span class="title" translate="global.menu.vk.topic-activity">Topic Activity</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="group-members">
+                        <i class="entypo-users"></i>
+                        <span class="title" translate="global.menu.vk.group-members">Group Members</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="group-search">
+                        <i class="entypo-search"></i>
+                        <span class="title" translate="global.menu.vk.group-search">Group Search</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-leaders">
+                        <i class="entypo-star"></i>
+                        <span class="title" translate="global.menu.vk.user-leaders">Opinion Leaders</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-intersect">
+                        <i class="entypo-shuffle"></i>
+                        <span class="title" translate="global.menu.vk.user-intersect">Max Group</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-analyse">
+                        <i class="entypo-users"></i>
+                        <span class="title" translate="global.menu.vk.user-analyse">User Analyse</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-birth">
+                        <i class="entypo-calendar"></i>
+                        <span class="title" translate="global.menu.vk.user-birth">User Birth</span>
+                    </a>
+                </li>
+                <li>;
+                <li>
+                    <a ui-sref="user-filter"><i class="glyphicon glyphicon-filter"></i>
+                        <span class="title" translate="global.menu.vk.user-filter">User filter</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-ids"><i class="entypo-switch"></i>
+                        <span class="title" translate="global.menu.vk.user-ids">ID->URL</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-urls"><i class="entypo-switch"></i>
+                        <span class="title" translate="global.menu.vk.user-urls">URL->ID</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 
-					<div class="main-content">
-						<div class="row">
-							<div ui-view="navbar" ng-cloak=""></div>
-						</div>
-						<hr />
-						<div role="main" ui-view="content"></div>
-					</div>
-				</div>
-			</body>
+    <div class="main-content">
+        <div class="row">
+            <div ui-view="navbar" ng-cloak=""></div>
+        </div>
+        <hr />
+        <div role="main" ui-view="content"></div>
+    </div>
+</div>
+</body>
 
 <!-- Google Analytics: uncomment and change UA-XXXXX-X to be your site's ID.
 <script>
-		(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-		function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-		e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-		e.src='//www.google-analytics.com/analytics.js';
-		r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-		ga('create','UA-XXXXX-X');ga('send','pageview');
-	</script>-->
+    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+    e.src='//www.google-analytics.com/analytics.js';
+    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+    ga('create','UA-XXXXX-X');ga('send','pageview');
+</script>-->
 
-	<!-- build:js scripts/vendor.js -->
-	<!-- bower:js -->
-	<script src="bower_components/jquery/dist/jquery.js"></script>
-	<script src="bower_components/angular/angular.js"></script>
-	<script src="bower_components/angular-aria/angular-aria.js"></script>
-	<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-	<script src="bower_components/angular-cache-buster/angular-cache-buster.js"></script>
-	<script src="bower_components/angular-cookies/angular-cookies.js"></script>
-	<script src="bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js"></script>
-	<script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
-	<script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
-	<script src="bower_components/angular-resource/angular-resource.js"></script>
-	<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-	<script src="bower_components/angular-translate/angular-translate.js"></script>
-	<script src="bower_components/messageformat/messageformat.js"></script>
-	<script src="bower_components/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.js"></script>
-	<script src="bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js"></script>
-	<script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
-	<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-	<script src="bower_components/bootstrap-sass/assets/javascripts/bootstrap.js"></script>
-	<script src="bower_components/json3/lib/json3.js"></script>
-	<script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
-	<script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
-	<script src="bower_components/sockjs-client/dist/sockjs.js"></script>
-	<script src="bower_components/stomp-websocket/lib/stomp.min.js"></script>
-	<script src="bower_components/fastclick/lib/fastclick.js"></script>
-	<script src="bower_components/nprogress/nprogress.js"></script>
-	<script src="bower_components/Chart.js/dist/Chart.js"></script>
-	<script src="bower_components/gauge.js/dist/gauge.js"></script>
-	<script src="bower_components/gauge.js/dist/gauge.min.js"></script>
-	<script src="bower_components/bootstrap-progressbar/bootstrap-progressbar.js"></script>
-	<script src="bower_components/iCheck/icheck.min.js"></script>
-	<script src="bower_components/Flot/jquery.flot.js"></script>
-	<script src="bower_components/moment/moment.js"></script>
-	<script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-	<script src="bower_components/jquery-sparkline/dist/jquery.sparkline.js"></script>
-	<script src="bower_components/eve/eve.js"></script>
-	<script src="bower_components/raphael/raphael.min.js"></script>
-	<script src="bower_components/mocha/mocha.js"></script>
-	<script src="bower_components/morris.js/morris.js"></script>
-	<script src="bower_components/jquery.hotkeys/jquery.hotkeys.js"></script>
-	<script src="bower_components/google-code-prettify/bin/prettify.min.js"></script>
-	<script src="bower_components/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
-	<script src="bower_components/jquery.tagsinput/src/jquery.tagsinput.js"></script>
-	<script src="bower_components/select2/dist/js/select2.js"></script>
-	<script src="bower_components/autosize/dist/autosize.js"></script>
-	<script src="bower_components/parsleyjs/dist/parsley.js"></script>
-	<script src="bower_components/devbridge-autocomplete/dist/jquery.autocomplete.js"></script>
-	<script src="bower_components/ion.rangeSlider/js/ion.rangeSlider.js"></script>
-	<script src="bower_components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"></script>
-	<script src="bower_components/jquery.inputmask/dist/inputmask/inputmask.js"></script>
-	<script src="bower_components/jquery-knob/js/jquery.knob.js"></script>
-	<script src="bower_components/cropper/dist/cropper.js"></script>
-	<script src="bower_components/dropzone/dist/min/dropzone.min.js"></script>
-	<script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
-	<script src="bower_components/jquery.easy-pie-chart/dist/jquery.easypiechart.js"></script>
-	<script src="bower_components/starrr/dist/starrr.js"></script>
-	<script src="bower_components/datatables.net/js/jquery.dataTables.js"></script>
-	<script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.js"></script>
-	<script src="bower_components/datatables.net-buttons/js/dataTables.buttons.js"></script>
-	<script src="bower_components/datatables.net-buttons/js/buttons.colVis.js"></script>
-	<script src="bower_components/datatables.net-buttons/js/buttons.flash.js"></script>
-	<script src="bower_components/datatables.net-buttons/js/buttons.html5.js"></script>
-	<script src="bower_components/datatables.net-buttons/js/buttons.print.js"></script>
-	<script src="bower_components/datatables.net-buttons-bs/js/buttons.bootstrap.js"></script>
-	<script src="bower_components/datatables.net-fixedheader/js/dataTables.fixedHeader.js"></script>
-	<script src="bower_components/datatables.net-keytable/js/dataTables.keyTable.js"></script>
-	<script src="bower_components/datatables.net-responsive/js/dataTables.responsive.js"></script>
-	<script src="bower_components/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-	<script src="bower_components/datatables.net-scroller/js/dataTables.scroller.js"></script>
-	<script src="bower_components/pdfmake/build/pdfmake.js"></script>
-	<script src="bower_components/pdfmake/build/vfs_fonts.js"></script>
-	<script src="bower_components/jszip/dist/jszip.js"></script>
-	<script src="bower_components/gsap/src/uncompressed/TweenMax.js"></script>
-	<script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
-	<!-- endbower -->
-	<!-- endbuild -->
+<!-- build:js scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/angular-cache-buster/angular-cache-buster.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+<script src="bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js"></script>
+<script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
+<script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/angular-translate/angular-translate.js"></script>
+<script src="bower_components/messageformat/messageformat.js"></script>
+<script src="bower_components/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.js"></script>
+<script src="bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js"></script>
+<script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="bower_components/bootstrap-sass/assets/javascripts/bootstrap.js"></script>
+<script src="bower_components/json3/lib/json3.js"></script>
+<script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
+<script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
+<script src="bower_components/sockjs-client/dist/sockjs.js"></script>
+<script src="bower_components/stomp-websocket/lib/stomp.min.js"></script>
+<script src="bower_components/fastclick/lib/fastclick.js"></script>
+<script src="bower_components/nprogress/nprogress.js"></script>
+<script src="bower_components/Chart.js/dist/Chart.js"></script>
+<script src="bower_components/gauge.js/dist/gauge.js"></script>
+<script src="bower_components/gauge.js/dist/gauge.min.js"></script>
+<script src="bower_components/bootstrap-progressbar/bootstrap-progressbar.js"></script>
+<script src="bower_components/iCheck/icheck.min.js"></script>
+<script src="bower_components/Flot/jquery.flot.js"></script>
+<script src="bower_components/moment/moment.js"></script>
+<script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="bower_components/jquery-sparkline/dist/jquery.sparkline.js"></script>
+<script src="bower_components/eve/eve.js"></script>
+<script src="bower_components/raphael/raphael.min.js"></script>
+<script src="bower_components/mocha/mocha.js"></script>
+<script src="bower_components/morris.js/morris.js"></script>
+<script src="bower_components/jquery.hotkeys/jquery.hotkeys.js"></script>
+<script src="bower_components/google-code-prettify/bin/prettify.min.js"></script>
+<script src="bower_components/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+<script src="bower_components/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+<script src="bower_components/select2/dist/js/select2.js"></script>
+<script src="bower_components/autosize/dist/autosize.js"></script>
+<script src="bower_components/parsleyjs/dist/parsley.js"></script>
+<script src="bower_components/devbridge-autocomplete/dist/jquery.autocomplete.js"></script>
+<script src="bower_components/ion.rangeSlider/js/ion.rangeSlider.js"></script>
+<script src="bower_components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"></script>
+<script src="bower_components/jquery.inputmask/dist/inputmask/inputmask.js"></script>
+<script src="bower_components/jquery-knob/js/jquery.knob.js"></script>
+<script src="bower_components/cropper/dist/cropper.js"></script>
+<script src="bower_components/dropzone/dist/min/dropzone.min.js"></script>
+<script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
+<script src="bower_components/jquery.easy-pie-chart/dist/jquery.easypiechart.js"></script>
+<script src="bower_components/starrr/dist/starrr.js"></script>
+<script src="bower_components/datatables.net/js/jquery.dataTables.js"></script>
+<script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.js"></script>
+<script src="bower_components/datatables.net-buttons/js/dataTables.buttons.js"></script>
+<script src="bower_components/datatables.net-buttons/js/buttons.colVis.js"></script>
+<script src="bower_components/datatables.net-buttons/js/buttons.flash.js"></script>
+<script src="bower_components/datatables.net-buttons/js/buttons.html5.js"></script>
+<script src="bower_components/datatables.net-buttons/js/buttons.print.js"></script>
+<script src="bower_components/datatables.net-buttons-bs/js/buttons.bootstrap.js"></script>
+<script src="bower_components/datatables.net-fixedheader/js/dataTables.fixedHeader.js"></script>
+<script src="bower_components/datatables.net-keytable/js/dataTables.keyTable.js"></script>
+<script src="bower_components/datatables.net-responsive/js/dataTables.responsive.js"></script>
+<script src="bower_components/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="bower_components/datatables.net-scroller/js/dataTables.scroller.js"></script>
+<script src="bower_components/pdfmake/build/pdfmake.js"></script>
+<script src="bower_components/pdfmake/build/vfs_fonts.js"></script>
+<script src="bower_components/jszip/dist/jszip.js"></script>
+<script src="bower_components/gsap/src/uncompressed/TweenMax.js"></script>
+<script src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
 
 
-	<!-- build:js({.tmp,src/main/webapp}) scripts/app.js -->
-	<!-- include: "type": "js", "files": "<%= app.scripts %>" -->
-	<script src="scripts/app/app.js"></script>
-	<script src="scripts/app/app.constants.js"></script>
-	<script src="scripts/components/admin/audits.service.js"></script>
-	<script src="scripts/components/admin/configuration.service.js"></script>
-	<script src="scripts/components/admin/logs.service.js"></script>
-	<script src="scripts/components/admin/monitoring.service.js"></script>
-	<script src="scripts/components/alert/alert.directive.js"></script>
-	<script src="scripts/components/alert/alert.service.js"></script>
-	<script src="scripts/components/api/api-google-drive/google.drive.service.js"></script>
-	<script src="scripts/components/api/api-vk-client/vk.service.js"></script>
-	<script src="scripts/components/api/api-vk-server/vk.service.server.js"></script>
-	<script src="scripts/components/auth/auth.service.js"></script>
-	<script src="scripts/components/auth/authority.directive.js"></script>
-	<script src="scripts/components/auth/principal.service.js"></script>
-	<script src="scripts/components/auth/provider/auth.session.service.js"></script>
-	<script src="scripts/components/auth/services/account.service.js"></script>
-	<script src="scripts/components/auth/services/activate.service.js"></script>
-	<script src="scripts/components/auth/services/password.service.js"></script>
-	<script src="scripts/components/auth/services/register.service.js"></script>
-	<script src="scripts/components/auth/services/sessions.service.js"></script>
-	<script src="scripts/components/form/form.directive.js"></script>
-	<script src="scripts/components/form/maxbytes.directive.js"></script>
-	<script src="scripts/components/form/minbytes.directive.js"></script>
-	<script src="scripts/components/form/uib-pager.config.js"></script>
-	<script src="scripts/components/form/uib-pagination.config.js"></script>
-	<script src="scripts/components/interceptor/auth.interceptor.js"></script>
-	<script src="scripts/components/interceptor/errorhandler.interceptor.js"></script>
-	<script src="scripts/components/interceptor/notification.interceptor.js"></script>
-	<script src="scripts/components/language/language.controller.js"></script>
-	<script src="scripts/components/language/language.service.js"></script>
-	<script src="scripts/components/multiply-autocomplete/multiply-select.js"></script>
-	<script src="scripts/components/navbar/navbar.controller.js"></script>
-	<script src="scripts/components/task-manager/task.service.js"></script>
-	<script src="scripts/components/tracker/tracker.service.js"></script>
-	<script src="scripts/components/user/user.service.js"></script>
-	<script src="scripts/components/util/base64.service.js"></script>
-	<script src="scripts/components/util/capitalize.filter.js"></script>
-	<script src="scripts/components/util/data-util.service.js"></script>
-	<script src="scripts/components/util/date-util.service.js"></script>
-	<script src="scripts/components/util/parse-links.service.js"></script>
-	<script src="scripts/components/util/sort.directive.js"></script>
-	<script src="scripts/components/util/truncate.filter.js"></script>
-	<script src="scripts/app/account/account.js"></script>
-	<script src="scripts/app/account/activate/activate.controller.js"></script>
-	<script src="scripts/app/account/activate/activate.js"></script>
-	<script src="scripts/app/account/login/login.controller.js"></script>
-	<script src="scripts/app/account/login/login.js"></script>
-	<script src="scripts/app/account/password/password.controller.js"></script>
-	<script src="scripts/app/account/password/password.directive.js"></script>
-	<script src="scripts/app/account/password/password.js"></script>
-	<script src="scripts/app/account/register/register.controller.js"></script>
-	<script src="scripts/app/account/register/register.js"></script>
-	<script src="scripts/app/account/reset/finish/reset.finish.controller.js"></script>
-	<script src="scripts/app/account/reset/finish/reset.finish.js"></script>
-	<script src="scripts/app/account/reset/request/reset.request.controller.js"></script>
-	<script src="scripts/app/account/reset/request/reset.request.js"></script>
-	<script src="scripts/app/account/sessions/sessions.controller.js"></script>
-	<script src="scripts/app/account/sessions/sessions.js"></script>
-	<script src="scripts/app/account/settings/settings.controller.js"></script>
-	<script src="scripts/app/account/settings/settings.js"></script>
-	<script src="scripts/app/admin/admin.js"></script>
-	<script src="scripts/app/admin/audits/audits.controller.js"></script>
-	<script src="scripts/app/admin/audits/audits.js"></script>
-	<script src="scripts/app/admin/configuration/configuration.controller.js"></script>
-	<script src="scripts/app/admin/configuration/configuration.js"></script>
-	<script src="scripts/app/admin/docs/docs.js"></script>
-	<script src="scripts/app/admin/health/health.controller.js"></script>
-	<script src="scripts/app/admin/health/health.js"></script>
-	<script src="scripts/app/admin/health/health.modal.controller.js"></script>
-	<script src="scripts/app/admin/logs/logs.controller.js"></script>
-	<script src="scripts/app/admin/logs/logs.js"></script>
-	<script src="scripts/app/admin/metrics/metrics.controller.js"></script>
-	<script src="scripts/app/admin/metrics/metrics.js"></script>
-	<script src="scripts/app/admin/metrics/metrics.modal.controller.js"></script>
-	<script src="scripts/app/admin/tracker/tracker.controller.js"></script>
-	<script src="scripts/app/admin/tracker/tracker.js"></script>
-	<script src="scripts/app/admin/user-management/user-management-delete-dialog.controller.js"></script>
-	<script src="scripts/app/admin/user-management/user-management-detail.controller.js"></script>
-	<script src="scripts/app/admin/user-management/user-management-dialog.controller.js"></script>
-	<script src="scripts/app/admin/user-management/user-management.controller.js"></script>
-	<script src="scripts/app/admin/user-management/user-management.js"></script>
-	<script src="scripts/app/entities/entity.js"></script>
-	<script src="scripts/app/error/error.js"></script>
-	<script src="scripts/app/main/main.controller.js"></script>
-	<script src="scripts/app/main/main.js"></script>
-	<script src="scripts/app/task-manager/task-manager.controller.js"></script>
-	<script src="scripts/app/task-manager/task-manager.js"></script>
-	<script src="scripts/app/vk/group-activity/group-activity.controller.js"></script>
-	<script src="scripts/app/vk/group-activity/group-activity.js"></script>
-	<script src="scripts/app/vk/group-info/group-info.controller.js"></script>
-	<script src="scripts/app/vk/group-info/group-info.js"></script>
-	<script src="scripts/app/vk/group-intersect/group-intersect.controller.js"></script>
-	<script src="scripts/app/vk/group-intersect/group-intersect.js"></script>
-	<script src="scripts/app/vk/group-members/group-members.controller.js"></script>
-	<script src="scripts/app/vk/group-members/group-members.js"></script>
-	<script src="scripts/app/vk/group-search/group-search.controller.js"></script>
-	<script src="scripts/app/vk/group-search/group-search.js"></script>
-	<script src="scripts/app/vk/topic-activity/topic-activity.controller.js"></script>
-	<script src="scripts/app/vk/topic-activity/topic-activity.js"></script>
-	<script src="scripts/app/vk/user-analyse/user-analyse.controller.js"></script>
-	<script src="scripts/app/vk/user-analyse/user-analyse.js"></script>
-	<script src="scripts/app/vk/user-audio/user-audio.controller.js"></script>
-	<script src="scripts/app/vk/user-audio/user-audio.js"></script>
-	<script src="scripts/app/vk/user-birth/user-birth.controller.js"></script>
-	<script src="scripts/app/vk/user-birth/user-birth.js"></script>
-	<script src="scripts/app/vk/user-filter/user-filter.controller.js"></script>
-	<script src="scripts/app/vk/user-filter/user-filter.js"></script>
-	<script src="scripts/app/vk/user-ids/user-ids.controller.js"></script>
-	<script src="scripts/app/vk/user-ids/user-ids.js"></script>
-	<script src="scripts/app/vk/user-intersect/user-intersect.controller.js"></script>
-	<script src="scripts/app/vk/user-intersect/user-intersect.js"></script>
-	<script src="scripts/app/vk/user-leaders/user-leaders.controller.js"></script>
-	<script src="scripts/app/vk/user-leaders/user-leaders.js"></script>
-	<script src="scripts/app/vk/user-urls/user-urls.controller.js"></script>
-	<script src="scripts/app/vk/user-urls/user-urls.js"></script>
-	<script src="scripts/app/vk/vk.js"></script>
-	<!-- /include -->
-	<script src="bower_components/messageformat/locale/ru.js"></script>
-	<script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
-	<script src="assets/js/joinable.js"></script>
-	<script src="assets/js/resizeable.js"></script>
-	<script src="assets/js/neon-api.js"></script>
-	<script src="assets/js/neon-custom.js"></script>
-	<!-- endbuild -->
+<!-- build:js({.tmp,src/main/webapp}) scripts/app.js -->
+<!-- include: "type": "js", "files": "<%= app.scripts %>" -->
+<script src="scripts/app/app.js"></script>
+<script src="scripts/app/app.constants.js"></script>
+<script src="scripts/components/admin/audits.service.js"></script>
+<script src="scripts/components/admin/configuration.service.js"></script>
+<script src="scripts/components/admin/logs.service.js"></script>
+<script src="scripts/components/admin/monitoring.service.js"></script>
+<script src="scripts/components/alert/alert.directive.js"></script>
+<script src="scripts/components/alert/alert.service.js"></script>
+<script src="scripts/components/api/api-google-drive/google.drive.service.js"></script>
+<script src="scripts/components/api/api-vk-client/vk.service.js"></script>
+<script src="scripts/components/api/api-vk-server/vk.service.server.js"></script>
+<script src="scripts/components/auth/auth.service.js"></script>
+<script src="scripts/components/auth/authority.directive.js"></script>
+<script src="scripts/components/auth/principal.service.js"></script>
+<script src="scripts/components/auth/provider/auth.session.service.js"></script>
+<script src="scripts/components/auth/services/account.service.js"></script>
+<script src="scripts/components/auth/services/activate.service.js"></script>
+<script src="scripts/components/auth/services/password.service.js"></script>
+<script src="scripts/components/auth/services/register.service.js"></script>
+<script src="scripts/components/auth/services/sessions.service.js"></script>
+<script src="scripts/components/form/form.directive.js"></script>
+<script src="scripts/components/form/maxbytes.directive.js"></script>
+<script src="scripts/components/form/minbytes.directive.js"></script>
+<script src="scripts/components/form/uib-pager.config.js"></script>
+<script src="scripts/components/form/uib-pagination.config.js"></script>
+<script src="scripts/components/interceptor/auth.interceptor.js"></script>
+<script src="scripts/components/interceptor/errorhandler.interceptor.js"></script>
+<script src="scripts/components/interceptor/notification.interceptor.js"></script>
+<script src="scripts/components/language/language.controller.js"></script>
+<script src="scripts/components/language/language.service.js"></script>
+<script src="scripts/components/multiply-autocomplete/multiply-select.js"></script>
+<script src="scripts/components/navbar/navbar.controller.js"></script>
+<script src="scripts/components/task-manager/task.service.js"></script>
+<script src="scripts/components/tracker/tracker.service.js"></script>
+<script src="scripts/components/user/user.service.js"></script>
+<script src="scripts/components/util/base64.service.js"></script>
+<script src="scripts/components/util/capitalize.filter.js"></script>
+<script src="scripts/components/util/data-util.service.js"></script>
+<script src="scripts/components/util/date-util.service.js"></script>
+<script src="scripts/components/util/parse-links.service.js"></script>
+<script src="scripts/components/util/sort.directive.js"></script>
+<script src="scripts/components/util/truncate.filter.js"></script>
+<script src="scripts/app/account/account.js"></script>
+<script src="scripts/app/account/activate/activate.controller.js"></script>
+<script src="scripts/app/account/activate/activate.js"></script>
+<script src="scripts/app/account/login/login.controller.js"></script>
+<script src="scripts/app/account/login/login.js"></script>
+<script src="scripts/app/account/password/password.controller.js"></script>
+<script src="scripts/app/account/password/password.directive.js"></script>
+<script src="scripts/app/account/password/password.js"></script>
+<script src="scripts/app/account/register/register.controller.js"></script>
+<script src="scripts/app/account/register/register.js"></script>
+<script src="scripts/app/account/reset/finish/reset.finish.controller.js"></script>
+<script src="scripts/app/account/reset/finish/reset.finish.js"></script>
+<script src="scripts/app/account/reset/request/reset.request.controller.js"></script>
+<script src="scripts/app/account/reset/request/reset.request.js"></script>
+<script src="scripts/app/account/sessions/sessions.controller.js"></script>
+<script src="scripts/app/account/sessions/sessions.js"></script>
+<script src="scripts/app/account/settings/settings.controller.js"></script>
+<script src="scripts/app/account/settings/settings.js"></script>
+<script src="scripts/app/admin/admin.js"></script>
+<script src="scripts/app/admin/audits/audits.controller.js"></script>
+<script src="scripts/app/admin/audits/audits.js"></script>
+<script src="scripts/app/admin/configuration/configuration.controller.js"></script>
+<script src="scripts/app/admin/configuration/configuration.js"></script>
+<script src="scripts/app/admin/docs/docs.js"></script>
+<script src="scripts/app/admin/health/health.controller.js"></script>
+<script src="scripts/app/admin/health/health.js"></script>
+<script src="scripts/app/admin/health/health.modal.controller.js"></script>
+<script src="scripts/app/admin/logs/logs.controller.js"></script>
+<script src="scripts/app/admin/logs/logs.js"></script>
+<script src="scripts/app/admin/metrics/metrics.controller.js"></script>
+<script src="scripts/app/admin/metrics/metrics.js"></script>
+<script src="scripts/app/admin/metrics/metrics.modal.controller.js"></script>
+<script src="scripts/app/admin/tracker/tracker.controller.js"></script>
+<script src="scripts/app/admin/tracker/tracker.js"></script>
+<script src="scripts/app/admin/user-management/user-management-delete-dialog.controller.js"></script>
+<script src="scripts/app/admin/user-management/user-management-detail.controller.js"></script>
+<script src="scripts/app/admin/user-management/user-management-dialog.controller.js"></script>
+<script src="scripts/app/admin/user-management/user-management.controller.js"></script>
+<script src="scripts/app/admin/user-management/user-management.js"></script>
+<script src="scripts/app/entities/entity.js"></script>
+<script src="scripts/app/error/error.js"></script>
+<script src="scripts/app/main/main.controller.js"></script>
+<script src="scripts/app/main/main.js"></script>
+<script src="scripts/app/task-manager/task-manager.controller.js"></script>
+<script src="scripts/app/task-manager/task-manager.js"></script>
+<script src="scripts/app/vk/group-activity/group-activity.controller.js"></script>
+<script src="scripts/app/vk/group-activity/group-activity.js"></script>
+<script src="scripts/app/vk/group-info/group-info.controller.js"></script>
+<script src="scripts/app/vk/group-info/group-info.js"></script>
+<script src="scripts/app/vk/group-intersect/group-intersect.controller.js"></script>
+<script src="scripts/app/vk/group-intersect/group-intersect.js"></script>
+<script src="scripts/app/vk/group-members/group-members.controller.js"></script>
+<script src="scripts/app/vk/group-members/group-members.js"></script>
+<script src="scripts/app/vk/group-search/group-search.controller.js"></script>
+<script src="scripts/app/vk/group-search/group-search.js"></script>
+<script src="scripts/app/vk/topic-activity/topic-activity.controller.js"></script>
+<script src="scripts/app/vk/topic-activity/topic-activity.js"></script>
+<script src="scripts/app/vk/user-analyse/user-analyse.controller.js"></script>
+<script src="scripts/app/vk/user-analyse/user-analyse.js"></script>
+<script src="scripts/app/vk/user-audio/user-audio.controller.js"></script>
+<script src="scripts/app/vk/user-audio/user-audio.js"></script>
+<script src="scripts/app/vk/user-birth/user-birth.controller.js"></script>
+<script src="scripts/app/vk/user-birth/user-birth.js"></script>
+<script src="scripts/app/vk/user-filter/user-filter.controller.js"></script>
+<script src="scripts/app/vk/user-filter/user-filter.js"></script>
+<script src="scripts/app/vk/user-ids/user-ids.controller.js"></script>
+<script src="scripts/app/vk/user-ids/user-ids.js"></script>
+<script src="scripts/app/vk/user-intersect/user-intersect.controller.js"></script>
+<script src="scripts/app/vk/user-intersect/user-intersect.js"></script>
+<script src="scripts/app/vk/user-leaders/user-leaders.controller.js"></script>
+<script src="scripts/app/vk/user-leaders/user-leaders.js"></script>
+<script src="scripts/app/vk/user-urls/user-urls.controller.js"></script>
+<script src="scripts/app/vk/user-urls/user-urls.js"></script>
+<script src="scripts/app/vk/vk.js"></script>
+<!-- /include -->
+<script src="bower_components/messageformat/locale/ru.js"></script>
+<script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
+<script src="assets/js/joinable.js"></script>
+<script src="assets/js/resizeable.js"></script>
+<script src="assets/js/neon-api.js"></script>
+<script src="assets/js/neon-custom.js"></script>
+<!-- endbuild -->
 
 </body>
 </html>
