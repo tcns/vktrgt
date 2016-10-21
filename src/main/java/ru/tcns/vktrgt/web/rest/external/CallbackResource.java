@@ -52,20 +52,30 @@ public class CallbackResource {
             String content = response.returnContent().asString();
             JSONObject object = new JSONObject(content);
             String accessToken = object.getString("access_token");
-            /*String testResponse = null;
-            try {
-                groupService.searchVk("test", accessToken);
-            } catch (VKException ex) {
-                if (ex.getVkErrorResponse().getErrorCode()== VKErrorCodes.VALIDATION_REQUIRED) {
-                    Response response2 = Request.Get(ex.getVkErrorResponse().getRedirectUri()).execute();
-                    System.out.println("redirect uri: " + ex.getVkErrorResponse().getRedirectUri());
-                    String content2 = response2.returnContent().asString();
-                    System.out.println(content2);
-                    JSONObject object2 = new JSONObject(content2);
-                    accessToken = object2.getString("access_token");
-                }
-            }*/
             request.getSession().setAttribute(Constants.VK_TOKEN, accessToken);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/Callback2",
+        method = RequestMethod.GET)
+    public void getCallback2(HttpServletRequest request, Model model) {
+        String code = request.getParameter("code");
+        try {
+            String baseUrl = String.format("%s://%s:%d",request.getScheme(),  request.getServerName(), request.getServerPort());
+            if (Arrays.asList(env.getActiveProfiles()).contains(Constants.SPRING_PROFILE_PRODUCTION)) {
+                baseUrl = "https://vktrgt.herokuapp.com";
+            }
+            String url = "https://oauth.vk.com/access_token?client_id=" + Constants.VK_CLIENT_ID_STANDALONE +
+                "&client_secret=" + Constants.VK_CLIENT_SECRET_STANDALONE + "&redirect_uri=" + baseUrl + "/Callback2&" +
+                "code=" + code;
+            Response response = Request.Get(url).execute();
+            String content = response.returnContent().asString();
+            JSONObject object = new JSONObject(content);
+            String accessToken = object.getString("access_token");
+            request.getSession().setAttribute(Constants.VK_TOKEN_STANDALONE, accessToken);
         } catch (IOException e) {
             e.printStackTrace();
         }

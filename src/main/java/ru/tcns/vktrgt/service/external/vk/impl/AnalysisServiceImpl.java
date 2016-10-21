@@ -1,9 +1,14 @@
 package ru.tcns.vktrgt.service.external.vk.impl;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.math.IntRange;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import ru.tcns.vktrgt.domain.OperationTypes;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.AnalyseDTO;
@@ -158,6 +163,39 @@ public class AnalysisServiceImpl implements AnalysisService {
         String json = JsonParser.objectToJson(users);
         userTask.saveFinal(exportService.getStreamFromObject(exportService.getCSV(json)));
         return users;
+    }
+
+    @Override
+    public List<String> listOperationSync(UserTask userTask, List<String> list1, List<String> list2, int operationType) {
+        userTask = userTask.startWork();
+        userTask = userTask.saveInitial(1);
+        List<String> result = new ArrayList<>();
+        switch (operationType) {
+            case OperationTypes.DIFFERENCE:
+                result = new ArrayList<>(Sets.newLinkedHashSet(ArrayUtils.xor(list1, list2)));
+                break;
+            case OperationTypes.INTERSECT:
+                list1.retainAll(list2);
+                result = list1;
+                break;
+            case OperationTypes.MERGE:
+                list1.addAll(list2);
+                result = new ArrayList<>(Sets.newLinkedHashSet(list1));
+                break;
+            case OperationTypes.MINUS:
+                list1.removeAll(list2);
+                result = list1;
+                break;
+        }
+        userTask.saveProgress(1);
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(result, "\n")));
+        return result;
+    }
+
+    @Override
+    @Async
+    public Future<List<String>> listOperation(UserTask userTask, List<String> list1, List<String> list2, int operationType) {
+        return new AsyncResult<>(listOperationSync(userTask, list1, list2, operationType));
     }
 
     private List<User> getUsers(UserTask userTask, List<String> userIds) {

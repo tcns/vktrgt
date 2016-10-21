@@ -37,4 +37,14 @@ public class TokenResource {
         tokenRespone.setToken(ans);
         return new ResponseEntity<>(tokenRespone, HttpStatus.OK);
     }
+    @RequestMapping(value = "/vk/token-standalone", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TokenRespone> getVKTokenStandalone(HttpServletRequest request) {
+        String ans = "";
+        if (request.getSession().getAttribute(Constants.VK_TOKEN_STANDALONE)!=null) {
+            ans = (String)request.getSession().getAttribute(Constants.VK_TOKEN_STANDALONE);
+        }
+        TokenRespone tokenRespone = new TokenRespone();
+        tokenRespone.setToken(ans);
+        return new ResponseEntity<>(tokenRespone, HttpStatus.OK);
+    }
 }

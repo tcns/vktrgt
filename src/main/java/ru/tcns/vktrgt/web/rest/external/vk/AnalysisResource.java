@@ -80,4 +80,22 @@ public class AnalysisResource {
         analysisService.filterUsers(userTask, analyseDTO.getUsers(), analyseDTO);
         return ResponseEntity.ok().build();
     }
+
+    @RequestMapping(value = "/lists",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Void> listOperation(@RequestParam List<String> ids1,
+                                              @RequestParam List<String> ids2,
+                                              @RequestParam Integer type,
+                                              @RequestParam String taskInfo,
+                                              @RequestParam(required = false) MultipartFile file1,
+                                              @RequestParam(required = false) MultipartFile file2) throws URISyntaxException, IOException {
+        ids1.addAll(exportService.getListOfStrings(file1, "\n"));
+        ids2.addAll(exportService.getListOfStrings(file2, "\n"));
+        UserTask userTask = UserTask.create(AnalysisService.LIST_OPERATION, new UserTaskSettings(userService.getUserWithAuthorities(), true,
+            taskInfo, googleDrive), userTaskRepository);
+        analysisService.listOperation(userTask, ids1, ids2, type);
+        return ResponseEntity.ok().build();
+    }
 }

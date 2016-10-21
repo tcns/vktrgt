@@ -53,6 +53,18 @@ angular.module('vktrgtApp')
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
                 });
+            }, listOperation: function (ids1, ids2, file1, file2, type, taskInfo) {
+                var fd = new FormData();
+                fd.append('file1', file1);
+                fd.append('file2', file2);
+                fd.append('ids1', ids1.join(','))
+                fd.append('ids2', ids2.join(','))
+                fd.append('taskInfo', taskInfo)
+                fd.append('type', type)
+                return $http.post('/api/lists', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
             }, groupsInfo: function (ids, taskInfo, file) {
                 var fd = new FormData();
                 fd.append('file', file);

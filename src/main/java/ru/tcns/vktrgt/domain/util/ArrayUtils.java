@@ -101,6 +101,14 @@ public class ArrayUtils {
 
     }
 
+    public static<T> List<T> xor (List<T> l1, List<T> l2) {
+        List<T> objects = new ArrayList<>();
+        objects.addAll(l1);
+        objects.addAll(l2);
+        l1.retainAll(l2);
+        objects.removeAll(l1);
+        return objects;
+    }
     public static List<String> getDelimetedLists(Integer from, Integer to, Integer max, List<GroupIds> idsList) {
         int start = Collections.binarySearch(idsList, new GroupIds(from));
         ArrayList<String> strings = new ArrayList<>();
