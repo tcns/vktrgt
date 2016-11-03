@@ -51,7 +51,7 @@ module.exports = function (grunt) {
                 tasks: ['ngconstant:dev']
             },
             sass: {
-                files: ['src/main/sass/**/*.{scss,sass}'],
+                files: ['src/main/webapp/assets/sass/**/*.{scss,sass}'],
                 tasks: ['sass:server']
             },
             includeSource: {
