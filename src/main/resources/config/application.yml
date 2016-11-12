@@ -30,6 +30,8 @@ multipart.maxRequestSize: 50MB
 security:
     basic:
         enabled: false
+vk.consumerKey: 5574216
+vk.consumerSecret: aN2llaady9Tp1SWCmI7S
 
 # ===================================================================
 # JHipster specific properties

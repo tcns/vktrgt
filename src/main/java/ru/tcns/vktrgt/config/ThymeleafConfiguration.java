@@ -1,19 +1,15 @@
 package ru.tcns.vktrgt.config;
 
-import org.apache.commons.lang.CharEncoding;
+import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 @Configuration
 public class ThymeleafConfiguration {
 
+    @SuppressWarnings("unused")
     private final Logger log = LoggerFactory.getLogger(ThymeleafConfiguration.class);
 
     @Bean
@@ -26,15 +22,5 @@ public class ThymeleafConfiguration {
         emailTemplateResolver.setCharacterEncoding(CharEncoding.UTF_8);
         emailTemplateResolver.setOrder(1);
         return emailTemplateResolver;
-    }
-
-    @Bean
-    @Description("Spring mail message resolver")
-    public MessageSource emailMessageSource() {
-        log.info("loading non-reloadable mail messages resources");
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:/mails/messages/messages");
-        messageSource.setDefaultEncoding(CharEncoding.UTF_8);
-        return messageSource;
     }
 }

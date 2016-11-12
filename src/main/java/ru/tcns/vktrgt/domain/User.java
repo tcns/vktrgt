@@ -1,5 +1,7 @@
 package ru.tcns.vktrgt.domain;
 
+import ru.tcns.vktrgt.config.Constants;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Email;
 
@@ -15,6 +17,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.time.ZonedDateTime;
 
@@ -24,17 +27,19 @@ import java.time.ZonedDateTime;
 @Document(collection = "jhi_user")
 public class User extends AbstractAuditingEntity implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Id
     private String id;
 
     @NotNull
-    @Pattern(regexp = "^[a-z0-9]*$|(anonymousUser)")
-    @Size(min = 1, max = 50)
+    @Pattern(regexp = Constants.LOGIN_REGEX)
+    @Size(min = 1, max = 100)
     private String login;
 
     @JsonIgnore
     @NotNull
-    @Size(min = 60, max = 60) 
+    @Size(min = 60, max = 60)
     private String password;
 
     @Size(max = 50)
@@ -82,8 +87,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
         return login;
     }
 
+    //Lowercase the login before saving it in database
     public void setLogin(String login) {
-        this.login = login;
+        this.login = login.toLowerCase(Locale.ENGLISH);
     }
 
     public String getPassword() {

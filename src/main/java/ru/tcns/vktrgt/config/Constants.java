@@ -9,6 +9,10 @@ public final class Constants {
     public static final String SPRING_PROFILE_DEVELOPMENT = "dev";
     public static final String SPRING_PROFILE_PRODUCTION = "prod";
     public static final String SPRING_PROFILE_FAST = "fast";
+    public static final String LOGIN_REGEX = "^[_'.@A-Za-z0-9-]*$";
+    public static final String SPRING_PROFILE_SWAGGER = "swagger";
+    // Spring profile used to disable running liquibase
+    public static final String SPRING_PROFILE_NO_LIQUIBASE = "no-liquibase";
     // Spring profile used when deploying with Spring Cloud (used when deploying to CloudFoundry)
     public static final String SPRING_PROFILE_CLOUD = "cloud";
     // Spring profile used when deploying to Heroku

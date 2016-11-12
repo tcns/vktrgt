@@ -1,16 +1,13 @@
 package ru.tcns.vktrgt.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import ru.tcns.vktrgt.config.Constants;
-import ru.tcns.vktrgt.domain.Authority;
+import com.codahale.metrics.annotation.Timed;
 import ru.tcns.vktrgt.domain.User;
-import ru.tcns.vktrgt.repository.AuthorityRepository;
 import ru.tcns.vktrgt.repository.UserRepository;
 import ru.tcns.vktrgt.security.AuthoritiesConstants;
 import ru.tcns.vktrgt.service.MailService;
 import ru.tcns.vktrgt.service.UserService;
-import ru.tcns.vktrgt.web.rest.dto.ManagedUserDTO;
-import ru.tcns.vktrgt.web.rest.dto.UserDTO;
+import ru.tcns.vktrgt.web.rest.vm.ManagedUserVM;
 import ru.tcns.vktrgt.web.rest.util.HeaderUtil;
 import ru.tcns.vktrgt.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -37,11 +34,11 @@ import java.util.stream.Collectors;
  * <p>This class accesses the User entity, and needs to fetch its collection of authorities.</p>
  * <p>
  * For a normal use-case, it would be better to have an eager relationship between User and Authority,
- * and send everything to the client side: there would be no DTO, a lot less code, and an outer-join
+ * and send everything to the client side: there would be no View Model and DTO, a lot less code, and an outer-join
  * which would be good for performance.
  * </p>
  * <p>
- * We use a DTO for 3 reasons:
+ * We use a View Model and a DTO for 3 reasons:
  * <ul>
  * <li>We want to keep a lazy association between the user and the authorities, because people will
  * quite often do relationships with the user, and we don't want them to get the authorities all
@@ -52,7 +49,7 @@ import java.util.stream.Collectors;
  * but then all authorities come from the cache, so in fact it's much better than doing an outer join
  * (which will get lots of data from the database, for each HTTP call).</li>
  * <li> As this manages users, for security reasons, we'd rather have a DTO layer.</li>
- * </p>
+ * </ul>
  * <p>Another option would be to have a specific JPA entity graph to handle this case.</p>
  */
 @RestController
@@ -67,38 +64,41 @@ public class UserResource {
     @Inject
     private MailService mailService;
 
-
-    @Inject
-    private AuthorityRepository authorityRepository;
-
     @Inject
     private UserService userService;
 
     /**
-     * POST  /users -> Creates a new user.
+     * POST  /users  : Creates a new user.
      * <p>
      * Creates a new user if the login and email are not already used, and sends an
      * mail with an activation link.
      * The user needs to be activated on creation.
      * </p>
+     *
+     * @param managedUserVM the user to create
+     * @param request the HTTP request
+     * @return the ResponseEntity with status 201 (Created) and with body the new user, or with status 400 (Bad Request) if the login or email is already in use
+     * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @RequestMapping(value = "/users",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @Secured(AuthoritiesConstants.ADMIN)
-    public ResponseEntity<?> createUser(@RequestBody ManagedUserDTO managedUserDTO, HttpServletRequest request) throws URISyntaxException {
-        log.debug("REST request to save User : {}", managedUserDTO);
-        if (userRepository.findOneByLogin(managedUserDTO.getLogin()).isPresent()) {
+    public ResponseEntity<?> createUser(@RequestBody ManagedUserVM managedUserVM, HttpServletRequest request) throws URISyntaxException {
+        log.debug("REST request to save User : {}", managedUserVM);
+
+        //Lowercase the user login before comparing with database
+        if (userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase()).isPresent()) {
             return ResponseEntity.badRequest()
-                .headers(HeaderUtil.createFailureAlert("user-management", "userexists", "Login already in use"))
+                .headers(HeaderUtil.createFailureAlert("userManagement", "userexists", "Login already in use"))
                 .body(null);
-        } else if (userRepository.findOneByEmail(managedUserDTO.getEmail()).isPresent()) {
+        } else if (userRepository.findOneByEmail(managedUserVM.getEmail()).isPresent()) {
             return ResponseEntity.badRequest()
-                .headers(HeaderUtil.createFailureAlert("user-management", "emailexists", "Email already in use"))
+                .headers(HeaderUtil.createFailureAlert("userManagement", "emailexists", "Email already in use"))
                 .body(null);
         } else {
-            User newUser = userService.createUser(managedUserDTO);
+            User newUser = userService.createUser(managedUserVM);
             String baseUrl = request.getScheme() + // "http"
             "://" +                                // "://"
             request.getServerName() +              // "myhost"
@@ -107,104 +107,96 @@ public class UserResource {
             request.getContextPath();              // "/myContextPath" or "" if deployed in root context
             mailService.sendCreationEmail(newUser, baseUrl);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
-                .headers(HeaderUtil.createAlert( "user-management.created", newUser.getLogin()))
+                .headers(HeaderUtil.createAlert( "userManagement.created", newUser.getLogin()))
                 .body(newUser);
         }
     }
 
     /**
-     * PUT  /users -> Updates an existing User.
+     * PUT  /users : Updates an existing User.
+     *
+     * @param managedUserVM the user to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated user,
+     * or with status 400 (Bad Request) if the login or email is already in use,
+     * or with status 500 (Internal Server Error) if the user couldn't be updated
      */
     @RequestMapping(value = "/users",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @Secured(AuthoritiesConstants.ADMIN)
-    public ResponseEntity<ManagedUserDTO> updateUser(@RequestBody ManagedUserDTO managedUserDTO) throws URISyntaxException {
-        log.debug("REST request to update User : {}", managedUserDTO);
-        Optional<User> existingUser = userRepository.findOneByEmail(managedUserDTO.getEmail());
-        if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserDTO.getId()))) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("user-management", "emailexists", "E-mail already in use")).body(null);
+    public ResponseEntity<ManagedUserVM> updateUser(@RequestBody ManagedUserVM managedUserVM) {
+        log.debug("REST request to update User : {}", managedUserVM);
+        Optional<User> existingUser = userRepository.findOneByEmail(managedUserVM.getEmail());
+        if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "emailexists", "E-mail already in use")).body(null);
         }
-        existingUser = userRepository.findOneByLogin(managedUserDTO.getLogin());
-        if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserDTO.getId()))) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("user-management", "userexists", "Login already in use")).body(null);
+        existingUser = userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase());
+        if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "userexists", "Login already in use")).body(null);
         }
-        return userRepository
-            .findOneById(managedUserDTO.getId())
-            .map(user -> {
-                user.setLogin(managedUserDTO.getLogin());
-                user.setFirstName(managedUserDTO.getFirstName());
-                user.setLastName(managedUserDTO.getLastName());
-                user.setEmail(managedUserDTO.getEmail());
-                user.setActivated(managedUserDTO.isActivated());
-                user.setLangKey(managedUserDTO.getLangKey());
-                Set<Authority> authorities = user.getAuthorities();
-                authorities.clear();
-                managedUserDTO.getAuthorities().stream().forEach(
-                    authority -> authorities.add(authorityRepository.findOne(authority))
-                );
-                userRepository.save(user);
-                return ResponseEntity.ok()
-                    .headers(HeaderUtil.createAlert("user-management.updated", managedUserDTO.getLogin()))
-                    .body(new ManagedUserDTO(userRepository
-                        .findOne(managedUserDTO.getId())));
-            })
-            .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+        userService.updateUser(managedUserVM.getId(), managedUserVM.getLogin(), managedUserVM.getFirstName(),
+            managedUserVM.getLastName(), managedUserVM.getEmail(), managedUserVM.isActivated(),
+            managedUserVM.getLangKey(), managedUserVM.getAuthorities());
 
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createAlert("userManagement.updated", managedUserVM.getLogin()))
+            .body(new ManagedUserVM(userService.getUserWithAuthorities(managedUserVM.getId())));
     }
 
     /**
-     * GET  /users -> get all users.
+     * GET  /users : get all users.
+     * 
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and with body all users
+     * @throws URISyntaxException if the pagination headers couldn't be generated
      */
     @RequestMapping(value = "/users",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<ManagedUserDTO>> getAllUsers(Pageable pageable)
+    public ResponseEntity<List<ManagedUserVM>> getAllUsers(Pageable pageable)
         throws URISyntaxException {
         Page<User> page = userRepository.findAll(pageable);
-        List<ManagedUserDTO> managedUserDTOs = page.getContent().stream()
-            .map(user -> new ManagedUserDTO(user))
+        List<ManagedUserVM> managedUserVMs = page.getContent().stream()
+            .map(ManagedUserVM::new)
             .collect(Collectors.toList());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
-        return new ResponseEntity<>(managedUserDTOs, headers, HttpStatus.OK);
+        return new ResponseEntity<>(managedUserVMs, headers, HttpStatus.OK);
     }
 
     /**
-     * GET  /users/:login -> get the "login" user.
+     * GET  /users/:login : get the "login" user.
+     *
+     * @param login the login of the user to find
+     * @return the ResponseEntity with status 200 (OK) and with body the "login" user, or with status 404 (Not Found)
      */
-    @RequestMapping(value = "/users/{login:[_'.@a-z0-9-]+}",
+    @RequestMapping(value = "/users/{login:" + Constants.LOGIN_REGEX + "}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<ManagedUserDTO> getUser(@PathVariable String login) {
+    public ResponseEntity<ManagedUserVM> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
         return userService.getUserWithAuthoritiesByLogin(login)
-                .map(ManagedUserDTO::new)
-                .map(managedUserDTO -> new ResponseEntity<>(managedUserDTO, HttpStatus.OK))
+                .map(ManagedUserVM::new)
+                .map(managedUserVM -> new ResponseEntity<>(managedUserVM, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
     /**
-     * DELETE  USER :login -> delete the "login" User.
+     * DELETE /users/:login : delete the "login" User.
+     *
+     * @param login the login of the user to delete
+     * @return the ResponseEntity with status 200 (OK)
      */
-    @RequestMapping(value = "/users/{login}",
+    @RequestMapping(value = "/users/{login:" + Constants.LOGIN_REGEX + "}",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
-        userService.deleteUserInformation(login);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("user-management.deleted", login)).build();
-    }
-
-    @RequestMapping(value = "/users/drive",
-        method = RequestMethod.GET
-    )
-    @Timed
-    public void saveGoogleDriveToken(@RequestParam String token, HttpServletRequest request)
-        throws URISyntaxException {
-        request.getSession().setAttribute(Constants.GOOGLE_DRIVE_TOKEN, token);
+        userService.deleteUser(login);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert( "userManagement.deleted", login)).build();
     }
 }

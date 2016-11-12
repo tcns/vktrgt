@@ -16,6 +16,7 @@ import ru.tcns.vktrgt.config.AuthFactory;
 import ru.tcns.vktrgt.config.Constants;
 import ru.tcns.vktrgt.domain.external.vk.dict.VKErrorCodes;
 import ru.tcns.vktrgt.domain.external.vk.exception.VKException;
+import ru.tcns.vktrgt.service.UserService;
 import ru.tcns.vktrgt.service.external.vk.intf.GroupService;
 
 import javax.inject.Inject;
@@ -31,6 +32,8 @@ public class CallbackResource {
 
     @Inject
     AuthFactory authFactory;
+    @Inject
+    UserService userService;
     @Inject
     private Environment env;
     @Inject
@@ -52,7 +55,8 @@ public class CallbackResource {
             String content = response.returnContent().asString();
             JSONObject object = new JSONObject(content);
             String accessToken = object.getString("access_token");
-            request.getSession().setAttribute(Constants.VK_TOKEN, accessToken);
+            String userId = "" + object.getInt("user_id");
+//            userService.updateVkCredentials(accessToken, userId);
         } catch (IOException e) {
             e.printStackTrace();
         }

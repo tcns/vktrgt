@@ -1,10 +1,21 @@
 // Karma configuration
-// http://karma-runner.github.io/0.10/config/configuration-file.html
+// http://karma-runner.github.io/0.13/config/configuration-file.html
+
+var sourcePreprocessors = ['coverage'];
+
+function isDebug() {
+    return process.argv.indexOf('--debug') >= 0;
+}
+
+if (isDebug()) {
+    // Disable JS minification if Karma is run with debug option.
+    sourcePreprocessors = [];
+}
 
 module.exports = function (config) {
     config.set({
         // base path, that will be used to resolve files and exclude
-        basePath: '../../',
+        basePath: 'src/test/javascript/'.replace(/[^/]+/g, '..'),
 
         // testing framework to use (jasmine/mocha/qunit/...)
         frameworks: ['jasmine'],
@@ -47,7 +58,7 @@ module.exports = function (config) {
             'main/webapp/bower_components/moment/moment.js',
             'main/webapp/bower_components/bootstrap-daterangepicker/daterangepicker.js',
             'main/webapp/bower_components/jquery-sparkline/dist/jquery.sparkline.js',
-            'main/webapp/bower_components/eve/eve.js',
+            'main/webapp/bower_components/eve-raphael/eve.js',
             'main/webapp/bower_components/raphael/raphael.min.js',
             'main/webapp/bower_components/mocha/mocha.js',
             'main/webapp/bower_components/morris.js/morris.js',
@@ -89,12 +100,13 @@ module.exports = function (config) {
             'main/webapp/bower_components/bootstrap-switch/dist/js/bootstrap-switch.js',
             'main/webapp/bower_components/angular-mocks/angular-mocks.js',
             // endbower
-            'main/webapp/scripts/app/app.js',
-            'main/webapp/scripts/app/**/*.js',
-            'main/webapp/scripts/components/**/*.+(js|html)',
-            'test/javascript/spec/helpers/module.js',
-            'test/javascript/spec/helpers/httpBackend.js',
-            'test/javascript/**/!(karma.conf).js'
+            'src/main/webapp/app/app.module.js',
+            'src/main/webapp/app/app.state.js',
+            'src/main/webapp/app/app.constants.js',
+            'src/main/webapp/app/**/*.+(js|html)',
+            'src/test/javascript/spec/helpers/module.js',
+            'src/test/javascript/spec/helpers/httpBackend.js',
+            'src/test/javascript/**/!(karma.conf).js'
         ],
 
 
@@ -102,19 +114,17 @@ module.exports = function (config) {
         exclude: [],
 
         preprocessors: {
-            './**/*.js': ['coverage']
+            './**/*.js': sourcePreprocessors
         },
 
-        reporters: ['dots', 'jenkins', 'coverage', 'progress'],
+        reporters: ['dots', 'junit', 'coverage', 'progress'],
 
-        jenkinsReporter: {
-
+        junitReporter: {
             outputFile: '../build/test-results/karma/TESTS-results.xml'
         },
 
         coverageReporter: {
-
-            dir: '../build/test-results/coverage',
+            dir: 'build/test-results/coverage',
             reporters: [
                 {type: 'lcov', subdir: 'report-lcov'}
             ]
@@ -138,15 +148,15 @@ module.exports = function (config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
-        browsers: ['Chrome'],
+        browsers: ['PhantomJS'],
 
         // Continuous Integration mode
         // if true, it capture browsers, run tests and exit
         singleRun: false,
 
         // to avoid DISCONNECTED messages when connecting to slow virtual machines
-        browserDisconnectTimeout : 10000, // default 2000
-        browserDisconnectTolerance : 1, // default 0
-        browserNoActivityTimeout : 4*60*1000 //default 10000
+        browserDisconnectTimeout: 10000, // default 2000
+        browserDisconnectTolerance: 1, // default 0
+        browserNoActivityTimeout: 4 * 60 * 1000 //default 10000
     });
 };

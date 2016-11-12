@@ -25,6 +25,9 @@ public class User implements Comparable<User> {
     private List<Relative> relatives;
     private Integer relation;
     private User relationPartner;
+    private String instagram;
+    private String twitter;
+    private String facebook;
 
     public Integer getId() {
         return id;
@@ -141,5 +144,29 @@ public class User implements Comparable<User> {
 
     public void setHomePhone(String homePhone) {
         this.homePhone = homePhone;
+    }
+
+    public String getInstagram() {
+        return instagram;
+    }
+
+    public void setInstagram(String instagram) {
+        this.instagram = instagram;
+    }
+
+    public String getTwitter() {
+        return twitter;
+    }
+
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
     }
 }

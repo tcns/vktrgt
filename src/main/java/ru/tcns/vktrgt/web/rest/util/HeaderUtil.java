@@ -1,5 +1,7 @@
 package ru.tcns.vktrgt.web.rest.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import ru.tcns.vktrgt.domain.external.vk.response.VKErrorResponse;
 

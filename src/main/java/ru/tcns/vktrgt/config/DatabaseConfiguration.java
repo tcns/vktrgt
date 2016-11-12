@@ -1,14 +1,8 @@
 package ru.tcns.vktrgt.config;
 
-import com.github.mongobee.Mongobee;
-import com.github.mongobee.changeset.ChangeLog;
-import com.github.mongobee.changeset.ChangeSet;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
 import ru.tcns.vktrgt.domain.util.JSR310DateConverters.*;
 import com.mongodb.Mongo;
-import org.mongeez.Mongeez;
+import com.github.mongobee.Mongobee;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
@@ -25,10 +19,10 @@ import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.core.mapping.event.ValidatingMongoEventListener;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Configuration
 @Profile("!" + Constants.SPRING_PROFILE_CLOUD)
@@ -77,27 +71,14 @@ public class DatabaseConfiguration extends AbstractMongoConfiguration {
         return new CustomConversions(converters);
     }
 
-    /*@Bean
-    @Profile("!" + Constants.SPRING_PROFILE_FAST)
-    public Mongeez mongeez() {
-        log.debug("Configuring Mongeez");
-        Mongeez mongeez = new Mongeez();
-        mongeez.setFile(new ClassPathResource("/config/mongeez/master.xml"));
-        mongeez.setMongo(mongo);
-        mongeez.setDbName(mongoProperties.getDatabase());
-        mongeez.process();
-        return mongeez;
-    }*/
-   @Bean
-   public Mongobee mongobee(){
-
-       Mongobee runner =
-           new Mongobee(mongoProperties.getUri());
-       runner.setDbName(mongoProperties.getDatabase());
-       runner.setChangeLogsScanPackage(
-           "ru.tcns.vktrgt.config.changeset"); // package to scan for changesets
-       runner.setEnabled(true);
-       return runner;
-   }
-
+    @Bean
+    public Mongobee mongobee() {
+        log.debug("Configuring Mongobee");
+        Mongobee mongobee = new Mongobee(mongo);
+        mongobee.setDbName(mongoProperties.getDatabase());
+        // package to scan for migrations
+        mongobee.setChangeLogsScanPackage("ru.tcns.vktrgt.config.dbmigrations");
+        mongobee.setEnabled(true);
+        return mongobee;
+    }
 }

@@ -1,5 +1,6 @@
 package ru.tcns.vktrgt.config;
 
+import com.github.mongobee.Mongobee;
 import com.mongodb.Mongo;
 import ru.tcns.vktrgt.domain.util.JSR310DateConverters.*;
 
@@ -42,7 +43,7 @@ public class CloudMongoDbConfiguration extends AbstractMongoConfiguration  {
 
     @Bean
     public CustomConversions customConversions() {
-        List<Converter<?, ?>> converterList = new ArrayList<>();;
+        List<Converter<?, ?>> converterList = new ArrayList<>();
         converterList.add(DateToZonedDateTimeConverter.INSTANCE);
         converterList.add(ZonedDateTimeToDateConverter.INSTANCE);
         converterList.add(DateToLocalDateConverter.INSTANCE);
@@ -50,6 +51,17 @@ public class CloudMongoDbConfiguration extends AbstractMongoConfiguration  {
         converterList.add(DateToLocalDateTimeConverter.INSTANCE);
         converterList.add(LocalDateTimeToDateConverter.INSTANCE);
         return new CustomConversions(converterList);
+    }
+
+    @Bean
+    public Mongobee mongobee() throws Exception {
+        log.debug("Configuring Mongobee");
+        Mongobee mongobee = new Mongobee(mongo());
+        mongobee.setDbName(getDatabaseName());
+        // package to scan for migrations
+        mongobee.setChangeLogsScanPackage("ru.tcns.vktrgt.config.dbmigrations");
+        mongobee.setEnabled(true);
+        return mongobee;
     }
 
     @Override

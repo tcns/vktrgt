@@ -135,7 +135,7 @@ public class VKUserServiceImpl extends AbstractVKUserService {
         userTask = userTask.startWork();
         List<String> convertedIds = userIds.parallelStream().map(a->VKUrlParser.getName(a)).collect(Collectors.toList());
         userTask = userTask.saveInitial(convertedIds.size());
-        String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts";
+        String fields = "relation,relatives,domain,sex,bdate,country,city,home_town,contacts,connections";
         List<String> users = ArrayUtils.getDelimetedLists(convertedIds, 1000);
         ExecutorService service = Executors.newFixedThreadPool(100);
         List<Future<List<User>>> tasks = new ArrayList<>();

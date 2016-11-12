@@ -11,10 +11,10 @@ import org.springframework.cache.support.NoOpCacheManager;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
+@SuppressWarnings("unused")
 @Configuration
 @EnableCaching
 @AutoConfigureAfter(value = { MetricsConfiguration.class, DatabaseConfiguration.class })
-@Profile("!" + Constants.SPRING_PROFILE_FAST)
 public class CacheConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(CacheConfiguration.class);
@@ -32,4 +32,5 @@ public class CacheConfiguration {
         cacheManager = new NoOpCacheManager();
         return cacheManager;
     }
+
 }

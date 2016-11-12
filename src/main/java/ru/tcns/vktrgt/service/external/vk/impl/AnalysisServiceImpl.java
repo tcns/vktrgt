@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 public class AnalysisServiceImpl implements AnalysisService {
 
 
-
     @Inject
     private VKUserService vkUserService;
     @Inject
@@ -64,7 +63,7 @@ public class AnalysisServiceImpl implements AnalysisService {
                     if (user.getBdate() != null &&
                         !user.getBdate().isEmpty() &&
                         range.containsInteger(DateUtils.getAge(user.getBdate(), VKDicts.BDAY_FORMATS, 0)) ||
-                        ((user.getBdate()==null || user.getBdate().isEmpty()) && range.equals(VKDefault.DEFAULT_RANGE))) {
+                        ((user.getBdate() == null || user.getBdate().isEmpty()) && range.equals(VKDefault.DEFAULT_RANGE))) {
                         uList.add(user);
                     }
                 }
@@ -79,7 +78,7 @@ public class AnalysisServiceImpl implements AnalysisService {
                 for (User user : users) {
                     if (user.getCity() != null &&
                         user.getCity().getId().equals(city) ||
-                        user.getCity()==null && city==VKDefault.CITY) {
+                        user.getCity() == null && city == VKDefault.CITY) {
                         uList.add(user);
                     }
                 }
@@ -125,7 +124,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         userTask = userTask.startWork();
         userTask = userTask.saveInitial(1);
         List<User> users = getUsers(userTask.copyNoCreate(), userIds);
-        if (analyseDTO.getAge() != null) {
+        if (analyseDTO.getAge() != null && analyseDTO.getAge().keySet().size() > 0) {
             userTask = userTask.updateStatusMessage("Фильтрация по возрасту");
             for (IntRange range : analyseDTO.getAge().keySet()) {
                 users = users.parallelStream().filter(a ->
@@ -134,32 +133,36 @@ public class AnalysisServiceImpl implements AnalysisService {
                         range.containsInteger(DateUtils.getAge(a.getBdate(), VKDicts.BDAY_FORMATS, 0))).collect(Collectors.toList());
             }
         }
-        if (analyseDTO.getCities() != null) {
-
+        if (analyseDTO.getCities() != null && analyseDTO.getCities().keySet().size() > 0) {
             userTask = userTask.updateStatusMessage("Фильтрация по городу");
-            for (Integer city : analyseDTO.getCities().keySet()) {
-                users = users.parallelStream().filter(a ->
-                    a.getCity() != null &&
-                        a.getCity().getId().equals(city)).collect(Collectors.toList());
-            }
+            users = users.parallelStream().filter(a ->
+                a.getCity() != null &&
+                    analyseDTO.getCities().keySet().contains(a.getCity().getId())).collect(Collectors.toList());
         }
-        if (analyseDTO.getCountries() != null) {
+        if (analyseDTO.getCountries() != null && analyseDTO.getCountries().keySet().size() > 0) {
 
             userTask = userTask.updateStatusMessage("Фильтрация по стране");
-            for (Integer country : analyseDTO.getCountries().keySet()) {
-                users = users.parallelStream().filter(user ->
-                    user.getCountry() != null &&
-                        user.getCountry().getId().equals(country)).collect(Collectors.toList());
-            }
+            users = users.parallelStream().filter(user ->
+                user.getCountry() != null &&
+                    analyseDTO.getCountries().keySet().contains(user.getCountry().getId())).collect(Collectors.toList());
         }
-        if (analyseDTO.getSex() != null) {
+        if (analyseDTO.getSex() != null && analyseDTO.getSex().keySet().size() > 0) {
             userTask = userTask.updateStatusMessage("Фильтрация по полу");
-            for (Integer sex : analyseDTO.getSex().keySet()) {
-                users = users.parallelStream().filter(user ->
-                    user.getSex() != null &&
-                        user.getSex().equals(sex)).collect(Collectors.toList());
-            }
+            users = users.parallelStream().filter(user ->
+                user.getSex() != null &&
+                    analyseDTO.getSex().keySet().contains(user.getSex())).collect(Collectors.toList());
         }
+        if (analyseDTO.getNeedInstagram()) {
+            userTask = userTask.updateStatusMessage("Фильтрация по инстаграму");
+            users = users.parallelStream().filter(user ->
+                StringUtils.isNotEmpty(user.getInstagram())).collect(Collectors.toList());
+        }
+        if (analyseDTO.getNeedTwitter()) {
+            userTask = userTask.updateStatusMessage("Фильтрация по твиттеру");
+            users = users.parallelStream().filter(user ->
+                StringUtils.isNotEmpty(user.getTwitter())).collect(Collectors.toList());
+        }
+
         String json = JsonParser.objectToJson(users);
         userTask.saveFinal(exportService.getStreamFromObject(exportService.getCSV(json)));
         return users;
@@ -209,16 +212,17 @@ public class AnalysisServiceImpl implements AnalysisService {
         return new AsyncResult<>(analyseUsersSync(userTask, userIds, analyseDTO));
     }
 
-    private String getFormattedPercent (float max, float val) {
-        return String.format("%.2f", ((val / max) * 100.0))+" %";
+    private String getFormattedPercent(float max, float val) {
+        return String.format("%.2f", ((val / max) * 100.0)) + " %";
     }
-    private String getFormattedAnalyseReport (AnalyseDTO analyseDTO) {
+
+    private String getFormattedAnalyseReport(AnalyseDTO analyseDTO) {
         StringBuilder sb = new StringBuilder();
         sb.append("Распределение по возрастам\n");
         ArrayUtils utils = new ArrayUtils();
-        int max  = analyseDTO.getUsers().size();
+        int max = analyseDTO.getUsers().size();
         Map<IntRange, Integer> ages = utils.sortByValue(ArrayUtils.getCounts(analyseDTO.getAge()), 0);
-        for (Map.Entry<IntRange, Integer> e: ages.entrySet()) {
+        for (Map.Entry<IntRange, Integer> e : ages.entrySet()) {
             sb.append("\t\t").append(e.getKey().getMinimumInteger()).append("-")
                 .append(e.getKey().getMaximumInteger()).append(" ").append(e.getValue())
                 .append(": ")
@@ -226,11 +230,11 @@ public class AnalysisServiceImpl implements AnalysisService {
         }
         sb.append("Распределение по городам\n");
         Map<Integer, Integer> cities = utils.sortByValue(ArrayUtils.getCounts(analyseDTO.getCities()), 0);
-        for (Map.Entry<Integer, Integer> e: cities.entrySet()) {
+        for (Map.Entry<Integer, Integer> e : cities.entrySet()) {
             String cityName = "Не указано";
             if (e.getKey() != VKDefault.CITY) {
                 List<User> users = analyseDTO.getCities().get(e.getKey());
-                if (users!=null && !users.isEmpty()) {
+                if (users != null && !users.isEmpty()) {
                     cityName = analyseDTO.getCities().get(e.getKey()).get(0).getCity().getTitle();
                 }
             }
@@ -241,11 +245,11 @@ public class AnalysisServiceImpl implements AnalysisService {
         }
         sb.append("Распределение по странам\n");
         Map<Integer, Integer> countries = utils.sortByValue(ArrayUtils.getCounts(analyseDTO.getCountries()), 0);
-        for (Map.Entry<Integer, Integer> e: countries.entrySet()) {
+        for (Map.Entry<Integer, Integer> e : countries.entrySet()) {
             String countryName = "Не указано";
             if (e.getKey() != VKDefault.COUNTRY) {
                 List<User> users = analyseDTO.getCountries().get(e.getKey());
-                if (users!=null && !users.isEmpty()) {
+                if (users != null && !users.isEmpty()) {
                     countryName = users.get(0).getCountry().getTitle();
                 }
             }
@@ -255,10 +259,10 @@ public class AnalysisServiceImpl implements AnalysisService {
         }
         sb.append("Распределение по полу\n");
         Map<Integer, Integer> sex = utils.sortByValue(ArrayUtils.getCounts(analyseDTO.getSex()), 0);
-        for (Map.Entry<Integer, Integer> e: sex.entrySet()) {
+        for (Map.Entry<Integer, Integer> e : sex.entrySet()) {
             String str = Sex.N.name();
-            for (Sex s: Sex.values()) {
-                if (s.getIntValue()==e.getKey()) {
+            for (Sex s : Sex.values()) {
+                if (s.getIntValue() == e.getKey()) {
                     str = s.toString();
                 }
             }
@@ -269,6 +273,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         return sb.toString();
 
     }
+
     private void collectFields(AnalyseDTO analyseDTO, List<User> users) {
         if (analyseDTO.getCities() == null) {
             analyseDTO.setCities(new LinkedHashMap<>());

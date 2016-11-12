@@ -1,5 +1,6 @@
 package ru.tcns.vktrgt;
 
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.scheduling.annotation.EnableAsync;
 import ru.tcns.vktrgt.config.Constants;
 import ru.tcns.vktrgt.config.JHipsterProperties;

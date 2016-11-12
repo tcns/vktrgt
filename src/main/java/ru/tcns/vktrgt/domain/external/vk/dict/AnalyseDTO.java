@@ -18,6 +18,8 @@ public class AnalyseDTO implements Serializable {
     private Map<Integer, List<User>> cities = new LinkedHashMap<>();
     private Map<Integer, List<User>> countries = new LinkedHashMap<>();
     private List<String> users = new ArrayList<>();
+    private Boolean needTwitter = false;
+    private Boolean needInstagram = false;
     private String taskInfo = "";
 
     public Map<Integer, List<User>> getSex() {
@@ -66,5 +68,21 @@ public class AnalyseDTO implements Serializable {
 
     public void setTaskInfo(String taskInfo) {
         this.taskInfo = taskInfo;
+    }
+
+    public Boolean getNeedTwitter() {
+        return needTwitter;
+    }
+
+    public void setNeedTwitter(Boolean needTwitter) {
+        this.needTwitter = needTwitter;
+    }
+
+    public Boolean getNeedInstagram() {
+        return needInstagram;
+    }
+
+    public void setNeedInstagram(Boolean needInstagram) {
+        this.needInstagram = needInstagram;
     }
 }

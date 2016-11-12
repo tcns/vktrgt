@@ -8,7 +8,7 @@ import ru.tcns.vktrgt.api.vk.Common;
 public interface VKService {
     String DOMAIN_PREFIX = "https://vk.com/";
     String URL_PREFIX = "https://api.vk.com/method/";
-    String VERSION = "&v=5.52";
+    String VERSION = "&v=5.59";
     String ACCESS_TOKEN = "&access_token=" + Common.getToken() + "&client_secret=" + Common.CLIENT_SECRET +
         VERSION;
     String RESPONSE_STRING = "response";

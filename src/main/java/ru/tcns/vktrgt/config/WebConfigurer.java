@@ -4,14 +4,12 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.codahale.metrics.servlets.MetricsServlet;
 import ru.tcns.vktrgt.web.filter.CachingHttpHeadersFilter;
-import ru.tcns.vktrgt.web.filter.StaticResourcesProductionFilter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.context.embedded.MimeMappings;
-import org.springframework.boot.context.embedded.ServletContextInitializer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.embedded.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -19,6 +17,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.*;
 import javax.inject.Inject;
 import javax.servlet.*;
@@ -35,27 +35,26 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
     private Environment env;
 
     @Inject
-    private JHipsterProperties props;
+    private JHipsterProperties jHipsterProperties;
 
     @Autowired(required = false)
     private MetricRegistry metricRegistry;
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        log.info("Web application configuration, using profiles: {}", Arrays.toString(env.getActiveProfiles()));
-        EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
-        if (!env.acceptsProfiles(Constants.SPRING_PROFILE_FAST)) {
-            initMetrics(servletContext, disps);
+        if (env.getActiveProfiles().length != 0) {
+            log.info("Web application configuration, using profiles: {}", Arrays.toString(env.getActiveProfiles()));
         }
+        EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
+        initMetrics(servletContext, disps);
         if (env.acceptsProfiles(Constants.SPRING_PROFILE_PRODUCTION)) {
             initCachingHttpHeadersFilter(servletContext, disps);
-            initStaticResourcesProductionFilter(servletContext, disps);
         }
         log.info("Web application fully configured");
     }
 
     /**
-     * Set up Mime types.
+     * Customize the Servlet engine: Mime types, the document root, the cache.
      */
     @Override
     public void customize(ConfigurableEmbeddedServletContainer container) {
@@ -65,24 +64,35 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         // CloudFoundry issue, see https://github.com/cloudfoundry/gorouter/issues/64
         mappings.add("json", "text/html;charset=utf-8");
         container.setMimeMappings(mappings);
+        // When running in an IDE or with ./gradlew bootRun, set location of the static web assets.
+        setLocationForStaticAssets(container);
+    }
+
+    private void setLocationForStaticAssets(ConfigurableEmbeddedServletContainer container) {
+        File root;
+        String prefixPath = resolvePathPrefix();
+        if (env.acceptsProfiles(Constants.SPRING_PROFILE_PRODUCTION)) {
+            root = new File(prefixPath + "build/www/");
+        } else {
+            root = new File(prefixPath + "src/main/webapp/");
+        }
+        if (root.exists() && root.isDirectory()) {
+            container.setDocumentRoot(root);
+        }
     }
 
     /**
-     * Initializes the static resources production Filter.
+     *  Resolve path prefix to static resources.
      */
-    private void initStaticResourcesProductionFilter(ServletContext servletContext,
-                                                     EnumSet<DispatcherType> disps) {
-
-        log.debug("Registering static resources production Filter");
-        FilterRegistration.Dynamic staticResourcesProductionFilter =
-            servletContext.addFilter("staticResourcesProductionFilter",
-                new StaticResourcesProductionFilter());
-
-        staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/");
-        staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/index.html");
-        staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/assets/*");
-        staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/scripts/*");
-        staticResourcesProductionFilter.setAsyncSupported(true);
+    private String resolvePathPrefix() {
+        String fullExecutablePath = this.getClass().getResource("").getPath();
+        String rootPath = Paths.get(".").toUri().normalize().getPath();
+        String extractedPath = fullExecutablePath.replace(rootPath, "");
+        int extractionEndIndex = extractedPath.indexOf("build/");
+        if(extractionEndIndex <= 0) {
+            return "";
+        }
+        return extractedPath.substring(0, extractionEndIndex);
     }
 
     /**
@@ -93,10 +103,10 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         log.debug("Registering Caching HTTP Headers Filter");
         FilterRegistration.Dynamic cachingHttpHeadersFilter =
             servletContext.addFilter("cachingHttpHeadersFilter",
-                new CachingHttpHeadersFilter(env));
+                new CachingHttpHeadersFilter(jHipsterProperties));
 
-        cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/dist/assets/*");
-        cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/dist/scripts/*");
+        cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/content/*");
+        cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/app/*");
         cachingHttpHeadersFilter.setAsyncSupported(true);
     }
 
@@ -129,7 +139,7 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = props.getCors();
+        CorsConfiguration config = jHipsterProperties.getCors();
         config.addAllowedOrigin("http://localhost:3000");
         if (config.getAllowedOrigins() != null && !config.getAllowedOrigins().isEmpty()) {
             source.registerCorsConfiguration("/api/**", config);

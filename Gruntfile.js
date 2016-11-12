@@ -349,6 +349,7 @@ module.exports = function (grunt) {
                     dest: 'src/main/webapp/scripts/app/app.constants.js'
                 },
                 constants: {
+                    DEBUG_INFO_ENABLED: true,
                     ENV: 'dev',
                     VERSION: parseVersionFromBuildGradle(),
                     CLIENT_ID_GOOGLE_DRIVE: '387946429490-qf7svfmvf8hvu8mo1v876p0j9395m4cp.apps.googleusercontent.com'
@@ -359,6 +360,8 @@ module.exports = function (grunt) {
                     dest: '.tmp/scripts/app/app.constants.js'
                 },
                 constants: {
+                    DEBUG_INFO_ENABLED: false,
+                    CLIENT_ID_GOOGLE_DRIVE: '387946429490-qf7svfmvf8hvu8mo1v876p0j9395m4cp.apps.googleusercontent.com',
                     ENV: 'prod',
                     VERSION: parseVersionFromBuildGradle()
                 }

@@ -1,22 +1,24 @@
 package ru.tcns.vktrgt.web.rest;
 
-import ru.tcns.vktrgt.Application;
+import ru.tcns.vktrgt.VktrgtApp;
+import ru.tcns.vktrgt.domain.User;
 import ru.tcns.vktrgt.repository.UserRepository;
 import ru.tcns.vktrgt.service.UserService;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.inject.Inject;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -25,10 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @see UserResource
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
-@IntegrationTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = VktrgtApp.class)
 public class UserResourceIntTest {
 
     @Inject
@@ -52,7 +52,7 @@ public class UserResourceIntTest {
         restUserMockMvc.perform(get("/api/users/admin")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.lastName").value("Administrator"));
     }
 
@@ -61,5 +61,31 @@ public class UserResourceIntTest {
         restUserMockMvc.perform(get("/api/users/unknown")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetExistingUserWithAnEmailLogin() throws Exception {
+        User user = userService.createUser("john.doe@localhost.com", "johndoe", "John", "Doe", "john.doe@localhost.com", "en-US");
+
+        restUserMockMvc.perform(get("/api/users/john.doe@localhost.com")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.login").value("john.doe@localhost.com"));
+
+        userRepository.delete(user);
+    }
+
+    @Test
+    public void testDeleteExistingUserWithAnEmailLogin() throws Exception {
+        User user = userService.createUser("john.doe@localhost.com", "johndoe", "John", "Doe", "john.doe@localhost.com", "en-US");
+
+        restUserMockMvc.perform(delete("/api/users/john.doe@localhost.com")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        assertThat(userRepository.findOneByLogin("john.doe@localhost.com").isPresent()).isFalse();
+
+        userRepository.delete(user);
     }
 }

@@ -2,6 +2,9 @@ package ru.tcns.vktrgt.config;
 
 import ru.tcns.vktrgt.security.*;
 import ru.tcns.vktrgt.web.filter.CsrfCookieGeneratorFilter;
+import ru.tcns.vktrgt.config.JHipsterProperties;
+
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -53,10 +56,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Inject
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-            .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+    public void configureGlobal(AuthenticationManagerBuilder auth) {
+        try {
+            auth
+                .userDetailsService(userDetailsService)
+                    .passwordEncoder(passwordEncoder());
+        } catch (Exception e) {
+            throw new BeanInitializationException("Security configuration failed", e);
+        }
     }
 
     @Override
@@ -108,6 +115,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/register").permitAll()
             .antMatchers("/api/activate").permitAll()
             .antMatchers("/api/authenticate").permitAll()
+            .antMatchers("/signin/**").permitAll()
             .antMatchers("/api/account/reset_password/init").permitAll()
             .antMatchers("/api/account/reset_password/finish").permitAll()
             .antMatchers("/api/logs/**").hasAuthority(AuthoritiesConstants.ADMIN)

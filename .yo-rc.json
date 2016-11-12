@@ -5,20 +5,27 @@
     "packageFolder": "ru/tcns/vktrgt",
     "authenticationType": "session",
     "hibernateCache": "no",
-    "clusteredHttpSession": "no",
+    "clusteredHttpSession": false,
     "websocket": "spring-websocket",
     "databaseType": "mongodb",
     "devDatabaseType": "mongodb",
     "prodDatabaseType": "mongodb",
-    "searchEngine": "no",
+    "searchEngine": false,
     "useSass": true,
     "buildTool": "gradle",
     "frontendBuilder": "grunt",
     "enableTranslation": true,
-    "enableSocialSignIn": false,
+    "enableSocialSignIn": true,
     "rememberMeKey": "00f47fea50d5a890e87923ac9c8935867fd039f3",
     "testFrameworks": [
       "gatling"
-    ]
+    ],
+    "jhipsterVersion": "3.9.1",
+    "serverPort": "8080",
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "applicationType": "monolith",
+    "jhiPrefix": "jhi",
+    "languages": []
   }
 }

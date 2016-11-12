@@ -19,7 +19,9 @@ angular.module('vktrgtApp')
                 })
             });
         };
-        $scope.loadAll();
+        if ($scope.isAuthenticated()) {
+            $scope.loadAll();
+        }
         $scope.$state = $state;
         $scope.inProduction = ENV === 'prod';
         $scope.logout = function () {

@@ -1,9 +1,7 @@
 package ru.tcns.vktrgt.domain;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -21,10 +19,7 @@ import java.io.Serializable;
 @Document(collection = "jhi_persistent_token")
 public class PersistentToken implements Serializable {
 
-    
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMMM yyyy");
-    
-    
+    private static final long serialVersionUID = 1L;
 
     private static final int MAX_USER_AGENT_LEN = 255;
 
@@ -34,8 +29,7 @@ public class PersistentToken implements Serializable {
     @JsonIgnore
     @NotNull
     private String tokenValue;
-
-    @JsonIgnore
+    
     private LocalDate tokenDate;
 
     //an IPV6 address max length is 39 characters
@@ -72,11 +66,6 @@ public class PersistentToken implements Serializable {
 
     public void setTokenDate(LocalDate tokenDate) {
         this.tokenDate = tokenDate;
-    }
-
-    @JsonGetter
-    public String getFormattedTokenDate() {
-        return DATE_TIME_FORMATTER.format(this.tokenDate);
     }
 
     public String getIpAddress() {

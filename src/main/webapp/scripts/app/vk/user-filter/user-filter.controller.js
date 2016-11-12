@@ -14,7 +14,9 @@ angular.module('vktrgtApp')
             sex : {},
             age: {},
             cities: {},
-            countries: {}
+            countries: {},
+            needInstagram: false,
+            needTwitter: false
         }
         $scope.countryList = [];
         $scope.cityList = [];
@@ -60,6 +62,8 @@ angular.module('vktrgtApp')
             model.countries = $scope.dto.countries;
             model.cities = $scope.dto.cities;
             model.age = $scope.dto.age;
+            model.needInstagram = $scope.dto.needInstagram;
+            model.needTwitter = $scope.dto.needTwitter;
             VKCloudService.filterUsers(model, document.getElementById('file').files[0]).success(function (response) {
                 $scope.message = "Задача добавлена";
             }).error(function (response) {

@@ -150,6 +150,7 @@ public class UserTask {
                 fileName,
                 payload, folder);
             this.setCurrentProgress(this.getMaxProgress());
+            this.setPercent(100);
             this.setPayload(file.getWebContentLink());
             if (errors.size() > 0) {
                 this.setCurrentStatus(UserTaskStatuses.COMPLETED_WITH_ERRORS);
