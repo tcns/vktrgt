@@ -15,6 +15,7 @@ import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.stereotype.Service;
+import ru.tcns.vktrgt.security.EmailNotPresentException;
 
 import javax.inject.Inject;
 import java.util.HashSet;
@@ -59,7 +60,12 @@ public class SocialService {
         String providerId = connection.getKey().getProviderId();
         User user = createUserIfNotExist(userProfile, langKey, providerId);
         createSocialConnection(user.getLogin(), connection);
-        mailService.sendSocialRegistrationValidationEmail(user, providerId);
+        if (user.getEmail() != null) {
+            throw new EmailNotPresentException();
+        } else {
+            mailService.sendSocialRegistrationValidationEmail(user, providerId);
+        }
+
     }
 
     private User createUserIfNotExist(UserProfile userProfile, String langKey, String providerId) {

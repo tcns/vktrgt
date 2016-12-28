@@ -71,6 +71,7 @@ public class SocialConfiguration implements SocialConfigurer {
     public ProviderSignInController providerSignInController(ConnectionFactoryLocator connectionFactoryLocator, UsersConnectionRepository usersConnectionRepository, SignInAdapter signInAdapter) throws Exception {
         ProviderSignInController providerSignInController = new ProviderSignInController(connectionFactoryLocator, usersConnectionRepository, signInAdapter);
         providerSignInController.setSignUpUrl("/social/signup");
+        providerSignInController.setSignInUrl("/social/signin");
         return providerSignInController;
     }
 

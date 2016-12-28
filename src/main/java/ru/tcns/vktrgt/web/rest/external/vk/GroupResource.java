@@ -3,6 +3,7 @@ package ru.tcns.vktrgt.web.rest.external.vk;
 import com.codahale.metrics.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.tcns.vktrgt.config.Constants;
+import ru.tcns.vktrgt.domain.SocialUserConnection;
 import ru.tcns.vktrgt.domain.UserTask;
 import ru.tcns.vktrgt.domain.UserTaskSettings;
 import ru.tcns.vktrgt.domain.external.vk.dict.ActiveAuditoryDTO;
@@ -21,6 +23,7 @@ import ru.tcns.vktrgt.domain.external.vk.dict.VKErrorCodes;
 import ru.tcns.vktrgt.domain.external.vk.exception.VKException;
 import ru.tcns.vktrgt.domain.external.vk.internal.Group;
 import ru.tcns.vktrgt.domain.external.vk.internal.User;
+import ru.tcns.vktrgt.repository.SocialUserConnectionRepository;
 import ru.tcns.vktrgt.repository.UserTaskRepository;
 import ru.tcns.vktrgt.repository.external.vk.GroupIdRepository;
 import ru.tcns.vktrgt.service.UserService;
@@ -46,7 +49,8 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api")
-public class GroupResource {
+public class
+GroupResource {
     private final Logger log = LoggerFactory.getLogger(GroupResource.class);
 
     @Inject
@@ -59,6 +63,8 @@ public class GroupResource {
     ExportService exportService;
     @Inject
     UserTaskRepository userTaskRepository;
+    @Autowired
+    SocialUserConnectionRepository connectionRepository;
 
     @RequestMapping(value = "/groups",
         method = RequestMethod.POST,
@@ -91,7 +97,12 @@ public class GroupResource {
         try {
             UserTask userTask = UserTask.create(GroupService.SEARCH_GROUP, new UserTaskSettings(userService.getUserWithAuthorities(), false,
                 "", googleDrive), userTaskRepository);
-            List<Group> groups = groupService.searchVk(q, (String) request.getSession().getAttribute(Constants.VK_TOKEN));
+            String token = "";
+            List<SocialUserConnection> map = connectionRepository.findAllByUserIdAndProviderIdOrderByRankAsc(userService.getUserWithAuthorities().getLogin(), "vkontakte");
+            if (map != null && map.get(0) != null) {
+                token = map.get(0).getAccessToken();
+            }
+            List<Group> groups = groupService.searchVk(q, token);
             List<Group> groupsEnchanched = groupService.getGroupsInfo(userTask, groups.parallelStream().map(a->a.getId().toString()).collect(Collectors.toList())).get();
             return ResponseEntity.ok(groupsEnchanched);
         } catch (VKException ex) {

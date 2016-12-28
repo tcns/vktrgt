@@ -1,5 +1,7 @@
 package ru.tcns.vktrgt.security.social;
 
+import org.springframework.social.support.URIBuilder;
+import org.springframework.web.servlet.view.RedirectView;
 import ru.tcns.vktrgt.config.JHipsterProperties;
 
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.web.SignInAdapter;
 import org.springframework.web.context.request.NativeWebRequest;
+import ru.tcns.vktrgt.security.UserNotActivatedException;
 
 import javax.inject.Inject;
 
@@ -30,7 +33,16 @@ public class CustomSignInAdapter implements SignInAdapter {
 
     @Override
     public String signIn(String userId, Connection<?> connection, NativeWebRequest request) {
-        UserDetails user = userDetailsService.loadUserByUsername(userId);
+        UserDetails user = null;
+        try {
+            user = userDetailsService.loadUserByUsername(userId);
+        } catch (UserNotActivatedException ex) {
+            return URIBuilder.fromUri("/#/social-register/no-provider")
+                .queryParam("success", "false")
+                .queryParam("error", "activation")
+                .build().toString();
+        }
+
         Authentication newAuth = new UsernamePasswordAuthenticationToken(
             user,
             null,
