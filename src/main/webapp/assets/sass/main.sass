@@ -37,13 +37,65 @@ body
 				i
 					color: #d9b878
 
-.control-label
+label
 	font-weight: normal
 	font-size: 14px
 
 input[type="file"]
 	font-size: 12px
 	margin-top: 20px
+
+textarea
+	background-color: #e7e9ef
+	width: 100%
+	outline: none
+	border: none
+	border-radius: 5px
+	padding: 10px
+	font-size: 14px
+	height: 50px
+
+input[type=text], input[type=number]
+	background-color: #e7e9ef
+	width: 100%
+	outline: none
+	border: none
+	border-radius: 5px
+	padding: 10px
+	font-size: 14px
+
+
+input[type=checkbox]
+	width: 30px
+	height: 15px
+	// background:url(check_radio_sheet.png) left top no-repeat
+	cursor: pointer
+	outline: none
+	border: none
+	&:checked, &:focus
+		outline: none
+
+.form-horizontal .control-label
+	padding: 0
+
+.laberwrap
+	text-align: right
+
+.btnwrap
+	text-align: center
+
+.blbtn
+	background-color: #1f5dea
+	padding: 10px 60px
+	border-radius: 30px
+	font-size: 14px
+	text-transform: uppercase
+	color: #fff
+	opacity: 1
+	&:hover
+		background-color: #1f5dea
+		color: #fff
+		cursor: pointer
 
 .form-control
 	display: block
@@ -56,12 +108,29 @@ input[type="file"]
 	outline: none
 	border: 1px solid #ebebeb
 
+.x_title
+	h2
+		text-align: center
+		padding-bottom: 30px
+		font-weight: normal
+		font-size: 24px
+
+.desctask
+	font-size: 14px
+	color: #9c9c9c
+	padding-top: 110px
+
+.form-group
+	padding: 25px
+
+// .filewrap
+// 	float: right
 
 // .page-container
-//   width: 100%
-//   display: table
-//   height: 100%
-//   table-layout: fixed
+// 	width: 100%
+// 	display: table
+// 	height: 100%
+// 	table-layout: fixed
 
 // .page-container .sidebar-menu
 // 	display: table-cell
@@ -86,4 +155,4 @@ input[type="file"]
 //   position: relative
 //   margin: 0
 //   font-size: 12px
-  // border-bottom: 1px solid rgba(69, 74, 84, 0.7)
+	// border-bottom: 1px solid rgba(69, 74, 84, 0.7)

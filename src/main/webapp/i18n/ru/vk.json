@@ -17,13 +17,13 @@
                 "title": "Поиск лидеров мнений",
                 "title-intersect": "Пересечение пользователей по группам",
                 "definition": "Описание...",
-                "user-list": "Введите список пользователей (по одному в строку)",
+                "user-list": "Введите список пользователей <br/> (по одному в строку)",
                 "task-info": "Описание задачи",
                 "min": "Минимальное количество встречающихся пользователей"
             },
             "birth": {
                 "definition": "Описание...",
-                "user-list": "Введите список пользователей (по одному в строку)",
+                "user-list": "Введите список пользователей <br/> (по одному в строку)",
                 "title": "Поиск ближайших дней рождения",
                 "type": "Тип родственников",
                 "nearest": "Период ближайших дней рождения (дней) по",
@@ -34,17 +34,17 @@
             "audio": {
                 "title": "Поиск пользователей по аудиозаписям",
                 "definition": "Описание...",
-                "user-list": "Введите список пользователей (по одному в строку)",
+                "user-list": "Введите список пользователей <br/> (по одному в строку)",
                 "audio-list": "Введите список ключевых слов аудиозаписей (по одному в строку)"
             },
             "analyse": {
                 "title": "Анализ пользователей",
                 "definition": "Описание...",
-                "list": "Введите список пользователей (по одному в строку)",
+                "list": "Введите список пользователей <br/> (по одному в строку)",
                 "sex-female": "Женщины",
                 "sex-male": "Мужчины",
                 "sex-all": "Все",
-                "age": "Возраст(разделяйте тире '-' и '<line ending>'. например 1-10<br />11-90)</p>",
+                "age": "Возраст",
                 "countries": "Страны",
                 "cities": "Города",
                 "instagram": "Требуется инстаграм",
@@ -52,7 +52,7 @@
             },
             "filter": {
                 "title": "Фильтир пользователей",
-                "definition": "Описание..."
+                "definition": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum explicabo sequi consequuntur mollitia dolor veritatis quaerat, voluptas harum aliquam, inventore soluta laudantium. Omnis voluptatibus maxime vitae doloribus cum. Ipsam repellendus rem voluptatibus blanditiis sed aliquam explicabo culpa earum, similique adipisci, saepe voluptatem quo facilis et assumenda nulla tenetur sint delectus inventore cumque repellat ab pariatur. Labore obcaecati dolorum explicabo cupiditate tempora suscipit necessitatibus aperiam at adipisci debitis, non tempore voluptatibus veritatis assumenda! Fuga, repudiandae saepe nobis quaerat quae nisi amet, delectus iure ad ullam mollitia, sunt animi necessitatibus in. Fugiat aperiam saepe aliquam optio, iste molestias, illo sequi quod deleniti."
             }
         },
         "groups": {

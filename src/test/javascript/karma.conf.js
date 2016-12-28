@@ -58,7 +58,7 @@ module.exports = function (config) {
             'main/webapp/bower_components/moment/moment.js',
             'main/webapp/bower_components/bootstrap-daterangepicker/daterangepicker.js',
             'main/webapp/bower_components/jquery-sparkline/dist/jquery.sparkline.js',
-            'main/webapp/bower_components/eve-raphael/eve.js',
+            'main/webapp/bower_components/eve/eve.js',
             'main/webapp/bower_components/raphael/raphael.min.js',
             'main/webapp/bower_components/mocha/mocha.js',
             'main/webapp/bower_components/morris.js/morris.js',

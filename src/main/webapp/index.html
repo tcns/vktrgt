@@ -44,6 +44,7 @@
     <!-- endbuild -->
     <link rel="stylesheet" href="assets/styles/font-icons/entypo/css/entypo.css">
     <link rel="stylesheet" href="assets/styles/neon-core.css">
+    <link rel="stylesheet" href="assets/styles/main.css">
 
     <!--[if lt IE 9]>
     <script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -78,7 +79,7 @@
                 <div class="sidebar-collapse">
                     <a href="" class="sidebar-collapse-icon with-animation">
                         <!-- add class "with-animation" if you want sidebar to have animation during expanding/collapsing transition -->
-                        <i class="entypo-menu"></i>
+                        <div class="iconwrap"><i class="entypo-menu"></i></div>
                     </a>
                 </div>
 
@@ -86,7 +87,7 @@
                 <!-- open/close menu icon (do not remove if you want to enable menu on mobile devices) -->
                 <div class="sidebar-mobile-menu visible-xs">
                     <a href="#" class="with-animation"><!-- add class "with-animation" to support animation -->
-                        <i class="entypo-menu"></i>
+                        <div class="iconwrap"><i class="entypo-menu"></i></div>
                     </a>
                 </div>
 
@@ -95,91 +96,91 @@
             <ul id="main-menu" class="main-menu">
                 <li>
                     <a ui-sref="task-manager">
-                        <i class="entypo-gauge"></i>
+                        <div class="iconwrap"><i class="entypo-gauge"></i></div>
                         <span class="title" translate="global.menu.task-manager">Task Manager</span>
                     </a>
                 </li>
                 <li>
                     <a ui-sref="group-intersect">
-                        <i class="entypo-shuffle"></i>
+                        <div class="iconwrap"><i class="entypo-shuffle"></i></div>
                         <span class="title" translate="global.menu.vk.group-intersect">Group intersection</span>
                     </a>
                 </li>
                 <li>
                     <a ui-sref="group-activity">
-                        <i class="glyphicon glyphicon-comment"></i>
+                        <div class="iconwrap"><i class="glyphicon glyphicon-comment"></i></div>
                         <span class="title" translate="global.menu.vk.group-activity">Wall Activity</span>
                     </a>
                 </li>
                 <li>
                     <a ui-sref="topic-activity">
-                        <i class="entypo-chat"></i>
+                        <div class="iconwrap"><i class="entypo-chat"></i></div>
                         <span class="title" translate="global.menu.vk.topic-activity">Topic Activity</span>
                     </a>
                 </li>
                 <li>
                     <a ui-sref="group-members">
-                        <i class="entypo-users"></i>
+                        <div class="iconwrap"><i class="entypo-users"></i></div>
                         <span class="title" translate="global.menu.vk.group-members">Group Members</span>
                     </a>
                 </li>
                 <li>
                     <a ui-sref="group-search">
-                        <i class="entypo-search"></i>
+                        <div class="iconwrap"><i class="entypo-search"></i></div>
                         <span class="title" translate="global.menu.vk.group-search">Group Search</span>
                     </a>
                 </li>
                 <li>
                     <a ui-sref="user-leaders">
-                        <i class="entypo-star"></i>
+                        <div class="iconwrap"><i class="entypo-star"></i></div>
                         <span class="title" translate="global.menu.vk.user-leaders">Opinion Leaders</span>
                     </a>
                 </li>
                 <li>
                     <a ui-sref="user-intersect">
-                        <i class="entypo-shuffle"></i>
+                        <div class="iconwrap"><i class="entypo-shuffle"></i></div>
                         <span class="title" translate="global.menu.vk.user-intersect">Max Group</span>
                     </a>
                 </li>
                 <li>
                     <a ui-sref="user-analyse">
-                        <i class="entypo-users"></i>
+                        <div class="iconwrap"><i class="entypo-users"></i></div>
                         <span class="title" translate="global.menu.vk.user-analyse">User Analyse</span>
                     </a>
                 </li>
                 <li>
                     <a ui-sref="user-birth">
-                        <i class="entypo-calendar"></i>
+                        <div class="iconwrap"><i class="entypo-calendar"></i></div>
                         <span class="title" translate="global.menu.vk.user-birth">User Birth</span>
                     </a>
                 </li>
                 <li>
-                    <a ui-sref="user-audio"><i class="glyphicon glyphicon-music"></i>
+                    <a ui-sref="user-audio"><div class="iconwrap"><i class="glyphicon glyphicon-music"></i></div>
                         <span class="title" translate="global.menu.vk.user-audio">User Audio</span>
                     </a>
                 </li>
                 <li>
-                    <a ui-sref="user-filter"><i class="glyphicon glyphicon-filter"></i>
+                    <a ui-sref="user-filter"><div class="iconwrap"><i class="glyphicon glyphicon-filter"></i></div>
                         <span class="title" translate="global.menu.vk.user-filter">User filter</span>
                     </a>
                 </li>
                 <li>
-                    <a ui-sref="user-ids"><i class="entypo-switch"></i>
+                    <a ui-sref="user-ids"><div class="iconwrap"><i class="entypo-switch"></i></div>
                         <span class="title" translate="global.menu.vk.user-ids">ID->URL</span>
                     </a>
                 </li>
                 <li>
-                    <a ui-sref="user-urls"><i class="entypo-switch"></i>
+                    <a ui-sref="user-urls"><div class="iconwrap"><i class="entypo-switch"></i></div>
                         <span class="title" translate="global.menu.vk.user-urls">URL->ID</span>
                     </a>
                 </li>
                 <li>
-                    <a ui-sref="group-invite"><i class="entypo-switch"></i>
+                    <a ui-sref="group-invite"><div class="iconwrap"><i class="entypo-switch"></i></div>
                         <span class="title" translate="global.menu.vk.group-invite">Приглашения в группы</span>
                     </a>
                 </li>
                 <li>
-                    <a ui-sref="list-operation"><i class="entypo-switch"></i>
+                    <a ui-sref="list-operation"><div class="iconwrap"><i class="entypo-switch"></i></div>
                         <span class="title" translate="global.menu.vk.list-operation">Операции со списками</span>
                     </a>
                 </li>
@@ -243,7 +244,7 @@
 <script src="bower_components/moment/moment.js"></script>
 <script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
 <script src="bower_components/jquery-sparkline/dist/jquery.sparkline.js"></script>
-<script src="bower_components/eve-raphael/eve.js"></script>
+<script src="bower_components/eve/eve.js"></script>
 <script src="bower_components/raphael/raphael.min.js"></script>
 <script src="bower_components/mocha/mocha.js"></script>
 <script src="bower_components/morris.js/morris.js"></script>

@@ -82,7 +82,7 @@ module.exports = function (grunt) {
         },
         wiredep: {
             app: {
-                src: ['src/main/webapp/index.html', 'src/main/sass/main.sass'],
+                src: ['src/main/webapp/index.html', 'src/main/webapp/assets/sass/main.sass'],
                 exclude: [
                     /angular-i18n/, // localizations are loaded dynamically
                     'bower_components/bootstrap/',
@@ -164,7 +164,7 @@ module.exports = function (grunt) {
             server: {
                 files: [{
                     expand: true,
-                    cwd: 'src/main/sass',
+                    cwd: 'src/main/webapp/assets/sass/',
                     src: ['*.sass'],
                     dest: 'src/main/webapp/assets/styles',
                     ext: '.css'
