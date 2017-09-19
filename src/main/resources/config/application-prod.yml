@@ -21,7 +21,7 @@ spring:
     data:
         mongodb:
             uri: ${MONGODB_URI}
-            database: heroku_967hwnzb
+            database: heroku_n1qlbndl
     mail:
         host: smtp.sendgrid.net
         port: 587

@@ -5,7 +5,7 @@
             "token":"Токен",
             "validation": {
                 "required":"Поле не должно быть пустым",
-                "range": "Знаение поля должно быть в пределах {{min}}-{{max}}"
+                "range": "Значение поля должно быть в пределах {{min}}-{{max}}"
             }
         },
         "user": {
@@ -51,8 +51,13 @@
                 "twitter": "Требуется твиттер"
             },
             "filter": {
-                "title": "Фильтир пользователей",
+                "title": "Фильтр пользователей",
                 "definition": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum explicabo sequi consequuntur mollitia dolor veritatis quaerat, voluptas harum aliquam, inventore soluta laudantium. Omnis voluptatibus maxime vitae doloribus cum. Ipsam repellendus rem voluptatibus blanditiis sed aliquam explicabo culpa earum, similique adipisci, saepe voluptatem quo facilis et assumenda nulla tenetur sint delectus inventore cumque repellat ab pariatur. Labore obcaecati dolorum explicabo cupiditate tempora suscipit necessitatibus aperiam at adipisci debitis, non tempore voluptatibus veritatis assumenda! Fuga, repudiandae saepe nobis quaerat quae nisi amet, delectus iure ad ullam mollitia, sunt animi necessitatibus in. Fugiat aperiam saepe aliquam optio, iste molestias, illo sequi quod deleniti."
+            },
+            "like": {
+                "title": "Лайки фотографиям",
+                "definition": "Выставление лайков аватарам пользователей",
+                "list": "Список пользователей"
             }
         },
         "groups": {

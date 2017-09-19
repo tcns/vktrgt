@@ -1,11 +1,4 @@
 <div ng-cloak>
-    <div class="page-title">
-        <div class="title_left">
-            <h3 translate="vk.title">
-                Вконтакте облачный
-            </h3>
-        </div>
-    </div>
     <div class="row">
         <div class="col-md-8">
             <div class="x_panel">
@@ -20,13 +13,14 @@
                     <form name="form" enctype="multipart/form-data" class="form-horizontal form-label-left" novalidate
                           show-validation>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="groups"
-                                   translate="vk.groups.intersect.group-list">
-                            </label>
-
-                            <div class="col-md-5 col-sm-5 col-xs-10">
-                                <textarea ng-model="groups" type="text" name="groups" id="groups" required
-                                          class="form-control col-md-7 col-xs-12"/>
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="groups"
+                                       translate="vk.groups.intersect.group-list">
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                <textarea ng-model="groups" type="text" name="groups" id="groups"
+                                          class=""/>
 
                                 <div ng-show="form.groups.$dirty && form.groups.$invalid">
                                     <p class="help-block"
@@ -34,30 +28,39 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <input type="file" id="file" name="file"/>
+                            <div class="col-md-8 col-md-offset-4">
+
+                                <div class="filewrap">
+
+                                    <input type="file" id="file" name="file"/>
+
+                                </div>
+
                             </div>
 
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="min-count"
-                                   translate="vk.groups.intersect.min-count">
-                                min count <span class="required">*</span>
-                            </label>
-
-                            <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="min-count"
+                                       translate="vk.groups.intersect.min-count">
+                                    min count <span class="required">*</span>
+                                </label>
+                            </div>
+                            <div class="col-md-8">
                                 <input ng-model="minCount" type="number" min="0" id="min-count" required="required"
-                                       class="form-control col-md-7 col-xs-12"/>
+                                       class=""/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="task-info"
-                                   translate="vk.groups.intersect.task-info">
-                            </label>
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="task-info"
+                                       translate="vk.groups.intersect.task-info">
+                                </label>
+                            </div>
 
-                            <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-md-8">
                                 <input ng-model="taskInfo" type="text" name="taskInfo" id="task-info" required
-                                       class="form-control col-md-7 col-xs-12"/>
+                                       class=""/>
 
                                 <div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
                                     <p class="help-block"
@@ -67,13 +70,19 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-group">
-                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <button ng-click="submit()" class="btn btn-success" ng-disabled="form.$invalid"
-                                        translate="entity.action.submit">
+
+                            <div class="col-md-8 col-md-offset-4 btnwrap">
+
+                                <button ng-click="submit()" ng-disabled="form.$invalid" class="btn blbtn"
+                                        translate="entity.action.submit">Отправить
                                 </button>
+
                             </div>
+
                         </div>
+
                         <div ng-show="message" class="alert alert-success alert-dismissible fade in" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                                 aria-hidden="true">×</span>
@@ -85,8 +94,16 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div translate="vk.groups.intersect.definition">
-                Тут описание
+            <div class="desctask">
+                Инструмент используется для того чтобы получить ID подписчиков сообществ для дальнейших манипуляций. Опция "Минимальное количество совпадений" даёт возможность найти пересечения между сообществами.
+                <br/>
+                1. Введите ссылки на группы по одной в строку.<br/>
+
+                2. Выберете, в скольких сообществах одновременно должны состоять люди, попадающие в список результата на выдачу.<br/>
+
+                3. Задайте понятное описание задачи, чтобы не забыть, кто у Вас собирается.<br/>
+
+                4. Нажмите "Отправить" и перейдите к следующей.<br/>
             </div>
         </div>
     </div>

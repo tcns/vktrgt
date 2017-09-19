@@ -28,8 +28,11 @@ public final class Constants {
     public static final String VK_TOKEN = "vk.token";
     public static final String VK_TOKEN_STANDALONE = "vk.token.standalone";
 
-    public static final String VK_CLIENT_ID = "5574216";
-    public static final String VK_CLIENT_SECRET = "aN2llaady9Tp1SWCmI7S";
+    //public static final String VK_CLIENT_ID = "5574216";
+    //public static final String VK_CLIENT_SECRET = "aN2llaady9Tp1SWCmI7S";
+
+    public static final String VK_CLIENT_ID = "5674086";
+    public static final String VK_CLIENT_SECRET = "nXpnplx8iTDU5QT79JiU";
 
     public static final String VK_CLIENT_ID_STANDALONE = "5674086";
     public static final String VK_CLIENT_SECRET_STANDALONE = "nXpnplx8iTDU5QT79JiU";

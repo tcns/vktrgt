@@ -87,7 +87,7 @@ public class TaskResource {
             InputStream stream = url.openStream();
             String ext = ".txt";
             if (task.getKind().equals(AnalysisService.FILTER_USERS)) {
-                ext = ".csv";
+              //  ext = ".csv";
             }
             byte[] fileNameBytes = fileName.getBytes("utf-8");
             String dispositionFileName = "";

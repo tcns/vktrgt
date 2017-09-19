@@ -20,7 +20,7 @@
             switch(provider) {
             case 'google': return 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email';
             case 'facebook': return 'public_profile,email';
-            case 'vkontakte': return '';
+            case 'vkontakte': return 'wall,audio';
                 // jhipster-needle-add-social-button
             default: return 'Provider setting not defined';
             }

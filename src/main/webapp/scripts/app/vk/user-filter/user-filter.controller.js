@@ -9,14 +9,27 @@ angular.module('vktrgtApp')
             false,//1
             false //2
         ]
+        $scope.relationships = [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ]
 
         $scope.dto = {
             sex : {},
             age: {},
             cities: {},
             countries: {},
+            relationships: {},
             needInstagram: false,
-            needTwitter: false
+            needTwitter: false,
+            needSibling: false
         }
         $scope.countryList = [];
         $scope.cityList = [];
@@ -46,6 +59,11 @@ angular.module('vktrgtApp')
                     $scope.dto.sex[(parseInt(i) + 1)] = [];
                 }
             }
+            for (var i in $scope.relationships) {
+                if ($scope.relationships[i]) {
+                    $scope.dto.relationships[(parseInt(i))] = [];
+                }
+            }
             if ($scope.countries) {
                 for (var i in $scope.countries) {
                     $scope.dto.countries[$scope.countries[i].id] =  [];
@@ -60,10 +78,12 @@ angular.module('vktrgtApp')
             model.taskInfo = $scope.taskInfo;
             model.sex = $scope.dto.sex;
             model.countries = $scope.dto.countries;
+            model.relationships = $scope.dto.relationships;
             model.cities = $scope.dto.cities;
             model.age = $scope.dto.age;
             model.needInstagram = $scope.dto.needInstagram;
             model.needTwitter = $scope.dto.needTwitter;
+            model.hasSibling = $scope.dto.needSibling;
             VKCloudService.filterUsers(model, document.getElementById('file').files[0]).success(function (response) {
                 $scope.message = "Задача добавлена";
             }).error(function (response) {

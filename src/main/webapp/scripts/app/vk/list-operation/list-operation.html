@@ -19,57 +19,65 @@
                 <div class="x_content">
                     <form class="form-horizontal form-label-left" name="form" novalidate show-validation>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="list1"
-                                   translate="vk.list-operation.list1" />
-
-                            <div class="col-md-5 col-sm-5 col-xs-10">
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="list1"
+                                       translate="vk.list-operation.list1"/>
+                            </div>
+                            <div class="col-md-8">
                                 <textarea name="list1" ng-model="list1" type="text" id="list1"
-                                          class="form-control col-md-7 col-xs-12"/>
+                                          class=""/>
                                 <div ng-show="form.list1.$dirty && form.list1.$invalid">
                                     <p class="help-block"
                                        ng-show="form.list1.$error.required" translate="vk.general.validation.required">
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <input type="file" id="file1" name="file1"/>
+                            <div class="col-md-8 col-md-offset-4">
+                                <div class="filewrap">
+                                    <input type="file" id="file1" name="file1"/>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="list2"
-                                   translate="vk.list-operation.list2" />
-
-                            <div class="col-md-5 col-sm-5 col-xs-10">
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="list2"
+                                       translate="vk.list-operation.list2"/>
+                            </div>
+                            <div class="col-md-8">
                                 <textarea name="list2" ng-model="list2" type="text" id="list2"
-                                          class="form-control col-md-7 col-xs-12"/>
+                                          class=""/>
                                 <div ng-show="form.list2.$dirty && form.list2.$invalid">
                                     <p class="help-block"
                                        ng-show="form.list2.$error.required" translate="vk.general.validation.required">
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <input type="file" id="file2" name="file2"/>
+                            <div class="col-md-8 col-md-offset-4">
+                                <div class="filewrap">
+                                    <input type="file" id="file2" name="file2"/>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="type"
-                                   translate="vk.list-operation.type" />
-
-                            <div class="col-md-5 col-sm-5 col-xs-10">
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="type"
+                                       translate="vk.list-operation.type"/>
+                            </div>
+                            <div class="col-md-8">
                                 <select name="type" ng-model="type" type="text" id="type"
                                         ng-options="types.indexOf(item)+1 as item for item in types"
-                                          class="form-control col-md-7 col-xs-12"/>
+                                        class=""/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="task-info"
-                                   translate="vk.list-operation.task-info">
-                            </label>
-
-                            <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="task-info"
+                                       translate="vk.list-operation.task-info">
+                                </label>
+                            </div>
+                            <div class="col-md-8">
                                 <input ng-model="taskInfo" type="text" name="taskInfo" id="task-info" required
-                                       class="form-control col-md-7 col-xs-12"/>
+                                       class=""/>
 
                                 <div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
                                     <p class="help-block"
@@ -80,12 +88,17 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <button ng-click="submit()" class="btn btn-success" ng-disabled="form.$invalid" translate="entity.action.submit">
-                                    Отправить
+
+                            <div class="col-md-8 col-md-offset-4 btnwrap">
+
+                                <button ng-click="submit()" ng-disabled="form.$invalid" class="btn blbtn"
+                                        translate="entity.action.submit">Отправить
                                 </button>
+
                             </div>
+
                         </div>
+
                         <div ng-show="message" class="alert alert-success alert-dismissible fade in" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                                 aria-hidden="true">×</span>
@@ -97,7 +110,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div translate="vk.list-operation.desc">
+            <div class="desctask" translate="vk.list-operation.definition">
                 Тут описание
             </div>
         </div>

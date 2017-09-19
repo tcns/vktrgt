@@ -20,6 +20,8 @@ public class AnalyseDTO implements Serializable {
     private List<String> users = new ArrayList<>();
     private Boolean needTwitter = false;
     private Boolean needInstagram = false;
+    private Boolean hasSibling = false;
+    private Map<Integer, List<User>> relationships = new LinkedHashMap<>();
     private String taskInfo = "";
 
     public Map<Integer, List<User>> getSex() {
@@ -84,5 +86,21 @@ public class AnalyseDTO implements Serializable {
 
     public void setNeedInstagram(Boolean needInstagram) {
         this.needInstagram = needInstagram;
+    }
+
+    public Boolean getHasSibling() {
+        return hasSibling;
+    }
+
+    public void setHasSibling(Boolean hasSibling) {
+        this.hasSibling = hasSibling;
+    }
+
+    public Map<Integer, List<User>> getRelationships() {
+        return relationships;
+    }
+
+    public void setRelationships(Map<Integer, List<User>> relationships) {
+        this.relationships = relationships;
     }
 }

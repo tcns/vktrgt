@@ -16,6 +16,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import ru.tcns.vktrgt.web.filter.LandingRedirectFilter;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -50,6 +51,12 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         if (env.acceptsProfiles(Constants.SPRING_PROFILE_PRODUCTION)) {
             initCachingHttpHeadersFilter(servletContext, disps);
         }
+        FilterRegistration.Dynamic landingRedirectFilter =
+            servletContext.addFilter(LandingRedirectFilter.class.getName(),
+                new LandingRedirectFilter());
+
+        landingRedirectFilter.addMappingForUrlPatterns(disps, true, "/");
+        landingRedirectFilter.setAsyncSupported(true);
         log.info("Web application fully configured");
     }
 

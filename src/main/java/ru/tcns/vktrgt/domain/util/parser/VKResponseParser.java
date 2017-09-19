@@ -26,7 +26,6 @@ public final class VKResponseParser {
     }
 
     public static List<User> parseUsersResponse(String response) throws JSONException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        System.out.println(response);
         JSONObject object = new JSONObject(response);
         JSONArray jsonArray = object.getJSONArray("response");
         List<User> users = new ArrayList<>();
@@ -38,7 +37,6 @@ public final class VKResponseParser {
     }
 
     public static CommonIDResponse parseCommonResponseWithCount(String response) throws JSONException{
-        System.out.println(response);
         JSONObject object = new JSONObject(response);
         JSONObject jsonResponse = object.getJSONObject("response");
         CommonIDResponse commonIDResponse = new CommonIDResponse();

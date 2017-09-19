@@ -124,7 +124,7 @@ module.exports = function (grunt) {
             options: {
                 watchTask: true,
                 proxy: {
-                    target: "localhost:8080",
+                    target: "localhost:18080",
                     proxyOptions: {
                         xfwd: true
                     }

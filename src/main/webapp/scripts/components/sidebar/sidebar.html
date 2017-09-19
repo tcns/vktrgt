@@ -1,0 +1,116 @@
+<div ng-show="isAuthenticated" class="sidebar-menu-inner">
+        <header class="logo-env">
+
+            <!-- logo -->
+            <div class="logo">
+                <a href="/">
+                    <img src="assets/images/logo.png" alt=""/>
+                </a>
+            </div>
+
+            <!-- logo collapse icon -->
+            <div class="sidebar-collapse">
+                <a href="" class="sidebar-collapse-icon with-animation">
+                    <!-- add class "with-animation" if you want sidebar to have animation during expanding/collapsing transition -->
+                    <div class="iconwrap"><i class="entypo-menu"></i></div>
+                </a>
+            </div>
+
+
+            <!-- open/close menu icon (do not remove if you want to enable menu on mobile devices) -->
+            <div class="sidebar-mobile-menu visible-xs">
+                <a href="#" class="with-animation"><!-- add class "with-animation" to support animation -->
+                    <div class="iconwrap"><i class="entypo-menu"></i></div>
+                </a>
+            </div>
+
+        </header>
+
+        <ul id="main-menu" class="main-menu">
+            <li>
+                <a ui-sref="task-manager">
+                    <div class="iconwrap"><i class="entypo-gauge"></i></div>
+                    <span class="title" translate="global.menu.task-manager">Task Manager</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="group-intersect">
+                    <div class="iconwrap"><i class="entypo-shuffle"></i></div>
+                    <span class="title" translate="global.menu.vk.group-intersect">Group intersection</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="group-activity">
+                    <div class="iconwrap"><i class="glyphicon glyphicon-comment"></i></div>
+                    <span class="title" translate="global.menu.vk.group-activity">Wall Activity</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="topic-activity">
+                    <div class="iconwrap"><i class="entypo-chat"></i></div>
+                    <span class="title" translate="global.menu.vk.topic-activity">Topic Activity</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="group-members">
+                    <div class="iconwrap"><i class="entypo-users"></i></div>
+                    <span class="title" translate="global.menu.vk.group-members">Group Members</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="group-search">
+                    <div class="iconwrap"><i class="entypo-search"></i></div>
+                    <span class="title" translate="global.menu.vk.group-search">Group Search</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="user-leaders">
+                    <div class="iconwrap"><i class="entypo-star"></i></div>
+                    <span class="title" translate="global.menu.vk.user-leaders">Opinion Leaders</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="user-intersect">
+                    <div class="iconwrap"><i class="entypo-shuffle"></i></div>
+                    <span class="title" translate="global.menu.vk.user-intersect">Max Group</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="user-analyse">
+                    <div class="iconwrap"><i class="entypo-users"></i></div>
+                    <span class="title" translate="global.menu.vk.user-analyse">User Analyse</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="user-birth">
+                    <div class="iconwrap"><i class="entypo-calendar"></i></div>
+                    <span class="title" translate="global.menu.vk.user-birth">User Birth</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="user-audio"><div class="iconwrap"><i class="glyphicon glyphicon-music"></i></div>
+                    <span class="title" translate="global.menu.vk.user-audio">User Audio</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="user-filter"><div class="iconwrap"><i class="glyphicon glyphicon-filter"></i></div>
+                    <span class="title" translate="global.menu.vk.user-filter">User filter</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="user-ids"><div class="iconwrap"><i class="entypo-switch"></i></div>
+                    <span class="title" translate="global.menu.vk.user-ids">ID->URL</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="user-urls"><div class="iconwrap"><i class="entypo-switch"></i></div>
+                    <span class="title" translate="global.menu.vk.user-urls">URL->ID</span>
+                </a>
+            </li>
+            <li>
+                <a ui-sref="list-operation"><div class="iconwrap"><i class="entypo-switch"></i></div>
+                    <span class="title" translate="global.menu.vk.list-operation">Операции со списками</span>
+                </a>
+            </li>
+        </ul>
+    </div>

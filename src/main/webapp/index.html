@@ -1,9 +1,9 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" ng-app="vktrgtApp">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <title>targetmachine</title>
     <meta name="description" content="">
     <meta name="google" value="notranslate">
     <meta name="viewport" content="width=device-width">
@@ -55,13 +55,12 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body ng-app="vktrgtApp" class="page-body">
+<body class="page-body">
 <!--[if lt IE 9]>
 <p class="browserupgrade">Вы используете <strong>устаревший</strong> браузер. Пожалуйста <a
     href="http://browsehappy.com/">обновите
     свой браузер</a> чтобы воспользоваться в полной мере функционалом сервиса</p>
 <![endif]-->
-<div ng-show="{{ENV === 'dev'}}" class="development" ng-cloak=""></div>
 
 <div class="page-container">
     <div class="sidebar-menu">
@@ -155,11 +154,6 @@
                     </a>
                 </li>
                 <li>
-                    <a ui-sref="user-audio"><div class="iconwrap"><i class="glyphicon glyphicon-music"></i></div>
-                        <span class="title" translate="global.menu.vk.user-audio">User Audio</span>
-                    </a>
-                </li>
-                <li>
                     <a ui-sref="user-filter"><div class="iconwrap"><i class="glyphicon glyphicon-filter"></i></div>
                         <span class="title" translate="global.menu.vk.user-filter">User filter</span>
                     </a>
@@ -177,6 +171,11 @@
                 <li>
                     <a ui-sref="list-operation"><div class="iconwrap"><i class="entypo-switch"></i></div>
                         <span class="title" translate="global.menu.vk.list-operation">Операции со списками</span>
+                    </a>
+                </li>
+                <li>
+                    <a ui-sref="user-like"><div class="iconwrap"><i class="entypo-switch"></i></div>
+                        <span class="title" translate="global.menu.vk.user-like">Лайки пользователям</span>
                     </a>
                 </li>
             </ul>
@@ -239,7 +238,7 @@
 <script src="bower_components/moment/moment.js"></script>
 <script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
 <script src="bower_components/jquery-sparkline/dist/jquery.sparkline.js"></script>
-<script src="bower_components/eve/eve.js"></script>
+<script src="bower_components/eve-raphael/eve.js"></script>
 <script src="bower_components/raphael/raphael.min.js"></script>
 <script src="bower_components/mocha/mocha.js"></script>
 <script src="bower_components/morris.js/morris.js"></script>
@@ -316,6 +315,7 @@
 <script src="scripts/components/language/language.service.js"></script>
 <script src="scripts/components/multiply-autocomplete/multiply-select.js"></script>
 <script src="scripts/components/navbar/navbar.controller.js"></script>
+<script src="scripts/components/sidebar/sidebar.controller.js"></script>
 <script src="scripts/components/task-manager/task.service.js"></script>
 <script src="scripts/components/tracker/tracker.service.js"></script>
 <script src="scripts/components/user/user.service.js"></script>
@@ -405,6 +405,8 @@
 <script src="scripts/app/vk/user-intersect/user-intersect.js"></script>
 <script src="scripts/app/vk/user-leaders/user-leaders.controller.js"></script>
 <script src="scripts/app/vk/user-leaders/user-leaders.js"></script>
+<script src="scripts/app/vk/user-like/user-like.controller.js"></script>
+<script src="scripts/app/vk/user-like/user-like.js"></script>
 <script src="scripts/app/vk/user-urls/user-urls.controller.js"></script>
 <script src="scripts/app/vk/user-urls/user-urls.js"></script>
 <script src="scripts/app/vk/vk.js"></script>

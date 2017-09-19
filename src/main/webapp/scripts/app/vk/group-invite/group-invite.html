@@ -1,11 +1,5 @@
 <div ng-cloak>
-    <div class="page-title">
-        <div class="title_left">
-            <h3 translate="vk.title">
-                VK Cloud
-            </h3>
-        </div>
-    </div>
+
     <div class="row">
         <div class="col-md-8">
             <div class="x_panel">
@@ -19,14 +13,14 @@
                 <div class="x_content">
                     <form class="form-horizontal form-label-left" name="form" novalidate show-validation>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="users"
+                            <label class="control-label" for="users"
                                    translate="vk.groups.invite.list">
                                 Group List
                             </label>
 
-                            <div class="col-md-5 col-sm-5 col-xs-10">
+                            <div class="col-md-8">
                                 <textarea name="users" ng-model="users" type="text" id="users"
-                                          class="form-control col-md-7 col-xs-12"/>
+                                          class=""/>
                                 <div ng-show="form.users.$dirty && form.users.$invalid">
                                     <p class="help-block"
                                        ng-show="form.users.$error.required" translate="vk.general.validation.required">
@@ -35,14 +29,14 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="groupId"
+                            <label class="control-label" for="groupId"
                                    translate="vk.groups.invite.group">
                                 Group List
                             </label>
 
-                            <div class="col-md-5 col-sm-5 col-xs-10">
+                            <div class="col-md-8">
                                 <input name="groupId" ng-model="groupId" type="text" id="groupId"
-                                          class="form-control col-md-7 col-xs-12"/>
+                                          class=""/>
                                 <div ng-show="form.groupId.$dirty && form.groupId.$invalid">
                                     <p class="help-block"
                                        ng-show="form.groupId.$error.required" translate="vk.general.validation.required">
@@ -51,18 +45,18 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="token"
+                            <label class="control-label" for="token"
                                    translate="vk.general.token">
                                 Group List
                             </label>
 
-                            <div class="col-md-5 col-sm-5 col-xs-10">
+                            <div class="col-md-8">
                                 <input name="token" ng-model="token" type="text" id="token"
-                                       class="form-control col-md-7 col-xs-12"/>
+                                       class=""/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <div class="col-md-8 col-md-offset-3">
                                 <button ng-click="submit()" ng-disabled="form.$invalid" class="btn btn-success" translate="entity.action.submit">
                                     Отправить
                                 </button>

@@ -1,0 +1,89 @@
+<div ng-cloak>
+    <div class="page-title">
+        <div class="title_left">
+            <h3 translate="vk.title">
+                Вконтакте облачный
+            </h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2 translate="vk.user.like.title">
+                        Users - opinion leaders
+                    </h2>
+
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form class="form-horizontal form-label-left" name="form" novalidate show-validation>
+                        <div class="form-group">
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="users"
+                                       translate="vk.user.like.list"/>
+                            </div>
+                            <div class="col-md-8">
+                                <textarea name="users" ng-model="users" type="text" id="users"
+                                          class=""/>
+                                <div ng-show="form.users.$dirty && form.users.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.users.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-md-offset-4">
+                                <div class="filewrap">
+                                    <input type="file" id="file" name="file"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="task-info"
+                                       translate="vk.user.leaders.task-info">
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                <input ng-model="taskInfo" type="text" name="taskInfo" id="task-info" required
+                                       class=""/>
+
+                                <div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.taskInfo.$error.required"
+                                       translate="vk.general.validation.required">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-md-8 col-md-offset-4 btnwrap">
+
+                                <button ng-click="submit()" ng-disabled="form.$invalid" class="btn blbtn"
+                                        translate="entity.action.submit">Отправить
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div ng-show="message" class="alert alert-success alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                            </button>
+                            {{message}}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div  class="desctask" translate="vk.user.desc-id">
+                Тут описание
+            </div>
+        </div>
+    </div>
+
+
+</div>

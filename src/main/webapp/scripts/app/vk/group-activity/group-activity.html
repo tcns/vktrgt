@@ -1,250 +1,249 @@
 <div ng-cloak>
 
-	<div class="row">
+    <div class="row">
 
-		<div class="col-md-8">
+        <div class="col-md-8">
 
-			<div class="x_panel">
+            <div class="x_panel">
 
-				<div class="x_title">
+                <div class="x_title">
 
-					<h2 translate="vk.groups.activity.title" />
+                    <h2 translate="vk.groups.activity.title"></h2>
 
-					<div class="clearfix"></div>
+                    <div class="clearfix"></div>
 
-				</div>
+                </div>
 
-				<div class="x_content">
+                <div class="x_content">
 
-					<form class="form-horizontal form-label-left" name="form" novalidate show-validation>
+                    <form class="form-horizontal form-label-left" name="form" novalidate show-validation>
 
-						<div class="form-group">
+                        <div class="form-group">
 
-							<div class="col-md-4">
+                            <div class="col-md-4 label-wrap">
 
-								<label class="control-label" for="groups"
-								translate="vk.groups.activity.list"/>
+                                <label class="control-label" for="groups"
+                                       translate="vk.groups.activity.list"/>
 
-							</div>
+                            </div>
 
-							<div class="col-md-8">
+                            <div class="col-md-8">
 
 
 								<textarea name="groups" ng-model="dto.groups" type="text" id="groups"
-								class=""/>
+                                          class=""/>
 
-								<div ng-show="form.groups.$dirty && form.groups.$invalid">
+                                <div ng-show="form.groups.$dirty && form.groups.$invalid">
 
-									<p class="help-block"
-									ng-show="form.groups.$error.required" translate="vk.general.validation.required">
+                                    <p class="help-block"
+                                       ng-show="form.groups.$error.required" translate="vk.general.validation.required">
 
-								</p>
+                                    </p>
 
-							</div>
+                                </div>
 
-						</div>
+                            </div>
 
-						<div class="col-md-8 col-md-offset-4">
+                            <div class="col-md-8 col-md-offset-4">
 
-							<div class="filewrap">
+                                <div class="filewrap">
 
-								<input type="file" id="file" name="file"/>
+                                    <input type="file" id="file" name="file"/>
 
-							</div>
+                                </div>
 
-						</div>
+                            </div>
 
-					</div>
+                        </div>
 
-					<div class="form-group">
+                        <div class="form-group">
 
-						<div class="col-md-4">
+                            <div class="col-md-4 label-wrap">
 
-							<label class="control-label" for="posts"
-							translate="vk.groups.activity.post-list"/>
+                                <label class="control-label" for="posts"
+                                       translate="vk.groups.activity.post-list"/>
 
-						</div>
+                            </div>
 
 
-						<div class="col-md-8">
+                            <div class="col-md-8">
 
 							<textarea ng-model="dto.postIds" type="text" name="posts" id="posts"
-							class=""/>
+                                      class=""/>
 
-							<div ng-show="form.posts.$dirty && form.posts.$invalid">
+                                <div ng-show="form.posts.$dirty && form.posts.$invalid">
 
-								<p class="help-block"
-								ng-show="form.posts.$error.required" translate="vk.general.validation.required">
-							</p>
+                                    <p class="help-block"
+                                       ng-show="form.posts.$error.required" translate="vk.general.validation.required">
+                                    </p>
 
-						</div>
+                                </div>
 
-					</div>
+                            </div>
 
-				</div>
+                        </div>
 
-				<div class="form-group">
+                        <div class="form-group">
 
-					<div class="col-md-4">
+                            <div class="col-md-4 label-wrap">
 
-						<label class="control-label" for="max-days"
-						translate="vk.groups.activity.max-days"/>
+                                <label class="control-label" for="max-days"
+                                       translate="vk.groups.activity.max-days"/>
 
-					</div>
+                            </div>
 
 
-					<div class="col-md-8">
+                            <div class="col-md-8">
 
-						<input ng-model="dto.maxDays" type="number" min="1" max="2000" name="maxDays" id="max-days" required="required"
-						class=""/>
+                                <input ng-model="dto.maxDays" type="number" min="1" max="2000" name="maxDays"
+                                       id="max-days" required="required"
+                                       class=""/>
 
-						<div ng-show="form.maxDays.$dirty && form.maxDays.$invalid">
+                                <div ng-show="form.maxDays.$dirty && form.maxDays.$invalid">
 
-							<p class="help-block"
-							ng-show="form.maxDays.$error.required" translate="vk.general.validation.required">
-						</p>
+                                    <p class="help-block"
+                                       ng-show="form.maxDays.$error.required"
+                                       translate="vk.general.validation.required">
+                                    </p>
 
-						<p class="help-block"
-						ng-show="form.maxDays.$error.min || form.maxDays.$error.max" translate="vk.general.validation.range"
-						translate-values="{min: '1', max: '2000'}">
-					</p>
+                                    <p class="help-block"
+                                       ng-show="form.maxDays.$error.min || form.maxDays.$error.max"
+                                       translate="vk.general.validation.range"
+                                       translate-values="{min: '1', max: '2000'}">
+                                    </p>
 
-				</div>
+                                </div>
 
-			</div>
+                            </div>
 
-		</div>
+                        </div>
 
-		<div class="form-group">
+                        <div class="form-group">
 
-			<div class="col-md-4">
+                            <div class="col-md-4 label-wrap">
 
-				<label class="control-label" for="min-count"
-				translate="vk.groups.activity.min-count">
-			</label>
+                                <label class="control-label" for="min-count"
+                                       translate="vk.groups.activity.min-count">
+                                </label>
 
-		</div>
+                            </div>
 
-		<div class="col-md-8">
+                            <div class="col-md-8">
 
-			<input ng-model="dto.minCount" type="number" min="0" name="minCount" id="min-count"  required="required"
-			class=""/>
+                                <input ng-model="dto.minCount" type="number" min="0" name="minCount" id="min-count"
+                                       required="required"
+                                       class=""/>
 
-			<div ng-show="form.minCount.$dirty && form.minCount.$invalid">
+                                <div ng-show="form.minCount.$dirty && form.minCount.$invalid">
 
-				<p class="help-block" ng-show="form.minCount.$error.required" translate="vk.general.validation.required">
-				</p>
+                                    <p class="help-block" ng-show="form.minCount.$error.required"
+                                       translate="vk.general.validation.required">
+                                    </p>
 
-			</div>
+                                </div>
 
-		</div>
+                            </div>
 
-	</div>
-												<!--div class="form-group">
-														<label class="control-label col-md-3 col-sm-3 col-xs-12" for="count-by-all-groups"
-																	 translate="vk.groups.activity.count-by-all-groups">
-														</label>
+                        </div>
 
-														<div class="col-md-6 col-sm-6 col-xs-12">
-																<input ng-model="dto.countByAllGroups" type="checkbox" id="count-by-all-groups"
-																			 class="form-control col-md-7 col-xs-12"/>
-														</div>
-													</div-->
+                        <div class="col-md-12">
 
-													<div class="col-md-12">
+                            <div class="form-group">
 
-														<div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="count-likes"
+                                       translate="vk.groups.activity.count-likes"/>
 
-															<label class="control-label col-md-3 col-sm-3 col-xs-4" for="count-likes"
-															translate="vk.groups.activity.count-likes"/>
+                                <div class="col-md-1 col-xs-4">
 
-															<div class="col-md-1 col-xs-4">
+                                    <input ng-model="dto.countLikes" type="checkbox" id="count-likes"
+                                           class=""/>
 
-																<input ng-model="dto.countLikes" type="checkbox" id="count-likes"
-																class=""/>
+                                </div>
 
-															</div>
 
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="count-reposts"
+                                       translate="vk.groups.activity.count-reposts"/>
 
-															<label class="control-label col-md-3 col-sm-3 col-xs-4" for="count-reposts"
-															translate="vk.groups.activity.count-reposts"/>
+                                <div class="col-md-1 col-xs-4">
 
-															<div class="col-md-1 col-xs-4">
+                                    <input ng-model="dto.countReposts" type="checkbox" id="count-reposts"
+                                           class=""/>
 
-																<input ng-model="dto.countReposts" type="checkbox" id="count-reposts"
-																class=""/>
+                                </div>
 
-															</div>
 
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="count-comments"
+                                       translate="vk.groups.activity.count-comments"/>
 
-															<label class="control-label col-md-3 col-sm-3 col-xs-4" for="count-comments"
-															translate="vk.groups.activity.count-comments"/>
 
+                                <div class="col-md-1 col-xs-4">
 
-															<div class="col-md-1 col-xs-4">
+                                    <input ng-model="dto.countComments" type="checkbox" id="count-comments"
+                                           class=""/>
 
-																<input ng-model="dto.countComments" type="checkbox" id="count-comments"
-																class=""/>
+                                </div>
 
-															</div>
+                            </div>
 
-														</div>
+                        </div>
 
-													</div>
+                        <div class="form-group">
 
-													<div class="form-group">
+                            <div class="col-md-4 label-wrap">
 
-													<div class="col-md-4 laberwrap">
+                                <label class="control-label" for="task-info"
+                                       translate="vk.groups.activity.task-info"/>
 
-														<label class="control-label" for="task-info"
-														translate="vk.groups.activity.task-info"/>
+                            </div>
 
-														</div>
+                            <div class="col-md-8">
 
-													<div class="col-md-8">
+                                <input ng-model="dto.taskInfo" type="text" id="task-info" name="taskInfo"
+                                       required="required"/>
 
-														<input ng-model="dto.taskInfo" type="text" id="task-info" name="taskInfo" required="required"/>
+                                <div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
 
-														<div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.taskInfo.$error.required"
+                                       translate="vk.general.validation.required">
+                                    </p>
 
-															<p class="help-block"
-															ng-show="form.taskInfo.$error.required" translate="vk.general.validation.required">
-														</p>
+                                </div>
 
-													</div>
 
+                            </div>
 
-												</div>
 
+                        </div>
 
-											</div>
+                        <div class="form-group">
 
-											<div class="form-group">
+                            <div class="col-md-8 col-md-offset-4 btnwrap">
 
-												<div class="col-md-8 col-md-offset-4 btnwrap">
+                                <button ng-click="submit()" ng-disabled="form.$invalid" class="btn blbtn"
+                                        translate="entity.action.submit">Отправить
+                                </button>
 
-													<button ng-click="submit()" ng-disabled="form.$invalid" class="btn blbtn" translate="entity.action.submit">Отправить</button>
+                            </div>
 
-												</div>
+                        </div>
 
-											</div>
+                        <div ng-show="message" class="alert alert-success alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                            </button>
+                            {{message}}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="desctask">
+                Активная аудитория стены группы ищет ID людей, которые проявляли активность на стене группы или пользователя, это могут быть лайки, комментарии, репосты.
+            </div>
+        </div>
+    </div>
 
-											<div ng-show="message" class="alert alert-success alert-dismissible fade in" role="alert">
-												<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-													aria-hidden="true">×</span>
-												</button>
-												{{message}}
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="desctask" translate="vk.groups.activity.definition">
-									Тут описание
-								</div>
-							</div>
-						</div>
 
-
-					</div>
+</div>

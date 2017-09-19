@@ -157,6 +157,16 @@ angular.module('vktrgtApp')
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
                 });
+            },
+            usersLikes: function (ids, taskInfo, file) {
+                var fd = new FormData();
+                fd.append('file', file)
+                fd.append('userIds', ids)
+                fd.append('taskInfo', taskInfo)
+                return $http.post('/api/users/like', fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                });
             }
 
         }

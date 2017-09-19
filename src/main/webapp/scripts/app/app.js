@@ -88,6 +88,10 @@ angular.module('vktrgtApp', ['LocalStorageModule', 'tmh.dynamicLocale', 'pascalp
                 'navbar@': {
                     templateUrl: 'scripts/components/navbar/navbar.html',
                     controller: 'NavbarController'
+                },
+                'sidebar@': {
+                    templateUrl: 'scripts/components/sidebar/sidebar.html',
+                    controller: 'SidebarController'
                 }
             },
             resolve: {

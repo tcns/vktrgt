@@ -1,82 +1,97 @@
 <div ng-cloak>
 
-	<div class="row">
+    <div class="row">
 
-		<div class="col-md-8">
+        <div class="col-md-8">
 
-			<div class="x_panel">
+            <div class="x_panel">
 
-				<div class="x_title">
+                <div class="x_title">
 
-					<h2 translate="vk.groups.info.title" />
+                    <h2 translate="vk.groups.info.title"/>
 
-					<div class="clearfix"></div>
+                    <div class="clearfix"></div>
 
-				</div>
+                </div>
 
-				<div class="x_content">
+                <div class="x_content">
 
-					<form class="form-horizontal form-label-left" name="form" novalidate show-validation>
+                    <form class="form-horizontal form-label-left" name="form" novalidate show-validation>
 
-						<div class="form-group">
+                        <div class="form-group">
 
-							<div class="col-md-4">
+                            <div class="col-md-4">
 
-								<label class="control-label" for="groups"
-								translate="vk.groups.intersect.group-list"/>
+                                <label class="control-label" for="groups"
+                                       translate="vk.groups.intersect.group-list"/>
 
-							</div>
+                            </div>
 
-							<div class="col-md-5 col-sm-5 col-xs-10">
+                            <div class="col-md-8">
 								<textarea ng-model="groups" type="text" id="groups" name="groups" required="required"
-								class="form-control col-md-7 col-xs-12"/>
-								<div ng-show="form.groups.$dirty && form.groups.$invalid">
-									<p class="help-block"
-									ng-show="form.groups.$error.required" translate="vk.general.validation.required">
-								</p>
-							</div>
-						</div>
-						<div class="col-md-2 col-sm-2 col-xs-2">
-							<input type="file" id="file" name="file"/>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="task-info"
-						translate="vk.groups.intersect.task-info">
-					</label>
+                                          class=""/>
+                                <div ng-show="form.groups.$dirty && form.groups.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.groups.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-md-offset-4">
 
-					<div class="col-md-6 col-sm-6 col-xs-12">
-						<input ng-model="taskInfo" type="text" name="taskInfo" id="task-info" required="required"
-						class="form-control col-md-7 col-xs-12"/>
-						<div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
-							<p class="help-block"
-							ng-show="form.taskInfo.$error.required" translate="vk.general.validation.required">
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-					<button ng-click="submit()" class="btn btn-success" ng-disabled="form.$invalid" translate="entity.action.submit">
-					</button>
-				</div>
-			</div>
-			<div ng-show="message" class="alert alert-success alert-dismissible fade in" role="alert">
-				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-					aria-hidden="true">×</span>
-				</button>
-				{{message}}
-			</div>
-		</form>
-	</div>
-</div>
-</div>
-<div class="col-md-4">
-	<div translate="vk.groups.info.definition">
-		Тут описание
-	</div>
-</div>
-</div>
+                                <div class="filewrap">
+
+                                    <input type="file" id="file" name="file"/>
+
+                                </div>
+
+                            </div>
+                            `
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="task-info"
+                                   translate="vk.groups.intersect.task-info">
+                            </label>
+
+                            <div class="col-md-8">
+                                <input ng-model="taskInfo" type="text" name="taskInfo" id="task-info"
+                                       required="required"
+                                       class=""/>
+                                <div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.taskInfo.$error.required"
+                                       translate="vk.general.validation.required">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-md-8 col-md-offset-4 btnwrap">
+
+                                <button ng-click="submit()" ng-disabled="form.$invalid" class="btn blbtn"
+                                        translate="entity.action.submit">Отправить
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div ng-show="message" class="alert alert-success alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                            </button>
+                            {{message}}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="desctask" translate="vk.groups.info.definition">
+                Тут описание
+            </div>
+        </div>
+    </div>
 
 
 </div>

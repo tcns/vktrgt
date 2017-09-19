@@ -1,43 +1,44 @@
 <div ng-cloak>
-    <div class="page-title">
-        <div class="title_left">
-            <h3 translate="vk.title">
-                VK Cloud
-            </h3>
-        </div>
-    </div>
+
     <div class="row">
         <div class="col-md-8">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2 translate="vk.user.analyse.title" />
+                    <h2 translate="vk.user.analyse.title"/>
 
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
                     <form class="form-horizontal form-label-left" name="form" novalidate show-validation>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="users"
-                                   translate="vk.user.analyse.list" />
-                            <div class="col-md-5 col-sm-5 col-xs-10">
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="users"
+                                       translate="vk.user.analyse.list"/>
+                            </div>
+                            <div class="col-md-8">
                                 <textarea name="users" ng-model="users" type="text" id="users"
-                                          class="form-control col-md-7 col-xs-12"/>
+                                          class=""/>
                                 <div ng-show="form.users.$dirty && form.users.$invalid">
                                     <p class="help-block"
                                        ng-show="form.users.$error.required" translate="vk.general.validation.required">
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                <input type="file" id="file" name="file"/>
+                            <div class="col-md-8 col-md-offset-4">
+                                <div class="filewrap">
+                                    <input type="file" id="file" name="file"/>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="age"
-                                   translate="vk.user.analyse.age" />
-                            <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="age"
+                                       translate="vk.user.analyse.age"/>
+                            </div>
+                            <div class="col-md-8">
                                 <textarea name="users" ng-model="age" type="text" id="age"
-                                          class="form-control col-md-7 col-xs-12"/>
+                                          placeholder="1-10"
+                                          class=""/>
                             </div>
                         </div>
                         <!--div class="form-group">
@@ -62,9 +63,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                            <label
                                    translate="vk.user.analyse.countries" />
-                            <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-md-8">
                                 <multiple-autocomplete ng-model="countries"
                                                        object-property="title"
                                                        suggestions-arr="countryList">
@@ -73,9 +74,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                            <label
                                    translate="vk.user.analyse.cities" />
-                            <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-md-8">
                                 <multiple-autocomplete ng-model="cities"
                                                        object-property="title"
                                                        suggestions-arr="cityList">
@@ -84,27 +85,35 @@
                             </div>
                         </div-->
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="task-info"
-                                   translate="vk.groups.activity.task-info">
-                            </label>
-
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input ng-model="taskInfo" type="text" id="task-info" name="taskInfo" required="required"
-                                       class="form-control col-md-7 col-xs-12"/>
+                            <div class="col-md-4 label-wrap">
+                                <label class="control-label" for="task-info"
+                                       translate="vk.groups.activity.task-info">
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                <input ng-model="taskInfo" type="text" id="task-info" name="taskInfo"
+                                       required="required"
+                                       class=""/>
                                 <div ng-show="form.taskInfo.$dirty && taskInfo.$invalid">
                                     <p class="help-block"
-                                       ng-show="form.taskInfo.$error.required" translate="vk.general.validation.required">
+                                       ng-show="form.taskInfo.$error.required"
+                                       translate="vk.general.validation.required">
                                     </p>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <button ng-click="submit()" ng-disabled="form.$invalid" class="btn btn-success" translate="entity.action.submit">
-                                    Отправить
+
+                            <div class="col-md-8 col-md-offset-4 btnwrap">
+
+                                <button ng-click="submit()" ng-disabled="form.$invalid" class="btn blbtn"
+                                        translate="entity.action.submit">Отправить
                                 </button>
+
                             </div>
+
                         </div>
+
                         <div ng-show="message" class="alert alert-success alert-dismissible fade in" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                                 aria-hidden="true">×</span>
@@ -116,7 +125,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div translate="vk.user.analyse.definition">
+            <div class="desctask" translate="vk.groups.activity.definition">
                 Тут описание
             </div>
         </div>

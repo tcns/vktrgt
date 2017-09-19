@@ -105,14 +105,123 @@
 									<input ng-model="dto.needTwitter" type="checkbox" id="twitter" class=""/>
 
 								</div>
+
+                                <label class="control-label col-md-3 col-sm-1 col-xs-4" for="sibling">Указан партнер</label>
+
+                                <div class="col-md-1 col-xs-4">
+
+                                    <input ng-model="dto.needSibling" type="checkbox" id="sibling" class=""/>
+
+                                </div>
 							</div>
 
 						</div>
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="not-checked">не указано</label>
+
+                                <div class="col-md-1 col-xs-4">
+
+                                    <input ng-model="relationships[0]" type="checkbox" id="not-checked" class=""/>
+
+                                </div>
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="not-married">не женат/не замужем</label>
+
+                                <div class="col-md-1 col-xs-4">
+
+                                    <input ng-model="relationships[1]" type="checkbox" id="not-married" class=""/>
+
+                                </div>
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="has-friend">есть друг/подруга</label>
+
+                                <div class="col-md-1 col-xs-4">
+
+                                    <input ng-model="relationships[2]" type="checkbox" id="has-friend" class=""/>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="has-pom">помолвлен/помолвлена</label>
+
+                                <div class="col-md-1 col-xs-4">
+
+                                    <input ng-model="relationships[3]" type="checkbox" id="has-pom" class=""/>
+
+                                </div>
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="is-married">женат/замужем</label>
+
+                                <div class="col-md-1 col-xs-4">
+
+                                    <input ng-model="relationships[4]" type="checkbox" id="is-married" class=""/>
+
+                                </div>
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="is-difficult"> всё сложно</label>
+
+                                <div class="col-md-1 col-xs-4">
+
+                                    <input ng-model="relationships[5]" type="checkbox" id="is-difficult" class=""/>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="active-search">в активном поиске</label>
+
+                                <div class="col-md-1 col-xs-4">
+
+                                    <input ng-model="relationships[6]" type="checkbox" id="active-search" class=""/>
+
+                                </div>
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="in-love">влюблён/влюблена</label>
+
+                                <div class="col-md-1 col-xs-4">
+
+                                    <input ng-model="relationships[7]" type="checkbox" id="in-love" class=""/>
+
+                                </div>
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-4" for="is-citizen-marry">в гражданском браке</label>
+
+                                <div class="col-md-1 col-xs-4">
+
+                                    <input ng-model="relationships[8]" type="checkbox" id="is-citizen-marry" class=""/>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
 
 
 						<div class="form-group">
 
-							<div class="col-md-4 laberwrap">
+							<div class="col-md-4 label-wrap">
 
 								<label class="control-label" for="age" translate="vk.user.analyse.age"/>
 
@@ -128,7 +237,7 @@
 
 						<div class="form-group">
 
-							<div class="col-md-4 laberwrap">
+							<div class="col-md-4 label-wrap">
 
 								<label class="control-label" translate="vk.user.analyse.countries"/>
 
@@ -144,7 +253,7 @@
 
 						<div class="form-group">
 
-							<div class="col-md-4 laberwrap">
+							<div class="col-md-4 label-wrap">
 
 								<label class="control-label" translate="vk.user.analyse.cities"/>
 
@@ -160,7 +269,7 @@
 
 						<div class="form-group">
 
-							<div class="col-md-4 laberwrap">
+							<div class="col-md-4 label-wrap">
 
 
 								<label class="control-label" for="task-info" translate="vk.groups.activity.task-info">

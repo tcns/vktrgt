@@ -162,9 +162,19 @@ public class AnalysisServiceImpl implements AnalysisService {
             users = users.parallelStream().filter(user ->
                 StringUtils.isNotEmpty(user.getTwitter())).collect(Collectors.toList());
         }
+        if (analyseDTO.getHasSibling()) {
+            userTask = userTask.updateStatusMessage("Фильтрация по второй половине");
+            users = users.parallelStream().filter(user -> user.getRelationPartner() != null).collect(Collectors.toList());
+        }
+        if (analyseDTO.getRelationships() != null && analyseDTO.getRelationships().keySet().size() > 0) {
+            userTask = userTask.updateStatusMessage("Фильтрация типу второй половины");
+            users = users.parallelStream().filter(user ->
+                                                      user.getRelation() != null &&
+                                                          analyseDTO.getRelationships().keySet().contains(user.getRelation())).collect(Collectors.toList());
+        }
 
-        String json = JsonParser.objectToJson(users);
-        userTask.saveFinal(exportService.getStreamFromObject(exportService.getCSV(json)));
+        List<Integer> idsFinal = users.parallelStream().map(User::getId).collect(Collectors.toList());
+        userTask.saveFinal(exportService.getStreamFromObject(StringUtils.join(idsFinal, "\n")));
         return users;
     }
 

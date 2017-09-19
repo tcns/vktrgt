@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('vktrgtApp')
-    .controller('NavbarController', function ($scope, $location, $state, Auth, Principal, ENV, TaskService, $q, $translate) {
+    .controller('NavbarController', function ($scope, $window, $location, $state, Auth, Principal, ENV, TaskService, $q, $translate) {
         $scope.isAuthenticated = Principal.isAuthenticated;
         $scope.page = 1;
         $scope.tasks = [];
@@ -26,6 +26,6 @@ angular.module('vktrgtApp')
         $scope.inProduction = ENV === 'prod';
         $scope.logout = function () {
             Auth.logout();
-            $state.go('home');
+            $window.location.href = '/';
         };
     });

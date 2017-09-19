@@ -60,11 +60,11 @@ public class SocialService {
         String providerId = connection.getKey().getProviderId();
         User user = createUserIfNotExist(userProfile, langKey, providerId);
         createSocialConnection(user.getLogin(), connection);
-        if (user.getEmail() != null) {
+      /*  if (user.getEmail() == null) {
             throw new EmailNotPresentException();
         } else {
             mailService.sendSocialRegistrationValidationEmail(user, providerId);
-        }
+        }*/
 
     }
 
