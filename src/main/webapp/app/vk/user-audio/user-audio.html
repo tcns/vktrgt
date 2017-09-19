@@ -1,0 +1,98 @@
+<div ng-cloak>
+    <div class="page-title">
+        <div class="title_left">
+            <h3 translate="vk.title">
+                VK Cloud
+            </h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2 translate="vk.user.audio.title">
+                        User aгdio
+                    </h2>
+
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form class="form-horizontal form-label-left" name="form" novalidate show-validation>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="users"
+                                   translate="vk.user.audio.user-list">
+                                Group List
+                            </label>
+
+                            <div class="col-md-5 col-sm-5 col-xs-10">
+                                <textarea name="users" ng-model="users" type="text" id="users"
+                                          class="form-control col-md-7 col-xs-12"/>
+                                <div ng-show="form.users.$dirty && form.users.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.users.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                </div>
+                            </div>
+                            <!--div class="col-md-2 col-sm-2 col-xs-2">
+                                <input type="file" id="file" name="file"/>
+                            </div-->
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="audio"
+                                   translate="vk.user.audio.audio-list">
+                                Post List
+                            </label>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea ng-model="audio" type="text" name="audio" id="audio"
+                                          class="form-control col-md-7 col-xs-12"/>
+                                <div ng-show="form.audio.$dirty && form.audio.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.audio.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="task-info"
+                                   translate="vk.groups.activity.task-info">
+                            </label>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input ng-model="taskInfo" type="text" id="task-info" name="taskInfo" required="required"
+                                       class="form-control col-md-7 col-xs-12"/>
+                                <div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.taskInfo.$error.required" translate="vk.general.validation.required">
+                                    </p>
+                                </div>
+                            </div>
+                        </div-->
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <button ng-click="submit()" ng-disabled="form.$invalid" class="btn btn-success" translate="entity.action.submit">
+                                    Отправить
+                                </button>
+                            </div>
+                        </div>
+                        <div ng-show="message" class="alert alert-success alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                            </button>
+                            {{message}}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div translate="vk.user.audio.definition">
+                Тут описание
+            </div>
+        </div>
+    </div>
+
+
+</div>

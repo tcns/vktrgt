@@ -1,0 +1,69 @@
+<div ng-cloak>
+    <div class="page-title">
+        <div class="title_left">
+            <h3 translate="task-manager.title">
+            </h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2 translate="task-manager.title">
+
+                    </h2>
+                    <div class="pull-right">
+                        <a class="btn btn-default" ng-click="removeAll()"><i class="fa fa-times" aria-hidden="true"></i></a>
+                        <button class="btn btn-default" ng-click="loadAll()">
+                            <span class="fa fa-refresh"></span>
+                        </button>
+                    </div>
+                    <div class="clearfix"></div>
+
+                </div>
+                <div class="x_content">
+                    <form class="form-horizontal form-label-left">
+                        <table class="jh-table table table-striped">
+                            <thead>
+                            <tr jh-sort="predicate" ascending="reverse" callback="loadAll()">
+                                <th jh-sort-by="kind"><span translate="task-manager.table.kind">Kind</span> <span class="glyphicon glyphicon-sort"></span></th>
+                                <th jh-sort-by="taskInfo"><span translate="task-manager.table.task-info">Task Info</span> <span class="glyphicon glyphicon-sort"></span></th>
+                                <th jh-sort-by="currentStatusDesc"><span translate="task-manager.table.current-status-desc">Current Status Description</span> <span class="glyphicon glyphicon-sort"></span></th>
+                                <th jh-sort-by="percent"><span translate="task-manager.table.current-progress">Current Status Description</span> <span class="glyphicon glyphicon-sort"></span></th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="task in tasks track by task.id">
+                                <td>{{task.kindTranslated}}</td>
+                                <td>{{task.taskInfo}}</td>
+                                <td>{{task.currentStatusDesc}}</td>
+                                <td>
+                                    <div class="progress">
+                                        <uib-progressbar min="0" max="task.maxProgress" value="task.currentProgress" class="progress-striped active" type="success">
+                                            <span>{{task.percent}}%</span>
+                                        </uib-progressbar>
+                                    </div>
+                                    </td>
+                                <td class="text-right">
+                                    <div class="btn-group flex-btn-group-container">
+                                        <a class="btn btn-default"
+                                           ng-show="task.currentStatus=='3' || task.currentStatus=='1'"
+                                           ng-href="/api/tasks/export/txt?taskId={{task.id}}&fileName={{task.taskInfo}}"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                        <a class="btn btn-default" ng-click="removeTask(task.id)"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                               <uib-pagination class="pagination-sm" total-items="totalItems" ng-model="page" ng-change="loadAll()"></uib-pagination>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

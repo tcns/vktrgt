@@ -1,0 +1,120 @@
+<div ng-cloak>
+    <div class="page-title">
+        <div class="title_left">
+            <h3 translate="vk.title" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2 translate="vk.user.birth.title" />
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form class="form-horizontal form-label-left" name="form" novalidate show-validation>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="users"
+                                   translate="vk.user.birth.user-list" />
+
+                            <div class="col-md-5 col-sm-5 col-xs-10">
+                                <textarea name="users" ng-model="users" type="text" id="users"
+                                          class="form-control col-md-7 col-xs-12"/>
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-2">
+                                <input type="file" id="file" name="file"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   translate="vk.user.birth.type" />
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <multiple-autocomplete ng-model="types"
+                                                       object-property="value"
+                                                       suggestions-arr="typeList">
+
+                                </multiple-autocomplete>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   translate="vk.user.birth.gender" />
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <multiple-autocomplete ng-model="genders"
+                                                       object-property="value"
+                                                       suggestions-arr="genderList">
+
+                                </multiple-autocomplete>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fromDays"
+                                   translate="vk.user.birth.fromDays" />
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input ng-model="fromDays" required type="number" id="fromDays"
+                                       class="form-control col-md-7 col-xs-12" ng-min="0"/>
+                                <div ng-show="form.fromDays.$dirty && form.fromDays.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.fromDays.$error.required"
+                                       translate="vk.general.validation.required">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nearestDays"
+                                   translate="vk.user.birth.nearest" />
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input ng-model="nearsetDays" required type="number" id="nearestDays"
+                                          class="form-control col-md-7 col-xs-12" ng-min="0"/>
+                                <div ng-show="form.nearestDays.$dirty && form.nearestDays.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.nearestDays.$error.required"
+                                       translate="vk.general.validation.required">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="task-info"
+                                   translate="vk.user.birth.task-info">
+                            </label>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input ng-model="taskInfo" type="text" name="taskInfo" id="task-info" required
+                                       class="form-control col-md-7 col-xs-12"/>
+
+                                <div ng-show="form.taskInfo.$dirty && form.taskInfo.$invalid">
+                                    <p class="help-block"
+                                       ng-show="form.taskInfo.$error.required"
+                                       translate="vk.general.validation.required">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <button ng-click="submit()" class="btn btn-success" ng-disabled="form.$invalid" translate="entity.action.submit">
+                                    Отправить
+                                </button>
+                            </div>
+                        </div>
+                        <div ng-show="message" class="alert alert-success alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                            </button>
+                            {{message}}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div translate="vk.user.birth.definition" />
+        </div>
+    </div>
+
+
+</div>
